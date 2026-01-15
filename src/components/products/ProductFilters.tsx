@@ -49,12 +49,37 @@ function FilterContent({
   const searchParams = useSearchParams()
 
   const [priceRange, setPriceRange] = useState([0, 1000])
+  const [minPriceInput, setMinPriceInput] = useState('0')
+  const [maxPriceInput, setMaxPriceInput] = useState('1000')
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     searchParams.get('category')?.split(',').filter(Boolean) || []
   )
   const [selectedRating, setSelectedRating] = useState<number | null>(
     searchParams.get('rating') ? parseInt(searchParams.get('rating')!) : null
   )
+
+  // Sync input fields when priceRange changes (e.g., from slider)
+  const handleSliderChange = (values: number[]) => {
+    setPriceRange(values)
+    setMinPriceInput(values[0].toString())
+    setMaxPriceInput(values[1].toString())
+  }
+
+  // Update price range from min input on Enter or blur
+  const handleMinPriceCommit = () => {
+    const value = minPriceInput === '' ? 0 : parseInt(minPriceInput) || 0
+    const clampedValue = Math.max(0, Math.min(value, priceRange[1]))
+    setPriceRange([clampedValue, priceRange[1]])
+    setMinPriceInput(clampedValue.toString())
+  }
+
+  // Update price range from max input on Enter or blur
+  const handleMaxPriceCommit = () => {
+    const value = maxPriceInput === '' ? 1000 : parseInt(maxPriceInput) || 1000
+    const clampedValue = Math.max(priceRange[0], Math.min(value, 10000))
+    setPriceRange([priceRange[0], clampedValue])
+    setMaxPriceInput(clampedValue.toString())
+  }
 
   const handleCategoryChange = (categoryId: string, checked: boolean) => {
     if (checked) {
@@ -98,6 +123,8 @@ function FilterContent({
   const handleClearFilters = () => {
     setSelectedCategories([])
     setPriceRange([0, 1000])
+    setMinPriceInput('0')
+    setMaxPriceInput('1000')
     setSelectedRating(null)
     router.push('/products')
     onClose?.()
@@ -180,7 +207,7 @@ function FilterContent({
           <div className="space-y-4">
             <Slider
               value={priceRange}
-              onValueChange={setPriceRange}
+              onValueChange={handleSliderChange}
               max={1000}
               step={10}
               className="py-2"
@@ -189,11 +216,12 @@ function FilterContent({
               <div className="flex-1">
                 <Label className="text-xs text-gray-500">Min</Label>
                 <Input
-                  type="number"
-                  value={priceRange[0]}
-                  onChange={(e) =>
-                    setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])
-                  }
+                  type="text"
+                  inputMode="numeric"
+                  value={minPriceInput}
+                  onChange={(e) => setMinPriceInput(e.target.value)}
+                  onBlur={handleMinPriceCommit}
+                  onKeyDown={(e) => e.key === 'Enter' && handleMinPriceCommit()}
                   className="h-9"
                 />
               </div>
@@ -201,11 +229,12 @@ function FilterContent({
               <div className="flex-1">
                 <Label className="text-xs text-gray-500">Max</Label>
                 <Input
-                  type="number"
-                  value={priceRange[1]}
-                  onChange={(e) =>
-                    setPriceRange([priceRange[0], parseInt(e.target.value) || 1000])
-                  }
+                  type="text"
+                  inputMode="numeric"
+                  value={maxPriceInput}
+                  onChange={(e) => setMaxPriceInput(e.target.value)}
+                  onBlur={handleMaxPriceCommit}
+                  onKeyDown={(e) => e.key === 'Enter' && handleMaxPriceCommit()}
                   className="h-9"
                 />
               </div>
