@@ -14,6 +14,11 @@ interface Product {
   seller: {
     storeName: string
   }
+  category?: {
+    id: string
+    name: string
+    slug: string
+  } | null
 }
 
 interface ProductGridProps {

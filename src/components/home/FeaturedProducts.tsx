@@ -85,6 +85,11 @@ interface Product {
   rating: number
   reviewCount: number
   seller: { storeName: string }
+  category?: {
+    id: string
+    name: string
+    slug: string
+  } | null
 }
 
 interface FeaturedProductsProps {

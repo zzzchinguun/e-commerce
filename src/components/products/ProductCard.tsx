@@ -22,6 +22,11 @@ interface Product {
   seller: {
     storeName: string
   }
+  category?: {
+    id: string
+    name: string
+    slug: string
+  } | null
 }
 
 interface ProductCardProps {
@@ -132,8 +137,25 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
         {/* Product Info */}
         <div className="mt-3 flex flex-1 flex-col">
-          {/* Seller */}
-          <p className="text-xs text-gray-500">{product.seller.storeName}</p>
+          {/* Category & Seller */}
+          <div className="flex items-center gap-1.5 text-xs text-gray-500">
+            {product.category && (
+              <>
+                <span
+                  className="text-orange-600 hover:text-orange-700"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    window.location.href = `/products?category=${product.category!.slug}`
+                  }}
+                >
+                  {product.category.name}
+                </span>
+                <span className="text-gray-300">•</span>
+              </>
+            )}
+            <span>{product.seller.storeName}</span>
+          </div>
 
           {/* Name */}
           <h3 className="mt-1 line-clamp-2 text-sm font-medium text-gray-900 group-hover:text-orange-600">

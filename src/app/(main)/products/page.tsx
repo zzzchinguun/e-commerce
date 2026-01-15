@@ -103,6 +103,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     seller: {
       storeName: p.seller.storeName,
     },
+    category: p.category,
   }))
 
   const totalPages = Math.ceil(count / limit)

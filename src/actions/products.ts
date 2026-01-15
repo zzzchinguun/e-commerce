@@ -25,6 +25,11 @@ export type PublicProduct = {
     storeName: string
     storeSlug: string
   }
+  category?: {
+    id: string
+    name: string
+    slug: string
+  } | null
 }
 
 export type ProductDetail = {
@@ -129,6 +134,7 @@ export async function getPublicProducts(options?: {
       ),
       categories (
         id,
+        name,
         slug
       )
     `, { count: 'exact' })
@@ -206,6 +212,11 @@ export async function getPublicProducts(options?: {
         storeName: product.seller_profiles.store_name,
         storeSlug: product.seller_profiles.store_slug,
       },
+      category: product.categories ? {
+        id: product.categories.id,
+        name: product.categories.name,
+        slug: product.categories.slug,
+      } : null,
     }
   }) || []
 
@@ -361,6 +372,11 @@ export async function getFeaturedProducts(limit = 6): Promise<{ products: Public
       product_images (
         url,
         is_primary
+      ),
+      categories (
+        id,
+        name,
+        slug
       )
     `)
     .eq('status', 'active')
@@ -388,6 +404,11 @@ export async function getFeaturedProducts(limit = 6): Promise<{ products: Public
         storeName: product.seller_profiles.store_name,
         storeSlug: product.seller_profiles.store_slug,
       },
+      category: product.categories ? {
+        id: product.categories.id,
+        name: product.categories.name,
+        slug: product.categories.slug,
+      } : null,
     }
   }) || []
 
@@ -417,6 +438,11 @@ export async function getBestSellers(limit = 6): Promise<{ products: PublicProdu
       product_images (
         url,
         is_primary
+      ),
+      categories (
+        id,
+        name,
+        slug
       )
     `)
     .eq('status', 'active')
@@ -443,6 +469,11 @@ export async function getBestSellers(limit = 6): Promise<{ products: PublicProdu
         storeName: product.seller_profiles.store_name,
         storeSlug: product.seller_profiles.store_slug,
       },
+      category: product.categories ? {
+        id: product.categories.id,
+        name: product.categories.name,
+        slug: product.categories.slug,
+      } : null,
     }
   }) || []
 
@@ -471,6 +502,11 @@ export async function getNewArrivals(limit = 6): Promise<{ products: PublicProdu
       product_images (
         url,
         is_primary
+      ),
+      categories (
+        id,
+        name,
+        slug
       )
     `)
     .eq('status', 'active')
@@ -497,6 +533,11 @@ export async function getNewArrivals(limit = 6): Promise<{ products: PublicProdu
         storeName: product.seller_profiles.store_name,
         storeSlug: product.seller_profiles.store_slug,
       },
+      category: product.categories ? {
+        id: product.categories.id,
+        name: product.categories.name,
+        slug: product.categories.slug,
+      } : null,
     }
   }) || []
 
@@ -525,6 +566,11 @@ export async function getRelatedProducts(productId: string, categoryId?: string,
       product_images (
         url,
         is_primary
+      ),
+      categories (
+        id,
+        name,
+        slug
       )
     `)
     .eq('status', 'active')
@@ -559,6 +605,11 @@ export async function getRelatedProducts(productId: string, categoryId?: string,
         storeName: product.seller_profiles.store_name,
         storeSlug: product.seller_profiles.store_slug,
       },
+      category: product.categories ? {
+        id: product.categories.id,
+        name: product.categories.name,
+        slug: product.categories.slug,
+      } : null,
     }
   }) || []
 
