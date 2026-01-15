@@ -75,6 +75,34 @@ export async function getPublicProducts(options?: {
 }): Promise<{ products: PublicProduct[]; count: number; error?: string }> {
   const supabase = await createClient()
 
+  // If filtering by category slug, first get the category ID(s)
+  let categoryIds: string[] = []
+  if (options?.category) {
+    // Support multiple categories (comma-separated)
+    const categorySlugs = options.category.split(',').filter(Boolean)
+
+    // Get category IDs for the given slugs (including subcategories)
+    const { data: categories } = await supabase
+      .from('categories')
+      .select('id, parent_id')
+      .in('slug', categorySlugs)
+
+    if (categories && categories.length > 0) {
+      const parentIds = categories.map(c => c.id)
+
+      // Also get subcategories if a parent category is selected
+      const { data: subcategories } = await supabase
+        .from('categories')
+        .select('id')
+        .in('parent_id', parentIds)
+
+      categoryIds = [
+        ...parentIds,
+        ...(subcategories?.map(c => c.id) || [])
+      ]
+    }
+  }
+
   // Build query for active products only
   let query = supabase
     .from('products')
@@ -107,9 +135,9 @@ export async function getPublicProducts(options?: {
     .eq('status', 'active')
     .eq('seller_profiles.status', 'approved')
 
-  // Apply filters
-  if (options?.category) {
-    query = query.eq('categories.slug', options.category)
+  // Apply category filter using category_id
+  if (categoryIds.length > 0) {
+    query = query.in('category_id', categoryIds)
   }
 
   if (options?.search) {

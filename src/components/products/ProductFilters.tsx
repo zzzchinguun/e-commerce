@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { ChevronDown, X, Filter } from 'lucide-react'
+import { ChevronDown, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -14,7 +14,6 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  SheetFooter,
 } from '@/components/ui/sheet'
 import {
   Collapsible,
@@ -23,26 +22,29 @@ import {
 } from '@/components/ui/collapsible'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
-import { formatPrice } from '@/lib/utils/format'
 
-const categories = [
-  { id: 'electronics', name: 'Electronics', count: 1234 },
-  { id: 'fashion', name: 'Fashion', count: 856 },
-  { id: 'home-garden', name: 'Home & Garden', count: 567 },
-  { id: 'health-beauty', name: 'Health & Beauty', count: 432 },
-  { id: 'sports-outdoors', name: 'Sports & Outdoors', count: 321 },
-  { id: 'automotive', name: 'Automotive', count: 198 },
-  { id: 'books-media', name: 'Books & Media', count: 654 },
-  { id: 'toys-games', name: 'Toys & Games', count: 234 },
-]
+export type CategoryFilter = {
+  id: string
+  name: string
+  slug: string
+  productCount?: number
+  children?: CategoryFilter[]
+}
 
 const ratings = [4, 3, 2, 1]
 
 interface ProductFiltersProps {
   className?: string
+  categories?: CategoryFilter[]
 }
 
-function FilterContent({ onClose }: { onClose?: () => void }) {
+function FilterContent({
+  onClose,
+  categories = [],
+}: {
+  onClose?: () => void
+  categories?: CategoryFilter[]
+}) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -111,24 +113,57 @@ function FilterContent({ onClose }: { onClose?: () => void }) {
         </CollapsibleTrigger>
         <CollapsibleContent className="pt-2">
           <div className="space-y-2">
-            {categories.map((category) => (
-              <div key={category.id} className="flex items-center gap-2">
-                <Checkbox
-                  id={category.id}
-                  checked={selectedCategories.includes(category.id)}
-                  onCheckedChange={(checked) =>
-                    handleCategoryChange(category.id, checked as boolean)
-                  }
-                />
-                <Label
-                  htmlFor={category.id}
-                  className="flex flex-1 cursor-pointer items-center justify-between text-sm"
-                >
-                  <span>{category.name}</span>
-                  <span className="text-gray-400">({category.count})</span>
-                </Label>
-              </div>
-            ))}
+            {categories.length === 0 ? (
+              <p className="text-sm text-gray-500">No categories available</p>
+            ) : (
+              categories.map((category) => (
+                <div key={category.id}>
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id={category.slug}
+                      checked={selectedCategories.includes(category.slug)}
+                      onCheckedChange={(checked) =>
+                        handleCategoryChange(category.slug, checked as boolean)
+                      }
+                    />
+                    <Label
+                      htmlFor={category.slug}
+                      className="flex flex-1 cursor-pointer items-center justify-between text-sm"
+                    >
+                      <span>{category.name}</span>
+                      {category.productCount !== undefined && (
+                        <span className="text-gray-400">({category.productCount})</span>
+                      )}
+                    </Label>
+                  </div>
+                  {/* Subcategories */}
+                  {category.children && category.children.length > 0 && (
+                    <div className="ml-6 mt-1 space-y-1">
+                      {category.children.map((sub) => (
+                        <div key={sub.id} className="flex items-center gap-2">
+                          <Checkbox
+                            id={sub.slug}
+                            checked={selectedCategories.includes(sub.slug)}
+                            onCheckedChange={(checked) =>
+                              handleCategoryChange(sub.slug, checked as boolean)
+                            }
+                          />
+                          <Label
+                            htmlFor={sub.slug}
+                            className="flex flex-1 cursor-pointer items-center justify-between text-sm text-gray-600"
+                          >
+                            <span>{sub.name}</span>
+                            {sub.productCount !== undefined && (
+                              <span className="text-gray-400">({sub.productCount})</span>
+                            )}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </CollapsibleContent>
       </Collapsible>
@@ -243,14 +278,14 @@ function FilterContent({ onClose }: { onClose?: () => void }) {
   )
 }
 
-export function ProductFilters({ className }: ProductFiltersProps) {
+export function ProductFilters({ className, categories = [] }: ProductFiltersProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
     <>
       {/* Desktop Filters */}
       <div className={cn('hidden lg:block', className)}>
-        <FilterContent />
+        <FilterContent categories={categories} />
       </div>
 
       {/* Mobile Filter Sheet */}
@@ -267,7 +302,7 @@ export function ProductFilters({ className }: ProductFiltersProps) {
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>
             <div className="mt-6">
-              <FilterContent onClose={() => setIsOpen(false)} />
+              <FilterContent onClose={() => setIsOpen(false)} categories={categories} />
             </div>
           </SheetContent>
         </Sheet>

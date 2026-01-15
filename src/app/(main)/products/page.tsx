@@ -1,11 +1,12 @@
 import { Suspense } from 'react'
 import { Metadata } from 'next'
-import { ProductFilters } from '@/components/products/ProductFilters'
+import { ProductFilters, type CategoryFilter } from '@/components/products/ProductFilters'
 import { ProductSort } from '@/components/products/ProductSort'
 import { ProductGrid } from '@/components/products/ProductGrid'
 import { ActiveFilters } from '@/components/products/ActiveFilters'
 import { Skeleton } from '@/components/ui/skeleton'
 import { getPublicProducts } from '@/actions/products'
+import { getCategories } from '@/actions/categories'
 
 export const metadata: Metadata = {
   title: 'Бүтээгдэхүүн',
@@ -61,6 +62,21 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const page = parseInt(params.page || '1', 10)
   const limit = 24
   const offset = (page - 1) * limit
+
+  // Fetch categories for filters
+  const { categories: hierarchicalCategories } = await getCategories()
+
+  // Transform categories for filter component
+  const filterCategories: CategoryFilter[] = (hierarchicalCategories || []).map((cat) => ({
+    id: cat.id,
+    name: cat.name,
+    slug: cat.slug,
+    children: cat.children?.map((child) => ({
+      id: child.id,
+      name: child.name,
+      slug: child.slug,
+    })),
+  }))
 
   // Fetch products from database
   const { products, count } = await getPublicProducts({
@@ -126,7 +142,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         <aside className="hidden w-64 shrink-0 lg:block">
           <div className="sticky top-24">
             <Suspense fallback={<FiltersSkeleton />}>
-              <ProductFilters />
+              <ProductFilters categories={filterCategories} />
             </Suspense>
           </div>
         </aside>
@@ -136,7 +152,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           {/* Toolbar */}
           <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
             <Suspense fallback={null}>
-              <ProductFilters className="lg:hidden" />
+              <ProductFilters className="lg:hidden" categories={filterCategories} />
             </Suspense>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-500">
