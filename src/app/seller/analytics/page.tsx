@@ -1,15 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   TrendingUp,
-  TrendingDown,
   Eye,
   ShoppingCart,
   DollarSign,
-  Package,
   ArrowUpRight,
   ArrowDownRight,
+  Loader2,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -20,57 +19,48 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { formatPrice } from '@/lib/utils/format'
+import { getSellerAnalytics } from '@/actions/analytics'
 
-// Placeholder analytics data
-const stats = [
-  {
-    title: 'Total Revenue',
-    value: 12847.32,
-    change: 12.5,
-    icon: DollarSign,
-    format: 'currency',
-  },
-  {
-    title: 'Orders',
-    value: 156,
-    change: 8.2,
-    icon: ShoppingCart,
-    format: 'number',
-  },
-  {
-    title: 'Product Views',
-    value: 4521,
-    change: -3.1,
-    icon: Eye,
-    format: 'number',
-  },
-  {
-    title: 'Conversion Rate',
-    value: 3.45,
-    change: 0.8,
-    icon: TrendingUp,
-    format: 'percent',
-  },
-]
-
-const topProducts = [
-  { name: 'Wireless Bluetooth Headphones', views: 1245, sales: 45, revenue: 3599.55 },
-  { name: 'Premium Cotton T-Shirt', views: 892, sales: 38, revenue: 949.62 },
-  { name: 'Portable Bluetooth Speaker', views: 756, sales: 32, revenue: 1471.68 },
-  { name: 'USB-C Charging Cable', views: 634, sales: 67, revenue: 870.33 },
-  { name: 'Phone Case - Clear', views: 523, sales: 28, revenue: 419.72 },
-]
-
-const recentActivity = [
-  { type: 'sale', message: 'New order #ORD-156 placed', time: '2 minutes ago', amount: 79.99 },
-  { type: 'view', message: 'Wireless Headphones viewed 23 times', time: '1 hour ago' },
-  { type: 'review', message: 'New 5-star review on Premium T-Shirt', time: '3 hours ago' },
-  { type: 'sale', message: 'New order #ORD-155 placed', time: '5 hours ago', amount: 124.97 },
-  { type: 'stock', message: 'USB-C Cable running low (5 left)', time: '6 hours ago' },
-]
+interface AnalyticsData {
+  stats: {
+    totalRevenue: number
+    revenueChange: number
+    orderCount: number
+    orderChange: number
+    productViews: number
+    viewsChange: number
+    conversionRate: number
+    conversionChange: number
+  }
+  topProducts: {
+    id: string
+    name: string
+    views: number
+    sales: number
+    revenue: number
+  }[]
+  recentActivity: {
+    type: 'sale' | 'view' | 'review' | 'stock'
+    message: string
+    time: string
+    amount?: number
+  }[]
+}
 
 export default function AnalyticsPage() {
   const [period, setPeriod] = useState('7d')
+  const [data, setData] = useState<AnalyticsData | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true)
+      const result = await getSellerAnalytics(period)
+      setData(result)
+      setLoading(false)
+    }
+    fetchData()
+  }, [period])
 
   const formatValue = (value: number, format: string) => {
     switch (format) {
@@ -81,6 +71,59 @@ export default function AnalyticsPage() {
       default:
         return value.toLocaleString()
     }
+  }
+
+  const stats = data
+    ? [
+        {
+          title: 'Total Revenue',
+          value: data.stats.totalRevenue,
+          change: data.stats.revenueChange,
+          icon: DollarSign,
+          format: 'currency',
+        },
+        {
+          title: 'Orders',
+          value: data.stats.orderCount,
+          change: data.stats.orderChange,
+          icon: ShoppingCart,
+          format: 'number',
+        },
+        {
+          title: 'Product Views',
+          value: data.stats.productViews,
+          change: data.stats.viewsChange,
+          icon: Eye,
+          format: 'number',
+        },
+        {
+          title: 'Conversion Rate',
+          value: data.stats.conversionRate,
+          change: data.stats.conversionChange,
+          icon: TrendingUp,
+          format: 'percent',
+        },
+      ]
+    : []
+
+  if (loading) {
+    return (
+      <div className="flex h-96 items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-orange-500" />
+      </div>
+    )
+  }
+
+  if (!data) {
+    return (
+      <div className="flex h-96 flex-col items-center justify-center text-center">
+        <ShoppingCart className="h-12 w-12 text-gray-300" />
+        <h2 className="mt-4 text-lg font-semibold text-gray-900">No data available</h2>
+        <p className="mt-2 text-sm text-gray-500">
+          Start selling to see your analytics data here.
+        </p>
+      </div>
+    )
   }
 
   return (
@@ -138,67 +181,42 @@ export default function AnalyticsPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Revenue Chart Placeholder */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Revenue Overview</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex h-64 items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-gray-50">
-              <div className="text-center">
-                <TrendingUp className="mx-auto h-12 w-12 text-gray-300" />
-                <p className="mt-2 text-sm text-gray-500">Revenue chart</p>
-                <p className="text-xs text-gray-400">Connect to database to see real data</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Orders Chart Placeholder */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Orders Overview</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex h-64 items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-gray-50">
-              <div className="text-center">
-                <ShoppingCart className="mx-auto h-12 w-12 text-gray-300" />
-                <p className="mt-2 text-sm text-gray-500">Orders chart</p>
-                <p className="text-xs text-gray-400">Connect to database to see real data</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-2">
         {/* Top Products */}
         <Card>
           <CardHeader>
             <CardTitle>Top Products</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {topProducts.map((product, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between rounded-lg border p-3"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-sm font-medium text-gray-600">
-                      {index + 1}
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{product.name}</p>
-                      <p className="text-sm text-gray-500">
-                        {product.views} views · {product.sales} sales
-                      </p>
-                    </div>
-                  </div>
-                  <p className="font-medium text-gray-900">{formatPrice(product.revenue)}</p>
+            {data.topProducts.length === 0 ? (
+              <div className="flex h-48 items-center justify-center text-center">
+                <div>
+                  <ShoppingCart className="mx-auto h-8 w-8 text-gray-300" />
+                  <p className="mt-2 text-sm text-gray-500">No products yet</p>
                 </div>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {data.topProducts.map((product, index) => (
+                  <div
+                    key={product.id}
+                    className="flex items-center justify-between rounded-lg border p-3"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-sm font-medium text-gray-600">
+                        {index + 1}
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900 line-clamp-1">{product.name}</p>
+                        <p className="text-sm text-gray-500">
+                          {product.views.toLocaleString()} views · {product.sales.toLocaleString()} sales
+                        </p>
+                      </div>
+                    </div>
+                    <p className="font-medium text-gray-900">{formatPrice(product.revenue)}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -208,67 +226,90 @@ export default function AnalyticsPage() {
             <CardTitle>Recent Activity</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {recentActivity.map((activity, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  <div
-                    className={`mt-1 h-2 w-2 rounded-full ${
-                      activity.type === 'sale'
-                        ? 'bg-green-500'
-                        : activity.type === 'view'
-                        ? 'bg-blue-500'
-                        : activity.type === 'review'
-                        ? 'bg-yellow-500'
-                        : 'bg-red-500'
-                    }`}
-                  />
-                  <div className="flex-1">
-                    <p className="text-sm text-gray-900">{activity.message}</p>
-                    <div className="flex items-center gap-2">
-                      <p className="text-xs text-gray-500">{activity.time}</p>
-                      {activity.amount && (
-                        <p className="text-xs font-medium text-green-600">
-                          +{formatPrice(activity.amount)}
-                        </p>
-                      )}
+            {data.recentActivity.length === 0 ? (
+              <div className="flex h-48 items-center justify-center text-center">
+                <div>
+                  <Eye className="mx-auto h-8 w-8 text-gray-300" />
+                  <p className="mt-2 text-sm text-gray-500">No recent activity</p>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {data.recentActivity.map((activity, index) => (
+                  <div key={index} className="flex items-start gap-3">
+                    <div
+                      className={`mt-1 h-2 w-2 rounded-full ${
+                        activity.type === 'sale'
+                          ? 'bg-green-500'
+                          : activity.type === 'view'
+                          ? 'bg-blue-500'
+                          : activity.type === 'review'
+                          ? 'bg-yellow-500'
+                          : 'bg-red-500'
+                      }`}
+                    />
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-900">{activity.message}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs text-gray-500">{activity.time}</p>
+                        {activity.amount && (
+                          <p className="text-xs font-medium text-green-600">
+                            +{formatPrice(activity.amount)}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
 
-      {/* Traffic Sources */}
+      {/* Summary Card */}
       <Card>
         <CardHeader>
-          <CardTitle>Traffic Sources</CardTitle>
+          <CardTitle>Period Summary</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 sm:grid-cols-4">
-            {[
-              { source: 'Direct', visits: 1245, percent: 35 },
-              { source: 'Search', visits: 892, percent: 25 },
-              { source: 'Social', visits: 756, percent: 21 },
-              { source: 'Referral', visits: 678, percent: 19 },
-            ].map((item) => (
-              <div key={item.source} className="rounded-lg border p-4">
-                <p className="text-sm text-gray-500">{item.source}</p>
-                <p className="mt-1 text-2xl font-bold text-gray-900">
-                  {item.visits.toLocaleString()}
-                </p>
-                <div className="mt-2">
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
-                    <div
-                      className="h-full bg-orange-500"
-                      style={{ width: `${item.percent}%` }}
-                    />
-                  </div>
-                  <p className="mt-1 text-xs text-gray-500">{item.percent}% of traffic</p>
+            <div className="rounded-lg border p-4">
+              <p className="text-sm text-gray-500">Avg Order Value</p>
+              <p className="mt-1 text-2xl font-bold text-gray-900">
+                {data.stats.orderCount > 0
+                  ? formatPrice(data.stats.totalRevenue / data.stats.orderCount)
+                  : formatPrice(0)}
+              </p>
+            </div>
+            <div className="rounded-lg border p-4">
+              <p className="text-sm text-gray-500">Revenue per View</p>
+              <p className="mt-1 text-2xl font-bold text-gray-900">
+                {data.stats.productViews > 0
+                  ? formatPrice(data.stats.totalRevenue / data.stats.productViews)
+                  : formatPrice(0)}
+              </p>
+            </div>
+            <div className="rounded-lg border p-4">
+              <p className="text-sm text-gray-500">Total Products</p>
+              <p className="mt-1 text-2xl font-bold text-gray-900">
+                {data.topProducts.length}
+              </p>
+            </div>
+            <div className="rounded-lg border p-4">
+              <p className="text-sm text-gray-500">Conversion Rate</p>
+              <p className="mt-1 text-2xl font-bold text-gray-900">
+                {data.stats.conversionRate}%
+              </p>
+              <div className="mt-2">
+                <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
+                  <div
+                    className="h-full bg-orange-500"
+                    style={{ width: `${Math.min(data.stats.conversionRate * 10, 100)}%` }}
+                  />
                 </div>
               </div>
-            ))}
+            </div>
           </div>
         </CardContent>
       </Card>
