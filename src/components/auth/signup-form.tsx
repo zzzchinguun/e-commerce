@@ -61,12 +61,12 @@ export function SignupForm() {
       if (authData.user && !authData.session) {
         setEmailSent(true)
       } else {
-        toast.success('Account created successfully!')
+        toast.success('Бүртгэл амжилттай үүслээ!')
         router.push('/')
         router.refresh()
       }
     } catch (error) {
-      toast.error('Something went wrong. Please try again.')
+      toast.error('Алдаа гарлаа. Дахин оролдоно уу.')
     } finally {
       setIsLoading(false)
     }
@@ -79,17 +79,17 @@ export function SignupForm() {
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
           <CheckCircle className="h-6 w-6 text-green-600" />
         </div>
-        <h3 className="text-lg font-medium text-gray-900">Check your email</h3>
+        <h3 className="text-lg font-medium text-gray-900">Имэйлээ шалгана уу</h3>
         <p className="mt-2 text-sm text-gray-600">
-          We&apos;ve sent a confirmation link to your email address. Please
-          click the link to verify your account.
+          Таны имэйл хаяг руу баталгаажуулах холбоос илгээлээ. Бүртгэлээ
+          баталгаажуулахын тулд холбоос дээр дарна уу.
         </p>
         <Button
           variant="outline"
           className="mt-6"
           onClick={() => setEmailSent(false)}
         >
-          Use a different email
+          Өөр имэйл ашиглах
         </Button>
       </div>
     )
@@ -106,18 +106,18 @@ export function SignupForm() {
           <span className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-gray-500">Or continue with</span>
+          <span className="bg-white px-2 text-gray-500">Эсвэл</span>
         </div>
       </div>
 
       {/* Email/Password form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="fullName">Full name</Label>
+          <Label htmlFor="fullName">Бүтэн нэр</Label>
           <Input
             id="fullName"
             type="text"
-            placeholder="John Doe"
+            placeholder="Бат Болд"
             autoComplete="name"
             disabled={isLoading}
             {...register('fullName')}
@@ -128,7 +128,7 @@ export function SignupForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">Имэйл</Label>
           <Input
             id="email"
             type="email"
@@ -143,11 +143,11 @@ export function SignupForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">Нууц үг</Label>
           <Input
             id="password"
             type="password"
-            placeholder="Create a password"
+            placeholder="Нууц үг үүсгэх"
             autoComplete="new-password"
             disabled={isLoading}
             {...register('password')}
@@ -164,26 +164,26 @@ export function SignupForm() {
                   hasMinLength ? 'text-green-600' : 'text-gray-500'
                 }
               >
-                {hasMinLength ? '✓' : '○'} At least 8 characters
+                {hasMinLength ? '✓' : '○'} Хамгийн багадаа 8 тэмдэгт
               </p>
               <p
                 className={
                   hasUppercase ? 'text-green-600' : 'text-gray-500'
                 }
               >
-                {hasUppercase ? '✓' : '○'} One uppercase letter
+                {hasUppercase ? '✓' : '○'} Нэг том үсэг
               </p>
               <p
                 className={
                   hasLowercase ? 'text-green-600' : 'text-gray-500'
                 }
               >
-                {hasLowercase ? '✓' : '○'} One lowercase letter
+                {hasLowercase ? '✓' : '○'} Нэг жижиг үсэг
               </p>
               <p
                 className={hasNumber ? 'text-green-600' : 'text-gray-500'}
               >
-                {hasNumber ? '✓' : '○'} One number
+                {hasNumber ? '✓' : '○'} Нэг тоо
               </p>
             </div>
           )}
@@ -195,7 +195,7 @@ export function SignupForm() {
           disabled={isLoading}
         >
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Create account
+          Бүртгэл үүсгэх
         </Button>
       </form>
     </div>

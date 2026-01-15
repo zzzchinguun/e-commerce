@@ -8,28 +8,28 @@ import { Separator } from '@/components/ui/separator'
 
 const footerLinks = {
   shop: [
-    { name: 'All Categories', href: '/categories' },
-    { name: 'Deals', href: '/deals' },
-    { name: 'New Arrivals', href: '/products?sort=newest' },
-    { name: 'Best Sellers', href: '/products?sort=best-selling' },
+    { name: 'Бүх ангилал', href: '/categories' },
+    { name: 'Хямдрал', href: '/deals' },
+    { name: 'Шинэ бүтээгдэхүүн', href: '/products?sort=newest' },
+    { name: 'Хамгийн их зарагдсан', href: '/products?sort=best-selling' },
   ],
   account: [
-    { name: 'My Account', href: '/account' },
-    { name: 'Orders', href: '/account/orders' },
-    { name: 'Wishlist', href: '/wishlist' },
-    { name: 'Track Order', href: '/track-order' },
+    { name: 'Миний бүртгэл', href: '/account' },
+    { name: 'Захиалгууд', href: '/account/orders' },
+    { name: 'Хадгалсан', href: '/wishlist' },
+    { name: 'Захиалга хянах', href: '/track-order' },
   ],
   seller: [
-    { name: 'Sell on Marketplace', href: '/seller/register' },
-    { name: 'Seller Dashboard', href: '/seller' },
-    { name: 'Seller Policies', href: '/seller-policies' },
-    { name: 'Success Stories', href: '/success-stories' },
+    { name: 'MSTORE-д зарах', href: '/seller/register' },
+    { name: 'Худалдагчийн самбар', href: '/seller' },
+    { name: 'Худалдагчийн бодлого', href: '/seller-policies' },
+    { name: 'Амжилтын түүхүүд', href: '/success-stories' },
   ],
   support: [
-    { name: 'Help Center', href: '/help' },
-    { name: 'Contact Us', href: '/contact' },
-    { name: 'Shipping Info', href: '/shipping' },
-    { name: 'Returns & Refunds', href: '/returns' },
+    { name: 'Тусламжийн төв', href: '/help' },
+    { name: 'Холбоо барих', href: '/contact' },
+    { name: 'Хүргэлтийн мэдээлэл', href: '/shipping' },
+    { name: 'Буцаалт & Нөхөн олговор', href: '/returns' },
   ],
 }
 
@@ -48,7 +48,7 @@ export function Footer() {
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         className="w-full bg-slate-800 py-4 text-sm hover:bg-slate-700 transition-colors"
       >
-        Back to top
+        Дээш буцах
       </button>
 
       {/* Main Footer Content */}
@@ -56,7 +56,7 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
           {/* Shop Links */}
           <div>
-            <h3 className="mb-4 font-semibold text-white">Shop</h3>
+            <h3 className="mb-4 font-semibold text-white">Дэлгүүр</h3>
             <ul className="space-y-2">
               {footerLinks.shop.map((link) => (
                 <li key={link.name}>
@@ -73,7 +73,7 @@ export function Footer() {
 
           {/* Account Links */}
           <div>
-            <h3 className="mb-4 font-semibold text-white">Your Account</h3>
+            <h3 className="mb-4 font-semibold text-white">Таны бүртгэл</h3>
             <ul className="space-y-2">
               {footerLinks.account.map((link) => (
                 <li key={link.name}>
@@ -90,7 +90,7 @@ export function Footer() {
 
           {/* Seller Links */}
           <div>
-            <h3 className="mb-4 font-semibold text-white">Sell with Us</h3>
+            <h3 className="mb-4 font-semibold text-white">Бидэнтэй хамт зарах</h3>
             <ul className="space-y-2">
               {footerLinks.seller.map((link) => (
                 <li key={link.name}>
@@ -107,7 +107,7 @@ export function Footer() {
 
           {/* Support Links */}
           <div>
-            <h3 className="mb-4 font-semibold text-white">Help & Support</h3>
+            <h3 className="mb-4 font-semibold text-white">Тусламж & Дэмжлэг</h3>
             <ul className="space-y-2">
               {footerLinks.support.map((link) => (
                 <li key={link.name}>
@@ -124,18 +124,18 @@ export function Footer() {
 
           {/* Newsletter */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
-            <h3 className="mb-4 font-semibold text-white">Stay Connected</h3>
+            <h3 className="mb-4 font-semibold text-white">Холбоотой байх</h3>
             <p className="mb-4 text-sm">
-              Subscribe to get special offers, free giveaways, and new arrivals.
+              Онцгой санал, бэлэг, шинэ бүтээгдэхүүний мэдээлэл авахын тулд бүртгүүлнэ үү.
             </p>
             <form className="flex gap-2" onSubmit={(e) => e.preventDefault()}>
               <Input
                 type="email"
-                placeholder="Your email"
+                placeholder="Таны имэйл"
                 className="bg-slate-800 border-slate-700 text-white placeholder:text-gray-500"
               />
               <Button type="submit" className="bg-orange-500 hover:bg-orange-600 shrink-0">
-                Subscribe
+                Бүртгүүлэх
               </Button>
             </form>
 
@@ -163,18 +163,18 @@ export function Footer() {
         <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
             <Link href="/terms" className="hover:text-orange-400 transition-colors">
-              Terms of Service
+              Үйлчилгээний нөхцөл
             </Link>
             <Link href="/privacy" className="hover:text-orange-400 transition-colors">
-              Privacy Policy
+              Нууцлалын бодлого
             </Link>
             <Link href="/cookies" className="hover:text-orange-400 transition-colors">
-              Cookie Settings
+              Күүкийн тохиргоо
             </Link>
           </div>
 
           <p className="text-sm text-gray-500">
-            &copy; {new Date().getFullYear()} Marketplace. All rights reserved.
+            &copy; {new Date().getFullYear()} MSTORE. Бүх эрх хуулиар хамгаалагдсан.
           </p>
         </div>
       </div>

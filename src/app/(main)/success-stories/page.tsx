@@ -3,66 +3,66 @@ import Link from 'next/link'
 import { Star, TrendingUp, Users, DollarSign, Quote } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Success Stories',
-  description: 'Read inspiring stories from our successful marketplace sellers',
+  title: 'Амжилтын түүхүүд',
+  description: 'Манай marketplace-ийн амжилттай худалдагчдын урам зоригтой түүхүүдийг унш',
 }
 
 const successStories = [
   {
-    name: 'Sarah Johnson',
-    business: 'Handmade Jewelry Co.',
+    name: 'Сараа Батсүх',
+    business: 'Гар урлалын үнэт эдлэл ХХК',
     image: 'https://picsum.photos/seed/seller1/200/200',
-    quote: 'Starting on this marketplace was the best decision for my small business. Within 6 months, I went from a hobby seller to running a full-time jewelry business.',
+    quote: 'Энэ marketplace-д эхлэх нь миний жижиг бизнест хамгийн зөв шийдвэр байлаа. 6 сарын дотор би хобби худалдагчаас бүтэн цагийн үнэт эдлэлийн бизнес эрхлэгч болсон.',
     stats: {
-      monthlyRevenue: '$15,000+',
+      monthlyRevenue: '₮15,000,000+',
       growth: '400%',
       rating: 4.9,
     },
-    category: 'Jewelry & Accessories',
+    category: 'Үнэт эдлэл & Гоёл чимэглэл',
   },
   {
-    name: 'Michael Chen',
-    business: 'TechGadgets Plus',
+    name: 'Мөнхбат Ганбаатар',
+    business: 'ТехГаджет Плюс',
     image: 'https://picsum.photos/seed/seller2/200/200',
-    quote: 'The seller tools and analytics helped me understand my customers better. I\'ve grown my electronics business from my garage to a warehouse operation.',
+    quote: 'Худалдагчийн хэрэгсэл болон аналитик надад хэрэглэгчдээ илүү сайн ойлгоход тусалсан. Би электроникийн бизнесээ гаражаас агуулахын үйл ажиллагаа болгон өсгөсөн.',
     stats: {
-      monthlyRevenue: '$50,000+',
+      monthlyRevenue: '₮50,000,000+',
       growth: '250%',
       rating: 4.8,
     },
-    category: 'Electronics',
+    category: 'Электроник',
   },
   {
-    name: 'Emily Rodriguez',
-    business: 'Organic Home Essentials',
+    name: 'Энхтуяа Дорж',
+    business: 'Органик гэрийн хэрэгсэл',
     image: 'https://picsum.photos/seed/seller3/200/200',
-    quote: 'As a mom running a business from home, this platform gave me the flexibility I needed. The low fees and great support made all the difference.',
+    quote: 'Гэрээсээ бизнес эрхэлдэг ээж болохын хувьд энэ платформ надад хэрэгтэй уян хатан байдлыг өгсөн. Бага хураамж болон маш сайн дэмжлэг бүх зүйлийг өөрчилсөн.',
     stats: {
-      monthlyRevenue: '$8,000+',
+      monthlyRevenue: '₮8,000,000+',
       growth: '300%',
       rating: 5.0,
     },
-    category: 'Home & Garden',
+    category: 'Гэр & Цэцэрлэг',
   },
   {
-    name: 'David Kim',
-    business: 'Fitness Gear Pro',
+    name: 'Дорж Түмэн',
+    business: 'Фитнес тоног төхөөрөмж Про',
     image: 'https://picsum.photos/seed/seller4/200/200',
-    quote: 'The marketplace\'s reach helped me connect with fitness enthusiasts across the country. My sales tripled in the first year.',
+    quote: 'Marketplace-ийн хүрэх хүрээ надад улс даяарх фитнес сонирхогчидтой холбогдоход тусалсан. Миний борлуулалт эхний жилд гурав дахин өссөн.',
     stats: {
-      monthlyRevenue: '$25,000+',
+      monthlyRevenue: '₮25,000,000+',
       growth: '200%',
       rating: 4.7,
     },
-    category: 'Sports & Outdoors',
+    category: 'Спорт & Гадаа',
   },
 ]
 
 const platformStats = [
-  { label: 'Active Sellers', value: '10,000+', icon: Users },
-  { label: 'Monthly Sales', value: '$5M+', icon: DollarSign },
-  { label: 'Avg. Seller Growth', value: '180%', icon: TrendingUp },
-  { label: 'Seller Satisfaction', value: '4.8/5', icon: Star },
+  { label: 'Идэвхтэй худалдагчид', value: '10,000+', icon: Users },
+  { label: 'Сарын борлуулалт', value: '₮5 тэрбум+', icon: DollarSign },
+  { label: 'Дундаж худалдагчийн өсөлт', value: '180%', icon: TrendingUp },
+  { label: 'Худалдагчийн сэтгэл ханамж', value: '4.8/5', icon: Star },
 ]
 
 export default function SuccessStoriesPage() {
@@ -70,9 +70,9 @@ export default function SuccessStoriesPage() {
     <div className="container mx-auto px-4 py-12">
       {/* Hero */}
       <div className="text-center mb-16">
-        <h1 className="text-4xl font-bold text-gray-900">Seller Success Stories</h1>
+        <h1 className="text-4xl font-bold text-gray-900">Худалдагчдын амжилтын түүхүүд</h1>
         <p className="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
-          Discover how entrepreneurs like you have built thriving businesses on our marketplace
+          Таны адил бизнес эрхлэгчид манай marketplace дээр хэрхэн амжилттай бизнес байгуулснаа мэдэж аваарай
         </p>
       </div>
 
@@ -126,18 +126,18 @@ export default function SuccessStoriesPage() {
                 <div className="grid grid-cols-3 gap-4 pt-4 border-t">
                   <div className="text-center">
                     <p className="text-xl font-bold text-green-600">{story.stats.monthlyRevenue}</p>
-                    <p className="text-xs text-gray-500">Monthly Revenue</p>
+                    <p className="text-xs text-gray-500">Сарын орлого</p>
                   </div>
                   <div className="text-center">
                     <p className="text-xl font-bold text-blue-600">{story.stats.growth}</p>
-                    <p className="text-xs text-gray-500">Year-over-Year Growth</p>
+                    <p className="text-xs text-gray-500">Жилийн өсөлт</p>
                   </div>
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-1">
                       <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
                       <span className="text-xl font-bold text-gray-900">{story.stats.rating}</span>
                     </div>
-                    <p className="text-xs text-gray-500">Seller Rating</p>
+                    <p className="text-xs text-gray-500">Худалдагчийн үнэлгээ</p>
                   </div>
                 </div>
               </div>
@@ -149,34 +149,34 @@ export default function SuccessStoriesPage() {
       {/* Tips Section */}
       <div className="mt-16 bg-gray-50 rounded-xl p-8">
         <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
-          Tips from Our Top Sellers
+          Манай шилдэг худалдагчдын зөвлөгөө
         </h2>
         <div className="grid md:grid-cols-3 gap-6">
           <div className="bg-white rounded-lg p-6">
             <div className="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center font-bold mb-4">
               1
             </div>
-            <h3 className="font-semibold text-gray-900 mb-2">Quality Photos Matter</h3>
+            <h3 className="font-semibold text-gray-900 mb-2">Чанартай зураг чухал</h3>
             <p className="text-sm text-gray-600">
-              Invest in good product photography. Clear, well-lit images can increase your conversion rate by up to 40%.
+              Сайн бүтээгдэхүүний зурагт хөрөнгө оруул. Тод, сайн гэрэлтүүлэгтэй зургууд таны хөрвүүлэлтийн хувийг 40% хүртэл нэмэгдүүлж болно.
             </p>
           </div>
           <div className="bg-white rounded-lg p-6">
             <div className="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center font-bold mb-4">
               2
             </div>
-            <h3 className="font-semibold text-gray-900 mb-2">Respond Quickly</h3>
+            <h3 className="font-semibold text-gray-900 mb-2">Шуурхай хариулах</h3>
             <p className="text-sm text-gray-600">
-              Fast response times build trust. Aim to answer customer questions within a few hours.
+              Хурдан хариу өгөх нь итгэлийг бий болгодог. Хэрэглэгчийн асуултад хэдэн цагийн дотор хариулахыг зорь.
             </p>
           </div>
           <div className="bg-white rounded-lg p-6">
             <div className="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center font-bold mb-4">
               3
             </div>
-            <h3 className="font-semibold text-gray-900 mb-2">Competitive Pricing</h3>
+            <h3 className="font-semibold text-gray-900 mb-2">Өрсөлдөхүйц үнэ</h3>
             <p className="text-sm text-gray-600">
-              Research your competition and price strategically. Don&apos;t always be the cheapest, but offer value.
+              Өрсөлдөгчөө судалж, стратегиар үнэ тогтоо. Үргэлж хамгийн хямд байх шаардлагагүй, харин үнэ цэнэ санал болго.
             </p>
           </div>
         </div>
@@ -184,23 +184,23 @@ export default function SuccessStoriesPage() {
 
       {/* CTA */}
       <div className="mt-16 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl p-12 text-center text-white">
-        <h2 className="text-3xl font-bold">Start Your Success Story Today</h2>
+        <h2 className="text-3xl font-bold">Өнөөдөр өөрийн амжилтын түүхээ эхлүүл</h2>
         <p className="mt-4 text-orange-100 max-w-xl mx-auto">
-          Join thousands of successful sellers who have grown their businesses on our platform.
-          No monthly fees, just results.
+          Манай платформ дээр бизнесээ амжилттай өсгөсөн мянга мянган худалдагчдын нэг болоорой.
+          Сарын хураамжгүй, зөвхөн үр дүн.
         </p>
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             href="/seller/register"
             className="inline-block rounded-lg bg-white px-8 py-3 font-semibold text-orange-600 hover:bg-orange-50"
           >
-            Start Selling Now
+            Одоо худалдаж эхлэх
           </Link>
           <Link
             href="/seller-policies"
             className="inline-block rounded-lg border-2 border-white px-8 py-3 font-semibold text-white hover:bg-white/10"
           >
-            Learn More
+            Дэлгэрэнгүй мэдээлэл
           </Link>
         </div>
       </div>

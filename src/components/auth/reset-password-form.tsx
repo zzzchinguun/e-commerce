@@ -17,14 +17,14 @@ const resetPasswordSchema = z
   .object({
     password: z
       .string()
-      .min(8, 'Password must be at least 8 characters')
-      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-      .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-      .regex(/[0-9]/, 'Password must contain at least one number'),
+      .min(8, 'Нууц үг хамгийн багадаа 8 тэмдэгт байх ёстой')
+      .regex(/[A-Z]/, 'Нууц үг дор хаяж нэг том үсэг агуулсан байх ёстой')
+      .regex(/[a-z]/, 'Нууц үг дор хаяж нэг жижиг үсэг агуулсан байх ёстой')
+      .regex(/[0-9]/, 'Нууц үг дор хаяж нэг тоо агуулсан байх ёстой'),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: 'Нууц үг таарахгүй байна',
     path: ['confirmPassword'],
   })
 
@@ -65,10 +65,10 @@ export function ResetPasswordForm() {
         return
       }
 
-      toast.success('Password updated successfully!')
+      toast.success('Нууц үг амжилттай шинэчлэгдлээ!')
       router.push('/login')
     } catch (error) {
-      toast.error('Something went wrong. Please try again.')
+      toast.error('Алдаа гарлаа. Дахин оролдоно уу.')
     } finally {
       setIsLoading(false)
     }
@@ -77,11 +77,11 @@ export function ResetPasswordForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="password">New password</Label>
+        <Label htmlFor="password">Шинэ нууц үг</Label>
         <Input
           id="password"
           type="password"
-          placeholder="Enter new password"
+          placeholder="Шинэ нууц үгээ оруулна уу"
           autoComplete="new-password"
           disabled={isLoading}
           {...register('password')}
@@ -94,27 +94,27 @@ export function ResetPasswordForm() {
         {password.length > 0 && (
           <div className="mt-2 space-y-1 text-xs">
             <p className={hasMinLength ? 'text-green-600' : 'text-gray-500'}>
-              {hasMinLength ? '✓' : '○'} At least 8 characters
+              {hasMinLength ? '✓' : '○'} Хамгийн багадаа 8 тэмдэгт
             </p>
             <p className={hasUppercase ? 'text-green-600' : 'text-gray-500'}>
-              {hasUppercase ? '✓' : '○'} One uppercase letter
+              {hasUppercase ? '✓' : '○'} Нэг том үсэг
             </p>
             <p className={hasLowercase ? 'text-green-600' : 'text-gray-500'}>
-              {hasLowercase ? '✓' : '○'} One lowercase letter
+              {hasLowercase ? '✓' : '○'} Нэг жижиг үсэг
             </p>
             <p className={hasNumber ? 'text-green-600' : 'text-gray-500'}>
-              {hasNumber ? '✓' : '○'} One number
+              {hasNumber ? '✓' : '○'} Нэг тоо
             </p>
           </div>
         )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Confirm new password</Label>
+        <Label htmlFor="confirmPassword">Шинэ нууц үг баталгаажуулах</Label>
         <Input
           id="confirmPassword"
           type="password"
-          placeholder="Confirm new password"
+          placeholder="Шинэ нууц үгээ баталгаажуулна уу"
           autoComplete="new-password"
           disabled={isLoading}
           {...register('confirmPassword')}
@@ -132,7 +132,7 @@ export function ResetPasswordForm() {
         disabled={isLoading}
       >
         {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        Update password
+        Нууц үг шинэчлэх
       </Button>
     </form>
   )

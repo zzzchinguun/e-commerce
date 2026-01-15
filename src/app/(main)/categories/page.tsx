@@ -13,8 +13,8 @@ import {
 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'All Categories',
-  description: 'Browse all product categories',
+  title: 'Бүх ангилалууд',
+  description: 'Бүтээгдэхүүний бүх ангилалуудыг үзэх',
 }
 
 // Icon mapping
@@ -55,9 +55,9 @@ export default async function CategoriesPage() {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-gray-900">Shop by Category</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Ангилалаар хайх</h1>
         <p className="mt-2 text-gray-600">
-          Explore our wide range of product categories
+          Бүтээгдэхүүний өргөн ангилалуудыг судлах
         </p>
       </div>
 
@@ -93,9 +93,9 @@ export default async function CategoriesPage() {
       ) : (
         <div className="py-12 text-center">
           <Package className="mx-auto h-12 w-12 text-gray-400" />
-          <p className="mt-4 text-gray-500">No categories available yet</p>
+          <p className="mt-4 text-gray-500">Одоогоор ангилал байхгүй байна</p>
           <p className="mt-2 text-sm text-gray-400">
-            Check back soon for new product categories
+            Удахгүй шинэ ангилалууд нэмэгдэнэ
           </p>
         </div>
       )}
@@ -103,15 +103,15 @@ export default async function CategoriesPage() {
       {/* Popular Categories Banner */}
       <div className="mt-16 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 p-8 text-white">
         <div className="text-center">
-          <h2 className="text-2xl font-bold">Can&apos;t find what you&apos;re looking for?</h2>
+          <h2 className="text-2xl font-bold">Хайж буй зүйлээ олохгүй байна уу?</h2>
           <p className="mt-2 text-orange-100">
-            Try our search feature to find exactly what you need
+            Хайлтын функцийг ашиглан хүссэн зүйлээ олоорой
           </p>
           <Link
             href="/products"
             className="mt-4 inline-block rounded-lg bg-white px-6 py-3 font-semibold text-orange-600 transition-colors hover:bg-orange-50"
           >
-            Browse All Products
+            Бүх бүтээгдэхүүн үзэх
           </Link>
         </div>
       </div>

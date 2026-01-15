@@ -13,14 +13,14 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { Separator } from '@/components/ui/separator'
 
 const categories = [
-  { name: 'Electronics', slug: 'electronics', icon: '📱' },
-  { name: 'Clothing', slug: 'clothing', icon: '👕' },
-  { name: 'Home & Garden', slug: 'home-garden', icon: '🏠' },
-  { name: 'Sports & Outdoors', slug: 'sports-outdoors', icon: '⚽' },
-  { name: 'Books', slug: 'books', icon: '📚' },
-  { name: 'Beauty & Health', slug: 'beauty-health', icon: '💄' },
-  { name: 'Toys & Games', slug: 'toys-games', icon: '🎮' },
-  { name: 'Automotive', slug: 'automotive', icon: '🚗' },
+  { name: 'Электроник', slug: 'electronics', icon: '📱' },
+  { name: 'Хувцас', slug: 'clothing', icon: '👕' },
+  { name: 'Гэр & Цэцэрлэг', slug: 'home-garden', icon: '🏠' },
+  { name: 'Спорт & Амралт', slug: 'sports-outdoors', icon: '⚽' },
+  { name: 'Ном', slug: 'books', icon: '📚' },
+  { name: 'Гоо сайхан & Эрүүл мэнд', slug: 'beauty-health', icon: '💄' },
+  { name: 'Тоглоом', slug: 'toys-games', icon: '🎮' },
+  { name: 'Автомашин', slug: 'automotive', icon: '🚗' },
 ]
 
 export function MobileNav() {
@@ -34,11 +34,11 @@ export function MobileNav() {
       await supabase.auth.signOut()
       logout()
       closeMobileMenu()
-      toast.success('Signed out successfully')
+      toast.success('Амжилттай гарлаа')
       router.push('/')
       router.refresh()
     } catch (error) {
-      toast.error('Failed to sign out')
+      toast.error('Гарахад алдаа гарлаа')
     }
   }
 
@@ -57,7 +57,7 @@ export function MobileNav() {
                 <User className="h-5 w-5" />
               </div>
               <div>
-                <p className="font-medium">{user?.full_name || 'User'}</p>
+                <p className="font-medium">{user?.full_name || 'Хэрэглэгч'}</p>
                 <p className="text-xs text-slate-300">{user?.email}</p>
               </div>
             </div>
@@ -71,8 +71,8 @@ export function MobileNav() {
                 <User className="h-5 w-5" />
               </div>
               <div>
-                <p className="font-medium">Sign In</p>
-                <p className="text-xs text-slate-300">Access your account</p>
+                <p className="font-medium">Нэвтрэх</p>
+                <p className="text-xs text-slate-300">Бүртгэлдээ нэвтрэх</p>
               </div>
             </Link>
           )}
@@ -83,7 +83,7 @@ export function MobileNav() {
           {/* Quick Links */}
           <div className="p-4">
             <h3 className="mb-2 text-xs font-semibold uppercase text-gray-500">
-              Quick Links
+              Түргэн холбоос
             </h3>
             <div className="space-y-1">
               <Link
@@ -91,7 +91,7 @@ export function MobileNav() {
                 onClick={handleLinkClick}
                 className="flex items-center justify-between rounded-lg px-3 py-2 hover:bg-gray-100"
               >
-                <span>Today&apos;s Deals</span>
+                <span>Өнөөдрийн хямдрал</span>
                 <ChevronRight className="h-4 w-4 text-gray-400" />
               </Link>
               <Link
@@ -99,7 +99,7 @@ export function MobileNav() {
                 onClick={handleLinkClick}
                 className="flex items-center justify-between rounded-lg px-3 py-2 hover:bg-gray-100"
               >
-                <span>New Arrivals</span>
+                <span>Шинэ бүтээгдэхүүн</span>
                 <ChevronRight className="h-4 w-4 text-gray-400" />
               </Link>
               <Link
@@ -107,7 +107,7 @@ export function MobileNav() {
                 onClick={handleLinkClick}
                 className="flex items-center justify-between rounded-lg px-3 py-2 hover:bg-gray-100"
               >
-                <span>Best Sellers</span>
+                <span>Хамгийн их зарагдсан</span>
                 <ChevronRight className="h-4 w-4 text-gray-400" />
               </Link>
             </div>
@@ -118,7 +118,7 @@ export function MobileNav() {
           {/* Categories */}
           <div className="p-4">
             <h3 className="mb-2 text-xs font-semibold uppercase text-gray-500">
-              Shop by Category
+              Ангилалаар үзэх
             </h3>
             <div className="space-y-1">
               {categories.map((category) => (
@@ -145,7 +145,7 @@ export function MobileNav() {
               {/* Account Links */}
               <div className="p-4">
                 <h3 className="mb-2 text-xs font-semibold uppercase text-gray-500">
-                  Your Account
+                  Миний бүртгэл
                 </h3>
                 <div className="space-y-1">
                   <Link
@@ -154,7 +154,7 @@ export function MobileNav() {
                     className="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gray-100"
                   >
                     <User className="h-4 w-4" />
-                    <span>My Account</span>
+                    <span>Миний бүртгэл</span>
                   </Link>
                   <Link
                     href="/account/orders"
@@ -162,7 +162,7 @@ export function MobileNav() {
                     className="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gray-100"
                   >
                     <Package className="h-4 w-4" />
-                    <span>Orders</span>
+                    <span>Захиалгууд</span>
                   </Link>
                   <Link
                     href="/wishlist"
@@ -170,7 +170,7 @@ export function MobileNav() {
                     className="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gray-100"
                   >
                     <Heart className="h-4 w-4" />
-                    <span>Wishlist</span>
+                    <span>Хадгалсан</span>
                   </Link>
 
                   {user?.role === 'seller' && (
@@ -180,7 +180,7 @@ export function MobileNav() {
                       className="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gray-100"
                     >
                       <Store className="h-4 w-4" />
-                      <span>Seller Dashboard</span>
+                      <span>Худалдагчийн самбар</span>
                     </Link>
                   )}
 
@@ -191,7 +191,7 @@ export function MobileNav() {
                       className="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gray-100"
                     >
                       <Settings className="h-4 w-4" />
-                      <span>Admin Panel</span>
+                      <span>Админ самбар</span>
                     </Link>
                   )}
                 </div>
@@ -206,7 +206,7 @@ export function MobileNav() {
                   className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-red-600 hover:bg-red-50"
                 >
                   <LogOut className="h-4 w-4" />
-                  <span>Sign Out</span>
+                  <span>Гарах</span>
                 </button>
               </div>
             </>

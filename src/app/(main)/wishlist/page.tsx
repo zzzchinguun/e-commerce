@@ -30,18 +30,18 @@ export default function WishlistPage() {
       image: item.image,
       seller: item.seller,
     })
-    toast.success('Added to cart')
+    toast.success('Сагсанд нэмэгдлээ')
     openCart()
   }
 
   const handleRemove = (id: string) => {
     removeItem(id)
-    toast.success('Removed from wishlist')
+    toast.success('Хадгалсан жагсаалтаас хасагдлаа')
   }
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href)
-    toast.success('Link copied to clipboard')
+    toast.success('Холбоос хуулагдлаа')
   }
 
   if (!mounted) {
@@ -68,12 +68,12 @@ export default function WishlistPage() {
           <div className="rounded-full bg-gray-100 p-8">
             <Heart className="h-16 w-16 text-gray-400" />
           </div>
-          <h1 className="mt-6 text-2xl font-bold text-gray-900">Your wishlist is empty</h1>
+          <h1 className="mt-6 text-2xl font-bold text-gray-900">Хадгалсан жагсаалт хоосон байна</h1>
           <p className="mt-2 text-gray-500">
-            Save items you like by clicking the heart icon on products.
+            Бүтээгдэхүүн дээрх зүрхэн дүрс дарж хадгална уу.
           </p>
           <Button asChild className="mt-8 bg-orange-500 hover:bg-orange-600">
-            <Link href="/products">Explore Products</Link>
+            <Link href="/products">Бүтээгдэхүүн үзэх</Link>
           </Button>
         </div>
       </div>
@@ -86,26 +86,26 @@ export default function WishlistPage() {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">
-            My Wishlist ({items.length} {items.length === 1 ? 'item' : 'items'})
+            Хадгалсан ({items.length} {items.length === 1 ? 'бүтээгдэхүүн' : 'бүтээгдэхүүн'})
           </h1>
           <p className="mt-1 text-gray-500">
-            Items you&apos;ve saved for later
+            Дараа авах гэж хадгалсан бүтээгдэхүүнүүд
           </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={handleShare}>
             <Share2 className="mr-2 h-4 w-4" />
-            Share
+            Хуваалцах
           </Button>
           <Button
             variant="outline"
             className="text-red-600 hover:bg-red-50 hover:text-red-700"
             onClick={() => {
               clearWishlist()
-              toast.success('Wishlist cleared')
+              toast.success('Жагсаалт цэвэрлэгдлээ')
             }}
           >
-            Clear All
+            Бүгдийг арилгах
           </Button>
         </div>
       </div>
@@ -169,7 +169,7 @@ export default function WishlistPage() {
               onClick={() => handleAddToCart(item)}
             >
               <ShoppingCart className="mr-2 h-4 w-4" />
-              Add to Cart
+              Сагсанд нэмэх
             </Button>
           </div>
         ))}

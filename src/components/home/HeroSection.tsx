@@ -10,36 +10,36 @@ import { cn } from '@/lib/utils'
 const heroSlides = [
   {
     id: 1,
-    title: 'Shop the Latest Electronics',
-    subtitle: 'Discover cutting-edge gadgets and tech deals',
-    cta: 'Shop Electronics',
+    title: 'Хамгийн сүүлийн үеийн электроник',
+    subtitle: 'Хамгийн сүүлийн үеийн гаджет, техникийн хямдралыг олж мэдээрэй',
+    cta: 'Электроник үзэх',
     href: '/products?category=electronics',
     bgColor: 'from-blue-600 to-blue-800',
     image: '/placeholder-electronics.jpg',
   },
   {
     id: 2,
-    title: 'Fashion for Everyone',
-    subtitle: 'New arrivals in clothing and accessories',
-    cta: 'Explore Fashion',
+    title: 'Бүгдэд зориулсан загвар',
+    subtitle: 'Хувцас, гоёл чимэглэлийн шинэ бүтээгдэхүүнүүд',
+    cta: 'Загвар үзэх',
     href: '/products?category=fashion',
     bgColor: 'from-purple-600 to-purple-800',
     image: '/placeholder-fashion.jpg',
   },
   {
     id: 3,
-    title: 'Home & Living Essentials',
-    subtitle: 'Transform your space with quality products',
-    cta: 'Shop Home',
+    title: 'Гэр & Амьдралын хэрэгцээ',
+    subtitle: 'Чанартай бүтээгдэхүүнээр орон зайгаа хувиргаарай',
+    cta: 'Гэр ахуй үзэх',
     href: '/products?category=home-garden',
     bgColor: 'from-green-600 to-green-800',
     image: '/placeholder-home.jpg',
   },
   {
     id: 4,
-    title: 'Sell on Marketplace',
-    subtitle: 'Reach millions of customers and grow your business',
-    cta: 'Start Selling',
+    title: 'MSTORE-д зараарай',
+    subtitle: 'Сая сая худалдан авагчдад хүрч, бизнесээ өргөжүүлээрэй',
+    cta: 'Зарж эхлэх',
     href: '/seller/register',
     bgColor: 'from-orange-500 to-orange-700',
     image: '/placeholder-seller.jpg',
@@ -105,14 +105,14 @@ export function HeroSection() {
         <button
           onClick={prevSlide}
           className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/20 p-2 text-white backdrop-blur-sm hover:bg-white/30 transition-colors"
-          aria-label="Previous slide"
+          aria-label="Өмнөх слайд"
         >
           <ChevronLeft className="h-6 w-6" />
         </button>
         <button
           onClick={nextSlide}
           className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/20 p-2 text-white backdrop-blur-sm hover:bg-white/30 transition-colors"
-          aria-label="Next slide"
+          aria-label="Дараагийн слайд"
         >
           <ChevronRight className="h-6 w-6" />
         </button>
@@ -127,7 +127,7 @@ export function HeroSection() {
                 'h-2 w-2 rounded-full transition-all',
                 index === currentSlide ? 'w-6 bg-white' : 'bg-white/50 hover:bg-white/75'
               )}
-              aria-label={`Go to slide ${index + 1}`}
+              aria-label={`Слайд ${index + 1}-рүү очих`}
             />
           ))}
         </div>

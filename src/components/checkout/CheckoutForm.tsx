@@ -23,15 +23,15 @@ import { useCartStore, type CartItem } from '@/stores/cart-store'
 import { formatPrice } from '@/lib/utils/format'
 
 const checkoutSchema = z.object({
-  email: z.string().email('Please enter a valid email'),
-  firstName: z.string().min(1, 'First name is required'),
-  lastName: z.string().min(1, 'Last name is required'),
-  address: z.string().min(1, 'Address is required'),
+  email: z.string().email('Зөв имэйл хаяг оруулна уу'),
+  firstName: z.string().min(1, 'Нэр шаардлагатай'),
+  lastName: z.string().min(1, 'Овог шаардлагатай'),
+  address: z.string().min(1, 'Хаяг шаардлагатай'),
   apartment: z.string().optional(),
-  city: z.string().min(1, 'City is required'),
-  state: z.string().min(1, 'State is required'),
-  zipCode: z.string().min(5, 'ZIP code is required'),
-  phone: z.string().min(10, 'Phone number is required'),
+  city: z.string().min(1, 'Хот шаардлагатай'),
+  state: z.string().min(1, 'Муж/Аймаг шаардлагатай'),
+  zipCode: z.string().min(5, 'Шуудангийн код шаардлагатай'),
+  phone: z.string().min(10, 'Утасны дугаар шаардлагатай'),
 })
 
 type CheckoutInput = z.infer<typeof checkoutSchema>
@@ -41,15 +41,11 @@ interface CheckoutFormProps {
   subtotal: number
 }
 
-const US_STATES = [
-  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
-  'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
-  'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan',
-  'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
-  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio',
-  'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
-  'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
-  'Wisconsin', 'Wyoming',
+const MONGOLIAN_PROVINCES = [
+  'Улаанбаатар', 'Архангай', 'Баян-Өлгий', 'Баянхонгор', 'Булган', 'Говь-Алтай',
+  'Говьсүмбэр', 'Дархан-Уул', 'Дорноговь', 'Дорнод', 'Дундговь', 'Завхан',
+  'Орхон', 'Өвөрхангай', 'Өмнөговь', 'Сүхбаатар', 'Сэлэнгэ', 'Төв',
+  'Увс', 'Ховд', 'Хөвсгөл', 'Хэнтий',
 ]
 
 export function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
@@ -123,14 +119,14 @@ export function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       {/* Contact Information */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">Contact Information</h2>
+        <h2 className="text-lg font-semibold text-gray-900">Холбоо барих мэдээлэл</h2>
         <div className="mt-4 space-y-4">
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">Имэйл</Label>
             <Input
               id="email"
               type="email"
-              placeholder="your@email.com"
+              placeholder="таны@имэйл.com"
               {...register('email')}
               className="mt-1"
             />
@@ -139,11 +135,11 @@ export function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
             )}
           </div>
           <div>
-            <Label htmlFor="phone">Phone Number</Label>
+            <Label htmlFor="phone">Утас</Label>
             <Input
               id="phone"
               type="tel"
-              placeholder="(123) 456-7890"
+              placeholder="99112233"
               {...register('phone')}
               className="mt-1"
             />
@@ -158,11 +154,11 @@ export function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
 
       {/* Shipping Address */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">Shipping Address</h2>
+        <h2 className="text-lg font-semibold text-gray-900">Хүргэлтийн хаяг</h2>
         <div className="mt-4 space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <Label htmlFor="firstName">First Name</Label>
+              <Label htmlFor="firstName">Нэр</Label>
               <Input
                 id="firstName"
                 {...register('firstName')}
@@ -173,7 +169,7 @@ export function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
               )}
             </div>
             <div>
-              <Label htmlFor="lastName">Last Name</Label>
+              <Label htmlFor="lastName">Овог</Label>
               <Input
                 id="lastName"
                 {...register('lastName')}
@@ -186,10 +182,10 @@ export function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
           </div>
 
           <div>
-            <Label htmlFor="address">Address</Label>
+            <Label htmlFor="address">Хаяг</Label>
             <Input
               id="address"
-              placeholder="Street address"
+              placeholder="Гудамж, байрны хаяг"
               {...register('address')}
               className="mt-1"
             />
@@ -199,10 +195,10 @@ export function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
           </div>
 
           <div>
-            <Label htmlFor="apartment">Apartment, suite, etc. (optional)</Label>
+            <Label htmlFor="apartment">Байр, тоот гэх мэт (заавал биш)</Label>
             <Input
               id="apartment"
-              placeholder="Apt, Suite, Unit, etc."
+              placeholder="Байр, тоот, давхар гэх мэт"
               {...register('apartment')}
               className="mt-1"
             />
@@ -210,7 +206,7 @@ export function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
 
           <div className="grid gap-4 sm:grid-cols-3">
             <div>
-              <Label htmlFor="city">City</Label>
+              <Label htmlFor="city">Хот/Дүүрэг</Label>
               <Input
                 id="city"
                 {...register('city')}
@@ -221,13 +217,13 @@ export function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
               )}
             </div>
             <div>
-              <Label htmlFor="state">State</Label>
+              <Label htmlFor="state">Муж/Аймаг</Label>
               <Select onValueChange={(value) => setValue('state', value)}>
                 <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="Select state" />
+                  <SelectValue placeholder="Аймаг сонгох" />
                 </SelectTrigger>
                 <SelectContent>
-                  {US_STATES.map((state) => (
+                  {MONGOLIAN_PROVINCES.map((state) => (
                     <SelectItem key={state} value={state}>
                       {state}
                     </SelectItem>
@@ -239,7 +235,7 @@ export function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
               )}
             </div>
             <div>
-              <Label htmlFor="zipCode">ZIP Code</Label>
+              <Label htmlFor="zipCode">Шуудангийн код</Label>
               <Input
                 id="zipCode"
                 {...register('zipCode')}
@@ -257,25 +253,25 @@ export function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
 
       {/* Order Summary */}
       <div className="rounded-lg bg-gray-50 p-4">
-        <h2 className="text-lg font-semibold text-gray-900">Order Summary</h2>
+        <h2 className="text-lg font-semibold text-gray-900">Захиалгын хураангуй</h2>
         <div className="mt-4 space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Subtotal</span>
+            <span className="text-gray-500">Нийт дүн</span>
             <span className="text-gray-900">{formatPrice(subtotal)}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Shipping</span>
+            <span className="text-gray-500">Хүргэлт</span>
             <span className="text-gray-900">
-              {shipping === 0 ? 'FREE' : formatPrice(shipping)}
+              {shipping === 0 ? 'ҮНЭГҮЙ' : formatPrice(shipping)}
             </span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Estimated Tax</span>
+            <span className="text-gray-500">Татвар (тооцоолсон)</span>
             <span className="text-gray-900">{formatPrice(tax)}</span>
           </div>
           <Separator className="my-2" />
           <div className="flex justify-between">
-            <span className="font-semibold text-gray-900">Total</span>
+            <span className="font-semibold text-gray-900">Нийт</span>
             <span className="font-bold text-gray-900">{formatPrice(total)}</span>
           </div>
         </div>
@@ -285,7 +281,7 @@ export function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
       <div className="rounded-lg border border-gray-200 bg-white p-4">
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <CreditCard className="h-5 w-5" />
-          <span>You will be redirected to Stripe for secure payment</span>
+          <span>Та аюулгүй төлбөр хийхийн тулд Stripe руу шилжих болно</span>
         </div>
       </div>
 
@@ -299,25 +295,25 @@ export function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-            Processing...
+            Боловсруулж байна...
           </>
         ) : (
           <>
             <Lock className="mr-2 h-5 w-5" />
-            Pay {formatPrice(total)}
+            Төлөх {formatPrice(total)}
           </>
         )}
       </Button>
 
       <p className="text-center text-xs text-gray-500">
-        By placing this order, you agree to our{' '}
+        Захиалга хийснээр та манай{' '}
         <a href="/terms" className="underline hover:text-gray-700">
-          Terms of Service
+          Үйлчилгээний нөхцөл
         </a>{' '}
-        and{' '}
+        болон{' '}
         <a href="/privacy" className="underline hover:text-gray-700">
-          Privacy Policy
-        </a>
+          Нууцлалын бодлого
+        </a>-г зөвшөөрч байна
       </p>
     </form>
   )

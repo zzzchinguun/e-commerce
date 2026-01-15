@@ -105,7 +105,7 @@ export function FeaturedProducts({
           <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
           <Button variant="ghost" asChild className="text-orange-600 hover:text-orange-700">
             <Link href={viewAllHref} className="flex items-center gap-1">
-              View all
+              Бүгдийг үзэх
               <ChevronRight className="h-4 w-4" />
             </Link>
           </Button>

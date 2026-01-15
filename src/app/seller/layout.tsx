@@ -31,35 +31,35 @@ import {
 
 const sidebarLinks = [
   {
-    name: 'Dashboard',
+    name: 'Хянах самбар',
     href: '/seller',
     icon: LayoutDashboard,
     exact: true,
   },
   {
-    name: 'Products',
+    name: 'Бүтээгдэхүүн',
     href: '/seller/products',
     icon: Package,
     badge: null,
   },
   {
-    name: 'Orders',
+    name: 'Захиалгууд',
     href: '/seller/orders',
     icon: ShoppingCart,
     badge: '3',
   },
   {
-    name: 'Analytics',
+    name: 'Статистик',
     href: '/seller/analytics',
     icon: BarChart3,
   },
   {
-    name: 'Earnings',
+    name: 'Орлого',
     href: '/seller/earnings',
     icon: DollarSign,
   },
   {
-    name: 'Settings',
+    name: 'Тохиргоо',
     href: '/seller/settings',
     icon: Settings,
   },
@@ -94,7 +94,7 @@ export default function SellerLayout({
         <div className="flex h-16 items-center justify-between border-b px-4">
           <Link href="/seller" className="flex items-center gap-2">
             <Store className="h-6 w-6 text-orange-500" />
-            <span className="font-bold text-gray-900">Seller Center</span>
+            <span className="font-bold text-gray-900">Худалдагчийн төв</span>
           </Link>
           <Button
             variant="ghost"
@@ -144,7 +144,7 @@ export default function SellerLayout({
             className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900"
           >
             <Store className="h-4 w-4" />
-            Back to Store
+            Дэлгүүр рүү буцах
           </Link>
         </div>
       </aside>
@@ -171,7 +171,7 @@ export default function SellerLayout({
                   link.exact
                     ? pathname === link.href
                     : pathname.startsWith(link.href)
-              )?.name || 'Seller Dashboard'}
+              )?.name || 'Худалдагчийн хянах самбар'}
             </h1>
           </div>
 
@@ -191,7 +191,7 @@ export default function SellerLayout({
                     <AvatarFallback>S</AvatarFallback>
                   </Avatar>
                   <span className="hidden text-sm font-medium lg:block">
-                    My Store
+                    Миний дэлгүүр
                   </span>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
@@ -200,19 +200,19 @@ export default function SellerLayout({
                 <DropdownMenuItem asChild>
                   <Link href="/seller/settings">
                     <User className="mr-2 h-4 w-4" />
-                    Store Profile
+                    Дэлгүүрийн профайл
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/account">
                     <Settings className="mr-2 h-4 w-4" />
-                    Account Settings
+                    Бүртгэлийн тохиргоо
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-red-600">
                   <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
+                  Гарах
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

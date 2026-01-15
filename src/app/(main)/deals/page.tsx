@@ -8,8 +8,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { createClient } from '@/lib/supabase/server'
 
 export const metadata: Metadata = {
-  title: "Today's Deals - Save Big",
-  description: 'Discover amazing deals and discounts on top products',
+  title: "Өнөөдрийн хямдрал - Хэмнээрэй",
+  description: 'Шилдэг бүтээгдэхүүний гайхалтай хямдралуудыг олж мэдээрэй',
 }
 
 interface DealsPageProps {
@@ -135,10 +135,10 @@ export default async function DealsPage({ searchParams }: DealsPageProps) {
       <div className="mb-8 rounded-xl bg-gradient-to-r from-red-500 to-orange-500 p-8 text-white">
         <div className="flex items-center gap-3 mb-4">
           <Flame className="h-8 w-8" />
-          <h1 className="text-3xl font-bold">Today&apos;s Deals</h1>
+          <h1 className="text-3xl font-bold">Өнөөдрийн хямдрал</h1>
         </div>
         <p className="text-lg text-red-100">
-          Discover amazing discounts on top products. Limited time offers!
+          Шилдэг бүтээгдэхүүний гайхалтай хямдралууд. Хязгаарлагдмал хугацаатай санал!
         </p>
       </div>
 
@@ -149,35 +149,35 @@ export default async function DealsPage({ searchParams }: DealsPageProps) {
             <Tag className="h-5 w-5" />
           </div>
           <p className="text-2xl font-bold text-gray-900">{count}</p>
-          <p className="text-sm text-gray-500">Active Deals</p>
+          <p className="text-sm text-gray-500">Идэвхтэй хямдрал</p>
         </div>
         <div className="rounded-lg border bg-white p-4 text-center">
           <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-green-600">
             <Percent className="h-5 w-5" />
           </div>
-          <p className="text-2xl font-bold text-gray-900">Up to 50%</p>
-          <p className="text-sm text-gray-500">Savings</p>
+          <p className="text-2xl font-bold text-gray-900">50% хүртэл</p>
+          <p className="text-sm text-gray-500">Хэмнэлт</p>
         </div>
         <div className="rounded-lg border bg-white p-4 text-center">
           <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600">
             <Clock className="h-5 w-5" />
           </div>
-          <p className="text-2xl font-bold text-gray-900">24h</p>
-          <p className="text-sm text-gray-500">Daily Refresh</p>
+          <p className="text-2xl font-bold text-gray-900">24 цаг</p>
+          <p className="text-sm text-gray-500">Өдөр бүр шинэчлэгдэнэ</p>
         </div>
         <div className="rounded-lg border bg-white p-4 text-center">
           <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-red-100 text-red-600">
             <Flame className="h-5 w-5" />
           </div>
-          <p className="text-2xl font-bold text-gray-900">Hot</p>
-          <p className="text-sm text-gray-500">Limited Stock</p>
+          <p className="text-2xl font-bold text-gray-900">Халуухан</p>
+          <p className="text-sm text-gray-500">Хязгаарлагдмал нөөц</p>
         </div>
       </div>
 
       {/* Toolbar */}
       <div className="mb-6 flex items-center justify-between">
         <p className="text-gray-600">
-          <span className="font-semibold text-gray-900">{count}</span> deals available
+          <span className="font-semibold text-gray-900">{count}</span> хямдрал байна
         </p>
         <Suspense fallback={<Skeleton className="h-10 w-[180px]" />}>
           <ProductSort />
@@ -191,15 +191,15 @@ export default async function DealsPage({ searchParams }: DealsPageProps) {
         ) : (
           <div className="rounded-lg border bg-gray-50 py-16 text-center">
             <Tag className="mx-auto h-12 w-12 text-gray-400" />
-            <h2 className="mt-4 text-lg font-semibold text-gray-900">No deals available right now</h2>
+            <h2 className="mt-4 text-lg font-semibold text-gray-900">Одоогоор хямдрал байхгүй байна</h2>
             <p className="mt-2 text-gray-500">
-              Check back soon for new deals and discounts
+              Удахгүй шинэ хямдралууд нэмэгдэнэ
             </p>
             <Link
               href="/products"
               className="mt-4 inline-block rounded-lg bg-orange-500 px-6 py-2 text-white hover:bg-orange-600"
             >
-              Browse All Products
+              Бүх бүтээгдэхүүн үзэх
             </Link>
           </div>
         )}
@@ -216,11 +216,11 @@ export default async function DealsPage({ searchParams }: DealsPageProps) {
               }).toString()}`}
               className="rounded-lg border px-4 py-2 text-sm hover:bg-gray-50"
             >
-              Previous
+              Өмнөх
             </a>
           )}
           <span className="px-4 py-2 text-sm text-gray-500">
-            Page {page} of {totalPages}
+            Хуудас {page} / {totalPages}
           </span>
           {page < totalPages && (
             <a
@@ -230,7 +230,7 @@ export default async function DealsPage({ searchParams }: DealsPageProps) {
               }).toString()}`}
               className="rounded-lg border px-4 py-2 text-sm hover:bg-gray-50"
             >
-              Next
+              Дараах
             </a>
           )}
         </div>
@@ -238,18 +238,18 @@ export default async function DealsPage({ searchParams }: DealsPageProps) {
 
       {/* Newsletter CTA */}
       <div className="mt-12 rounded-xl bg-gray-900 p-8 text-center text-white">
-        <h2 className="text-2xl font-bold">Never Miss a Deal</h2>
+        <h2 className="text-2xl font-bold">Хямдралыг бүү алдаарай</h2>
         <p className="mt-2 text-gray-400">
-          Subscribe to get notified about exclusive offers and flash sales
+          Онцгой саналууд болон шуурхай хямдралын мэдээллийг авахын тулд бүртгүүлээрэй
         </p>
         <div className="mx-auto mt-4 flex max-w-md gap-2">
           <input
             type="email"
-            placeholder="Enter your email"
+            placeholder="Имэйл хаягаа оруулна уу"
             className="flex-1 rounded-lg px-4 py-2 text-gray-900"
           />
           <button className="rounded-lg bg-orange-500 px-6 py-2 font-semibold hover:bg-orange-600">
-            Subscribe
+            Бүртгүүлэх
           </button>
         </div>
       </div>

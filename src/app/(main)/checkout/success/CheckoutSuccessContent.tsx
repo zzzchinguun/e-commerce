@@ -27,16 +27,16 @@ export function CheckoutSuccessContent() {
         </div>
 
         <h1 className="mt-6 text-2xl font-bold text-gray-900">
-          Order Placed Successfully!
+          Захиалга баталгаажлаа!
         </h1>
 
         <p className="mt-2 text-gray-600">
-          Thank you for your purchase. We&apos;ve sent a confirmation email with your order details.
+          Худалдан авсанд баярлалаа. Захиалгын дэлгэрэнгүй мэдээллийг имэйлээр илгээлээ.
         </p>
 
         {sessionId && (
           <p className="mt-4 text-sm text-gray-500">
-            Order ID: {sessionId.slice(0, 20)}...
+            Захиалгын дугаар: {sessionId.slice(0, 20)}...
           </p>
         )}
 
@@ -44,9 +44,9 @@ export function CheckoutSuccessContent() {
           <div className="flex items-center gap-3">
             <Package className="h-6 w-6 text-orange-500" />
             <div className="text-left">
-              <h3 className="font-medium text-gray-900">What happens next?</h3>
+              <h3 className="font-medium text-gray-900">Дараа нь юу болох вэ?</h3>
               <p className="text-sm text-gray-500">
-                You&apos;ll receive shipping updates via email as your order is processed and shipped.
+                Захиалга боловсруулагдаж, хүргэгдэх үед имэйлээр мэдэгдэл авах болно.
               </p>
             </div>
           </div>
@@ -54,11 +54,11 @@ export function CheckoutSuccessContent() {
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Button asChild variant="outline">
-            <Link href="/account/orders">View Order</Link>
+            <Link href="/account/orders">Захиалгууд харах</Link>
           </Button>
           <Button asChild className="bg-orange-500 hover:bg-orange-600">
             <Link href="/products" className="flex items-center gap-2">
-              Continue Shopping
+              Худалдаа үргэлжлүүлэх
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>

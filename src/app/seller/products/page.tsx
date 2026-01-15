@@ -59,9 +59,9 @@ type Product = {
 }
 
 const statusConfig: Record<string, { label: string; color: string }> = {
-  active: { label: 'Active', color: 'bg-green-100 text-green-700' },
-  draft: { label: 'Draft', color: 'bg-gray-100 text-gray-700' },
-  inactive: { label: 'Inactive', color: 'bg-red-100 text-red-700' },
+  active: { label: 'Идэвхтэй', color: 'bg-green-100 text-green-700' },
+  draft: { label: 'Ноорог', color: 'bg-gray-100 text-gray-700' },
+  inactive: { label: 'Идэвхгүй', color: 'bg-red-100 text-red-700' },
 }
 
 export default function ProductsPage() {
@@ -115,14 +115,14 @@ export default function ProductsPage() {
   }
 
   const handleDelete = async (productId: string) => {
-    if (!confirm('Are you sure you want to delete this product?')) return
+    if (!confirm('Та энэ бүтээгдэхүүнийг устгахдаа итгэлтэй байна уу?')) return
 
     startTransition(async () => {
       const result = await deleteProduct(productId)
       if (result.error) {
         toast.error(result.error)
       } else {
-        toast.success('Product deleted')
+        toast.success('Бүтээгдэхүүн устгагдлаа')
         fetchProducts()
       }
     })
@@ -134,29 +134,29 @@ export default function ProductsPage() {
       if (result.error) {
         toast.error(result.error)
       } else {
-        toast.success('Product duplicated')
+        toast.success('Бүтээгдэхүүн хуулагдлаа')
         fetchProducts()
       }
     })
   }
 
   const handleBulkDelete = async () => {
-    if (!confirm(`Are you sure you want to delete ${selectedProducts.length} products?`)) return
+    if (!confirm(`Та ${selectedProducts.length} бүтээгдэхүүн устгахдаа итгэлтэй байна уу?`)) return
 
     startTransition(async () => {
       for (const productId of selectedProducts) {
         await deleteProduct(productId)
       }
-      toast.success(`${selectedProducts.length} products deleted`)
+      toast.success(`${selectedProducts.length} бүтээгдэхүүн устгагдлаа`)
       setSelectedProducts([])
       fetchProducts()
     })
   }
 
   const getStockStatus = (stock: number) => {
-    if (stock === 0) return { label: 'Out of Stock', color: 'text-red-600' }
-    if (stock <= 10) return { label: 'Low Stock', color: 'text-yellow-600' }
-    return { label: 'In Stock', color: 'text-gray-900' }
+    if (stock === 0) return { label: 'Дууссан', color: 'text-red-600' }
+    if (stock <= 10) return { label: 'Бага үлдсэн', color: 'text-yellow-600' }
+    return { label: 'Нөөцтэй', color: 'text-gray-900' }
   }
 
   return (
@@ -164,13 +164,13 @@ export default function ProductsPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Products</h1>
-          <p className="text-gray-500">Manage your product inventory</p>
+          <h1 className="text-2xl font-bold text-gray-900">Бүтээгдэхүүн</h1>
+          <p className="text-gray-500">Бүтээгдэхүүний нөөцөө удирдах</p>
         </div>
         <Button asChild className="bg-orange-500 hover:bg-orange-600">
           <Link href="/seller/products/new">
             <Plus className="mr-2 h-4 w-4" />
-            Add Product
+            Бүтээгдэхүүн нэмэх
           </Link>
         </Button>
       </div>
@@ -180,7 +180,7 @@ export default function ProductsPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input
-            placeholder="Search products..."
+            placeholder="Бүтээгдэхүүн хайх..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
@@ -188,13 +188,13 @@ export default function ProductsPage() {
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="All Status" />
+            <SelectValue placeholder="Бүх төлөв" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="inactive">Inactive</SelectItem>
+            <SelectItem value="all">Бүх төлөв</SelectItem>
+            <SelectItem value="active">Идэвхтэй</SelectItem>
+            <SelectItem value="draft">Ноорог</SelectItem>
+            <SelectItem value="inactive">Идэвхгүй</SelectItem>
           </SelectContent>
         </Select>
         {selectedProducts.length > 0 && (
@@ -209,7 +209,7 @@ export default function ProductsPage() {
             ) : (
               <Trash2 className="mr-2 h-4 w-4" />
             )}
-            Delete ({selectedProducts.length})
+            Устгах ({selectedProducts.length})
           </Button>
         )}
       </div>
@@ -230,17 +230,17 @@ export default function ProductsPage() {
                     onCheckedChange={toggleSelectAll}
                   />
                 </TableHead>
-                <TableHead>Product</TableHead>
+                <TableHead>Бүтээгдэхүүн</TableHead>
                 <TableHead>SKU</TableHead>
                 <TableHead>
                   <Button variant="ghost" className="h-auto p-0 font-medium">
-                    Price
+                    Үнэ
                     <ArrowUpDown className="ml-1 h-4 w-4" />
                   </Button>
                 </TableHead>
-                <TableHead>Stock</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Sales</TableHead>
+                <TableHead>Нөөц</TableHead>
+                <TableHead>Төлөв</TableHead>
+                <TableHead>Борлуулалт</TableHead>
                 <TableHead className="w-12"></TableHead>
               </TableRow>
             </TableHeader>
@@ -275,7 +275,7 @@ export default function ProductsPage() {
                         <div>
                           <p className="font-medium text-gray-900">{product.name}</p>
                           <p className="text-sm text-gray-500">
-                            {product.categories?.name || 'Uncategorized'}
+                            {product.categories?.name || 'Ангилалгүй'}
                           </p>
                         </div>
                       </div>
@@ -306,18 +306,18 @@ export default function ProductsPage() {
                           <DropdownMenuItem asChild>
                             <Link href={`/seller/products/${product.id}`}>
                               <Pencil className="mr-2 h-4 w-4" />
-                              Edit
+                              Засах
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
                             <Link href={`/products/${product.slug}`} target="_blank">
                               <Eye className="mr-2 h-4 w-4" />
-                              View in Store
+                              Дэлгүүрт харах
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleDuplicate(product.id)}>
                             <Copy className="mr-2 h-4 w-4" />
-                            Duplicate
+                            Хуулах
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
@@ -325,7 +325,7 @@ export default function ProductsPage() {
                             onClick={() => handleDelete(product.id)}
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
+                            Устгах
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -340,17 +340,17 @@ export default function ProductsPage() {
         {!loading && products.length === 0 && (
           <div className="py-12 text-center">
             <Package className="mx-auto h-12 w-12 text-gray-300" />
-            <h3 className="mt-4 font-medium text-gray-900">No products found</h3>
+            <h3 className="mt-4 font-medium text-gray-900">Бүтээгдэхүүн олдсонгүй</h3>
             <p className="mt-1 text-sm text-gray-500">
               {searchQuery || statusFilter !== 'all'
-                ? 'Try adjusting your search or filters'
-                : 'Get started by adding your first product'}
+                ? 'Хайлт эсвэл шүүлтүүрээ өөрчлөөд үзнэ үү'
+                : 'Эхний бүтээгдэхүүнээ нэмж эхлэх'}
             </p>
             {!searchQuery && statusFilter === 'all' && (
               <Button asChild className="mt-4 bg-orange-500 hover:bg-orange-600">
                 <Link href="/seller/products/new">
                   <Plus className="mr-2 h-4 w-4" />
-                  Add Product
+                  Бүтээгдэхүүн нэмэх
                 </Link>
               </Button>
             )}

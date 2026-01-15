@@ -42,7 +42,7 @@ export function Header() {
 
             {/* Logo */}
             <Link href="/" className="flex shrink-0 items-center">
-              <span className="text-xl font-bold tracking-tight">MARKETPLACE</span>
+              <span className="text-xl font-bold tracking-tight">MSTORE</span>
             </Link>
 
             {/* Search Bar - Hidden on mobile */}
@@ -63,7 +63,7 @@ export function Header() {
                   className="flex flex-col items-center text-white hover:bg-slate-800"
                 >
                   <Heart className="h-5 w-5" />
-                  <span className="text-[10px]">Wishlist</span>
+                  <span className="text-[10px]">Хадгалсан</span>
                 </Button>
               </Link>
 
@@ -82,7 +82,7 @@ export function Header() {
                     </span>
                   )}
                 </div>
-                <span className="text-[10px]">Cart</span>
+                <span className="text-[10px]">Сагс</span>
               </Button>
             </div>
           </div>

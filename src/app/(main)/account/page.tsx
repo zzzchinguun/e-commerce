@@ -11,26 +11,26 @@ import type { User } from '@supabase/supabase-js'
 
 const quickLinks = [
   {
-    name: 'Your Orders',
-    description: 'Track, return, or buy things again',
+    name: 'Таны захиалгууд',
+    description: 'Хянах, буцаах эсвэл дахин худалдан авах',
     href: '/account/orders',
     icon: Package,
   },
   {
-    name: 'Your Addresses',
-    description: 'Edit addresses for orders',
+    name: 'Таны хаягууд',
+    description: 'Захиалгын хаягуудыг засварлах',
     href: '/account/addresses',
     icon: MapPin,
   },
   {
-    name: 'Your Wishlist',
-    description: 'View your saved items',
+    name: 'Хадгалсан',
+    description: 'Хадгалсан бүтээгдэхүүнүүдийг үзэх',
     href: '/wishlist',
     icon: Heart,
   },
   {
-    name: 'Payment Methods',
-    description: 'Manage payment methods',
+    name: 'Төлбөрийн хэрэгсэл',
+    description: 'Төлбөрийн аргуудыг удирдах',
     href: '/account/settings',
     icon: CreditCard,
   },
@@ -89,7 +89,7 @@ export default function AccountPage() {
             <p className="text-sm text-gray-500">{user?.email}</p>
           </div>
           <Button variant="outline" className="ml-auto" asChild>
-            <Link href="/account/settings">Edit Profile</Link>
+            <Link href="/account/settings">Профайл засах</Link>
           </Button>
         </div>
       </div>
@@ -117,19 +117,19 @@ export default function AccountPage() {
       {/* Recent Orders Preview */}
       <div className="rounded-lg border bg-white p-6">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-gray-900">Recent Orders</h3>
+          <h3 className="font-semibold text-gray-900">Сүүлийн захиалгууд</h3>
           <Link
             href="/account/orders"
             className="text-sm text-orange-600 hover:underline"
           >
-            View all orders
+            Бүх захиалга үзэх
           </Link>
         </div>
         <div className="mt-4 text-center py-8 text-gray-500">
           <Package className="mx-auto h-12 w-12 text-gray-300" />
-          <p className="mt-2">No orders yet</p>
+          <p className="mt-2">Одоогоор захиалга байхгүй</p>
           <Button asChild className="mt-4 bg-orange-500 hover:bg-orange-600">
-            <Link href="/products">Start Shopping</Link>
+            <Link href="/products">Дэлгүүр хэсэх</Link>
           </Button>
         </div>
       </div>

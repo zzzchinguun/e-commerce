@@ -3,8 +3,8 @@ import Link from 'next/link'
 import { Store, DollarSign, Package, Shield, AlertTriangle, CheckCircle } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Seller Policies',
-  description: 'Guidelines and policies for selling on our marketplace',
+  title: 'Худалдагчийн бодлого',
+  description: 'Манай marketplace-д худалдах удирдамж болон бодлого',
 }
 
 export default function SellerPoliciesPage() {
@@ -12,31 +12,31 @@ export default function SellerPoliciesPage() {
     <div className="container mx-auto px-4 py-12 max-w-4xl">
       <div className="text-center mb-12">
         <Store className="h-12 w-12 text-orange-500 mx-auto mb-4" />
-        <h1 className="text-3xl font-bold text-gray-900">Seller Policies</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Худалдагчийн бодлого</h1>
         <p className="mt-2 text-gray-600">
-          Everything you need to know about selling on our marketplace
+          Манай marketplace-д худалдах талаар мэдэх ёстой бүх зүйл
         </p>
       </div>
 
       <div className="prose prose-gray max-w-none">
         {/* Getting Started */}
         <section className="mb-12">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Getting Started</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Эхлэх</h2>
           <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
-            <h3 className="font-semibold text-green-800 mb-2">Seller Requirements</h3>
+            <h3 className="font-semibold text-green-800 mb-2">Худалдагчийн шаардлага</h3>
             <ul className="list-disc pl-6 text-green-700 space-y-1">
-              <li>Valid business or individual seller registration</li>
-              <li>Verifiable contact information</li>
-              <li>Ability to ship orders within the specified timeframe</li>
-              <li>Commitment to customer service excellence</li>
+              <li>Хүчинтэй бизнес эсвэл хувь хүний худалдагчийн бүртгэл</li>
+              <li>Баталгаажуулах боломжтой холбоо барих мэдээлэл</li>
+              <li>Заасан хугацаанд захиалга илгээх чадвар</li>
+              <li>Хэрэглэгчийн үйлчилгээний өндөр төвшинд тууштай байх</li>
             </ul>
           </div>
           <p className="text-gray-600">
-            To become a seller, simply{' '}
+            Худалдагч болохын тулд{' '}
             <Link href="/seller/register" className="text-orange-600 hover:underline">
-              register here
+              энд бүртгүүлнэ үү
             </Link>
-            . Our team will review your application within 2-3 business days.
+            . Манай баг таны өргөдлийг 2-3 ажлын өдрийн дотор хянана.
           </p>
         </section>
 
@@ -44,37 +44,37 @@ export default function SellerPoliciesPage() {
         <section className="mb-12">
           <div className="flex items-center gap-3 mb-4">
             <DollarSign className="h-6 w-6 text-orange-500" />
-            <h2 className="text-xl font-semibold text-gray-900">Fees & Commissions</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Хураамж & Шимтгэл</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse border">
               <thead>
                 <tr className="bg-gray-50">
-                  <th className="border p-3 text-left font-medium text-gray-900">Fee Type</th>
-                  <th className="border p-3 text-left font-medium text-gray-900">Amount</th>
-                  <th className="border p-3 text-left font-medium text-gray-900">Description</th>
+                  <th className="border p-3 text-left font-medium text-gray-900">Хураамжийн төрөл</th>
+                  <th className="border p-3 text-left font-medium text-gray-900">Хэмжээ</th>
+                  <th className="border p-3 text-left font-medium text-gray-900">Тайлбар</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td className="border p-3 text-gray-600">Commission</td>
+                  <td className="border p-3 text-gray-600">Шимтгэл</td>
                   <td className="border p-3 text-gray-600">10-15%</td>
-                  <td className="border p-3 text-gray-600">Per sale, varies by category</td>
+                  <td className="border p-3 text-gray-600">Борлуулалт тутамд, ангиллаас хамаарна</td>
                 </tr>
                 <tr>
-                  <td className="border p-3 text-gray-600">Monthly Fee</td>
-                  <td className="border p-3 text-gray-600">$0</td>
-                  <td className="border p-3 text-gray-600">No monthly subscription required</td>
+                  <td className="border p-3 text-gray-600">Сарын хураамж</td>
+                  <td className="border p-3 text-gray-600">₮0</td>
+                  <td className="border p-3 text-gray-600">Сарын захиалга шаардлагагүй</td>
                 </tr>
                 <tr>
-                  <td className="border p-3 text-gray-600">Listing Fee</td>
-                  <td className="border p-3 text-gray-600">$0</td>
-                  <td className="border p-3 text-gray-600">Free to list products</td>
+                  <td className="border p-3 text-gray-600">Жагсаалтын хураамж</td>
+                  <td className="border p-3 text-gray-600">₮0</td>
+                  <td className="border p-3 text-gray-600">Бүтээгдэхүүн байршуулах үнэгүй</td>
                 </tr>
                 <tr>
-                  <td className="border p-3 text-gray-600">Payment Processing</td>
-                  <td className="border p-3 text-gray-600">2.9% + $0.30</td>
-                  <td className="border p-3 text-gray-600">Standard Stripe fees</td>
+                  <td className="border p-3 text-gray-600">Төлбөр боловсруулалт</td>
+                  <td className="border p-3 text-gray-600">2.9% + ₮300</td>
+                  <td className="border p-3 text-gray-600">Стандарт Stripe хураамж</td>
                 </tr>
               </tbody>
             </table>
@@ -85,54 +85,54 @@ export default function SellerPoliciesPage() {
         <section className="mb-12">
           <div className="flex items-center gap-3 mb-4">
             <Package className="h-6 w-6 text-orange-500" />
-            <h2 className="text-xl font-semibold text-gray-900">Product Guidelines</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Бүтээгдэхүүний удирдамж</h2>
           </div>
 
-          <h3 className="text-lg font-medium text-gray-900 mb-3">Required Product Information</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-3">Шаардлагатай бүтээгдэхүүний мэдээлэл</h3>
           <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6">
-            <li>Clear, high-quality product images (minimum 500x500 pixels)</li>
-            <li>Accurate product titles and descriptions</li>
-            <li>Correct pricing and inventory levels</li>
-            <li>Proper category classification</li>
-            <li>Shipping weight and dimensions</li>
+            <li>Тод, өндөр чанартай бүтээгдэхүүний зураг (хамгийн багадаа 500x500 пиксел)</li>
+            <li>Үнэн зөв бүтээгдэхүүний гарчиг болон тодорхойлолт</li>
+            <li>Зөв үнэ болон нөөцийн түвшин</li>
+            <li>Зөв ангиллын ангилал</li>
+            <li>Хүргэлтийн жин болон хэмжээс</li>
           </ul>
 
-          <h3 className="text-lg font-medium text-gray-900 mb-3">Prohibited Items</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-3">Хориотой бараа</h3>
           <div className="bg-red-50 border border-red-200 rounded-lg p-6">
             <ul className="list-disc pl-6 text-red-700 space-y-1">
-              <li>Counterfeit or replica products</li>
-              <li>Illegal items or controlled substances</li>
-              <li>Weapons and ammunition</li>
-              <li>Adult content (unless in approved categories)</li>
-              <li>Items that infringe on intellectual property</li>
-              <li>Hazardous materials</li>
-              <li>Live animals</li>
+              <li>Хуурамч эсвэл хуулбар бүтээгдэхүүн</li>
+              <li>Хууль бус бараа эсвэл хяналттай бодис</li>
+              <li>Зэвсэг болон сум</li>
+              <li>Насанд хүрэгчдэд зориулсан агуулга (зөвшөөрөгдсөн ангиллаас бусад)</li>
+              <li>Оюуны өмчийн эрхийг зөрчсөн бараа</li>
+              <li>Аюултай материал</li>
+              <li>Амьд амьтан</li>
             </ul>
           </div>
         </section>
 
         {/* Shipping Requirements */}
         <section className="mb-12">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Shipping Requirements</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Хүргэлтийн шаардлага</h2>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="border rounded-lg p-4">
               <CheckCircle className="h-5 w-5 text-green-500 mb-2" />
-              <h3 className="font-medium text-gray-900">Expected Standards</h3>
+              <h3 className="font-medium text-gray-900">Хүлээгдэж буй стандарт</h3>
               <ul className="mt-2 text-sm text-gray-600 space-y-1">
-                <li>• Ship within 2 business days</li>
-                <li>• Provide valid tracking numbers</li>
-                <li>• Use appropriate packaging</li>
-                <li>• Accurate shipping costs</li>
+                <li>• 2 ажлын өдрийн дотор илгээх</li>
+                <li>• Хүчинтэй хяналтын дугаар өгөх</li>
+                <li>• Тохирох сав баглаа ашиглах</li>
+                <li>• Үнэн зөв хүргэлтийн зардал</li>
               </ul>
             </div>
             <div className="border rounded-lg p-4">
               <AlertTriangle className="h-5 w-5 text-amber-500 mb-2" />
-              <h3 className="font-medium text-gray-900">Policy Violations</h3>
+              <h3 className="font-medium text-gray-900">Бодлогын зөрчил</h3>
               <ul className="mt-2 text-sm text-gray-600 space-y-1">
-                <li>• Late shipments affect seller rating</li>
-                <li>• Missing tracking = order issues</li>
-                <li>• Damaged items = returns</li>
-                <li>• Repeated issues = suspension</li>
+                <li>• Хоцрогдсон илгээмж үнэлгээнд нөлөөлнө</li>
+                <li>• Хяналтын дугаар байхгүй = захиалгын асуудал</li>
+                <li>• Гэмтсэн бараа = буцаалт</li>
+                <li>• Давтан зөрчил = түдгэлзүүлэлт</li>
               </ul>
             </div>
           </div>
@@ -142,67 +142,67 @@ export default function SellerPoliciesPage() {
         <section className="mb-12">
           <div className="flex items-center gap-3 mb-4">
             <Shield className="h-6 w-6 text-orange-500" />
-            <h2 className="text-xl font-semibold text-gray-900">Customer Service Standards</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Хэрэглэгчийн үйлчилгээний стандарт</h2>
           </div>
           <p className="text-gray-600 mb-4">
-            Maintaining excellent customer service is crucial for success on our marketplace:
+            Манай marketplace-д амжилттай байхад хэрэглэгчийн маш сайн үйлчилгээг хадгалах нь чухал:
           </p>
           <ul className="list-disc pl-6 text-gray-600 space-y-2">
-            <li>Respond to customer inquiries within 24 hours</li>
-            <li>Handle returns and refunds according to marketplace policy</li>
-            <li>Maintain a seller rating of 4.0 or higher</li>
-            <li>Resolve disputes professionally and promptly</li>
-            <li>Keep product listings accurate and up-to-date</li>
+            <li>Хэрэглэгчийн хүсэлтэд 24 цагийн дотор хариулах</li>
+            <li>Буцаалт, нөхөн олговрыг marketplace-ийн бодлогын дагуу шийдвэрлэх</li>
+            <li>Худалдагчийн үнэлгээг 4.0 ба түүнээс дээш хадгалах</li>
+            <li>Маргааныг мэргэжлийн, шуурхай шийдвэрлэх</li>
+            <li>Бүтээгдэхүүний жагсаалтыг үнэн зөв, шинэчлэгдсэн байлгах</li>
           </ul>
         </section>
 
         {/* Returns Policy */}
         <section className="mb-12">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Returns & Refunds</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Буцаалт & Нөхөн олговор</h2>
           <p className="text-gray-600 mb-4">
-            All sellers must honor the marketplace&apos;s minimum return policy:
+            Бүх худалдагч marketplace-ийн хамгийн бага буцаалтын бодлогыг дагаж мөрдөх ёстой:
           </p>
           <ul className="list-disc pl-6 text-gray-600 space-y-2">
-            <li>Minimum 14-day return window for all products</li>
-            <li>Process refunds within 5 business days of receiving returns</li>
-            <li>Cover return shipping for defective items</li>
-            <li>Option to offer extended return periods (recommended)</li>
+            <li>Бүх бүтээгдэхүүнд хамгийн багадаа 14 хоногийн буцаалтын хугацаа</li>
+            <li>Буцаалтыг хүлээн авснаас хойш 5 ажлын өдрийн дотор нөхөн олговор боловсруулах</li>
+            <li>Гэмтэлтэй барааны буцаалтын хүргэлтийн зардлыг хариуцах</li>
+            <li>Уртасгасан буцаалтын хугацаа санал болгох сонголт (зөвлөмжлөгддөг)</li>
           </ul>
         </section>
 
         {/* Account Health */}
         <section className="mb-12">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Account Health & Performance</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Бүртгэлийн эрүүл мэнд & Гүйцэтгэл</h2>
           <p className="text-gray-600 mb-4">
-            We monitor seller performance to ensure a quality marketplace experience:
+            Бид чанартай marketplace-ийн туршлагыг хангахын тулд худалдагчийн гүйцэтгэлийг хянадаг:
           </p>
           <div className="grid md:grid-cols-3 gap-4">
             <div className="bg-green-50 rounded-lg p-4 text-center">
               <p className="text-2xl font-bold text-green-600">&lt; 3%</p>
-              <p className="text-sm text-gray-600">Order Defect Rate</p>
+              <p className="text-sm text-gray-600">Захиалгын согогийн хувь</p>
             </div>
             <div className="bg-green-50 rounded-lg p-4 text-center">
               <p className="text-2xl font-bold text-green-600">&gt; 95%</p>
-              <p className="text-sm text-gray-600">On-Time Shipment</p>
+              <p className="text-sm text-gray-600">Цагтаа илгээсэн</p>
             </div>
             <div className="bg-green-50 rounded-lg p-4 text-center">
               <p className="text-2xl font-bold text-green-600">&gt; 4.0</p>
-              <p className="text-sm text-gray-600">Seller Rating</p>
+              <p className="text-sm text-gray-600">Худалдагчийн үнэлгээ</p>
             </div>
           </div>
         </section>
 
         {/* CTA */}
         <section className="bg-orange-50 rounded-xl p-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Ready to Start Selling?</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Худалдаж эхлэхэд бэлэн үү?</h2>
           <p className="mt-2 text-gray-600">
-            Join thousands of successful sellers on our marketplace
+            Манай marketplace дээр амжилттай бизнес эрхэлж буй мянга мянган худалдагчдын нэг боломжтой
           </p>
           <Link
             href="/seller/register"
             className="mt-4 inline-block rounded-lg bg-orange-500 px-8 py-3 font-semibold text-white hover:bg-orange-600"
           >
-            Register as a Seller
+            Худалдагчаар бүртгүүлэх
           </Link>
         </section>
       </div>

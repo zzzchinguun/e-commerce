@@ -22,7 +22,7 @@ export function CartDrawer() {
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2">
             <ShoppingBag className="h-5 w-5" />
-            Shopping Cart ({itemCount})
+            Худалдааны сагс ({itemCount})
           </SheetTitle>
         </SheetHeader>
 
@@ -32,23 +32,23 @@ export function CartDrawer() {
               <ShoppingBag className="h-12 w-12 text-gray-400" />
             </div>
             <div className="text-center">
-              <h3 className="font-medium text-gray-900">Your cart is empty</h3>
+              <h3 className="font-medium text-gray-900">Таны сагс хоосон байна</h3>
               <p className="mt-1 text-sm text-gray-500">
-                Add items to your cart to checkout
+                Төлбөр хийхийн тулд сагсандаа бараа нэмнэ үү
               </p>
             </div>
             <Button onClick={closeCart} asChild>
-              <Link href="/products">Continue Shopping</Link>
+              <Link href="/products">Худалдаа үргэлжлүүлэх</Link>
             </Button>
           </div>
         ) : (
           <>
-            {/* Cart Items */}
+            {/* Сагсны бараанууд */}
             <div className="flex-1 overflow-y-auto py-4">
               <div className="space-y-4">
                 {items.map((item) => (
                   <div key={item.id} className="flex gap-4">
-                    {/* Product Image */}
+                    {/* Барааны зураг */}
                     <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-gray-100">
                       {item.product.image ? (
                         <Image
@@ -64,7 +64,7 @@ export function CartDrawer() {
                       )}
                     </div>
 
-                    {/* Product Details */}
+                    {/* Барааны дэлгэрэнгүй */}
                     <div className="flex flex-1 flex-col">
                       <Link
                         href={`/products/${item.product.slug}`}
@@ -77,7 +77,7 @@ export function CartDrawer() {
                         {item.product.seller.storeName}
                       </p>
 
-                      {/* Variant Options */}
+                      {/* Сонголтууд */}
                       {item.variantOptions && (
                         <p className="text-xs text-gray-500">
                           {Object.entries(item.variantOptions)
@@ -87,7 +87,7 @@ export function CartDrawer() {
                       )}
 
                       <div className="mt-auto flex items-center justify-between">
-                        {/* Quantity Controls */}
+                        {/* Тоо ширхэг */}
                         <div className="flex items-center gap-2">
                           <Button
                             variant="outline"
@@ -114,7 +114,7 @@ export function CartDrawer() {
                           </Button>
                         </div>
 
-                        {/* Price & Remove */}
+                        {/* Үнэ & Устгах */}
                         <div className="flex items-center gap-2">
                           <span className="font-medium">
                             {formatPrice(item.product.price * item.quantity)}
@@ -137,18 +137,18 @@ export function CartDrawer() {
 
             <Separator />
 
-            {/* Footer */}
+            {/* Хөл хэсэг */}
             <div className="space-y-4 pt-4">
-              {/* Subtotal */}
+              {/* Нийт дүн */}
               <div className="flex items-center justify-between text-lg font-medium">
-                <span>Subtotal</span>
+                <span>Нийт дүн</span>
                 <span>{formatPrice(subtotal)}</span>
               </div>
               <p className="text-xs text-gray-500">
-                Shipping and taxes calculated at checkout
+                Хүргэлт болон татварыг төлбөрийн үед тооцно
               </p>
 
-              {/* Actions */}
+              {/* Үйлдлүүд */}
               <div className="space-y-2">
                 <Button
                   className="w-full bg-orange-500 hover:bg-orange-600"
@@ -156,7 +156,7 @@ export function CartDrawer() {
                   asChild
                   onClick={closeCart}
                 >
-                  <Link href="/checkout">Proceed to Checkout</Link>
+                  <Link href="/checkout">Төлбөр хийх</Link>
                 </Button>
                 <Button
                   variant="outline"
@@ -165,7 +165,7 @@ export function CartDrawer() {
                   asChild
                   onClick={closeCart}
                 >
-                  <Link href="/cart">View Cart</Link>
+                  <Link href="/cart">Сагс харах</Link>
                 </Button>
               </div>
             </div>

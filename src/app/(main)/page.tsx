@@ -39,7 +39,7 @@ export default async function HomePage() {
 
       {/* Featured Products */}
       <FeaturedProducts
-        title="Featured Products"
+        title="Онцлох бүтээгдэхүүнүүд"
         viewAllHref="/products?featured=true"
         products={transformProducts(featuredResult.products)}
       />
@@ -49,14 +49,14 @@ export default async function HomePage() {
 
       {/* Best Sellers */}
       <FeaturedProducts
-        title="Best Sellers"
+        title="Хамгийн их зарагдсан"
         viewAllHref="/products?sort=best-selling"
         products={transformProducts(bestSellersResult.products)}
       />
 
       {/* New Arrivals */}
       <FeaturedProducts
-        title="New Arrivals"
+        title="Шинэ бүтээгдэхүүнүүд"
         viewAllHref="/products?sort=newest"
         products={transformProducts(newArrivalsResult.products)}
       />

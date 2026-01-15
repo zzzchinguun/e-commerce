@@ -6,41 +6,41 @@ import { Truck, Shield, RotateCcw, Headphones } from 'lucide-react'
 const features = [
   {
     icon: Truck,
-    title: 'Free Shipping',
-    description: 'On orders over $50',
+    title: 'Үнэгүй хүргэлт',
+    description: '50,000₮-с дээш захиалгад',
   },
   {
     icon: Shield,
-    title: 'Secure Payment',
-    description: '100% secure transactions',
+    title: 'Аюулгүй төлбөр',
+    description: '100% найдвартай гүйлгээ',
   },
   {
     icon: RotateCcw,
-    title: 'Easy Returns',
-    description: '30-day return policy',
+    title: 'Хялбар буцаалт',
+    description: '30 хоногийн буцаалтын бодлого',
   },
   {
     icon: Headphones,
-    title: '24/7 Support',
-    description: 'Dedicated customer service',
+    title: '24/7 Дэмжлэг',
+    description: 'Тусгай хэрэглэгчийн үйлчилгээ',
   },
 ]
 
 const promoBanners = [
   {
     id: 1,
-    title: 'Summer Sale',
-    subtitle: 'Up to 50% off on selected items',
-    cta: 'Shop Now',
+    title: 'Зуны хямдрал',
+    subtitle: 'Сонгосон бүтээгдэхүүнүүдээс 50% хүртэл хямдрал',
+    cta: 'Одоо худалдаж авах',
     href: '/products?sale=true',
     bgColor: 'bg-gradient-to-r from-yellow-400 to-orange-500',
     textColor: 'text-white',
   },
   {
     id: 2,
-    title: 'New Arrivals',
-    subtitle: 'Check out the latest products',
-    cta: 'Explore',
+    title: 'Шинэ бүтээгдэхүүн',
+    subtitle: 'Хамгийн сүүлийн үеийн бүтээгдэхүүнүүдийг үзээрэй',
+    cta: 'Үзэх',
     href: '/products?sort=newest',
     bgColor: 'bg-gradient-to-r from-slate-700 to-slate-900',
     textColor: 'text-white',

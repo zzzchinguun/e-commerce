@@ -107,7 +107,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
       selectedVariant?.id,
       selectedVariant ? selectedOptions : undefined
     )
-    toast.success('Added to cart')
+    toast.success('Сагсанд нэмэгдлээ')
     openCart()
   }
 
@@ -120,7 +120,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
   const handleToggleWishlist = () => {
     if (isInWishlist) {
       removeFromWishlist(product.id)
-      toast.success('Removed from wishlist')
+      toast.success('Хадгалсан жагсаалтаас хасагдлаа')
     } else {
       addToWishlist({
         id: product.id,
@@ -134,13 +134,13 @@ export function ProductInfo({ product }: ProductInfoProps) {
           storeSlug: product.seller.storeSlug,
         },
       })
-      toast.success('Added to wishlist')
+      toast.success('Хадгалсан жагсаалтанд нэмэгдлээ')
     }
   }
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href)
-    toast.success('Link copied to clipboard')
+    toast.success('Холбоос хуулагдлаа')
   }
 
   return (
@@ -151,7 +151,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
           href={`/sellers/${product.seller.storeSlug}`}
           className="text-sm text-orange-600 hover:underline"
         >
-          Visit {product.seller.storeName} Store
+          {product.seller.storeName} дэлгүүрт зочлох
         </Link>
       </div>
 
@@ -176,7 +176,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
           </div>
           <span className="font-medium text-gray-900">{product.rating}</span>
           <Link href="#reviews" className="text-sm text-orange-600 hover:underline">
-            {product.reviewCount?.toLocaleString()} reviews
+            {product.reviewCount?.toLocaleString()} сэтгэгдэл
           </Link>
         </div>
       )}
@@ -202,7 +202,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
         </div>
         {currentCompareAtPrice && (
           <p className="text-sm text-green-600">
-            You save {formatPrice(currentCompareAtPrice - currentPrice)}
+            Таны хэмнэлт {formatPrice(currentCompareAtPrice - currentPrice)}
           </p>
         )}
       </div>
@@ -220,7 +220,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
                 onValueChange={(value) => handleOptionChange(option.name, value)}
               >
                 <SelectTrigger className="mt-1 w-full">
-                  <SelectValue placeholder={`Select ${option.name}`} />
+                  <SelectValue placeholder={`${option.name} сонгох`} />
                 </SelectTrigger>
                 <SelectContent>
                   {option.values.map((value) => (
@@ -239,16 +239,16 @@ export function ProductInfo({ product }: ProductInfoProps) {
       <div className="flex items-center gap-2">
         {isOutOfStock ? (
           <Badge variant="secondary" className="bg-red-100 text-red-700">
-            Out of Stock
+            Дууссан
           </Badge>
         ) : currentStock <= 10 ? (
           <Badge variant="secondary" className="bg-orange-100 text-orange-700">
-            Only {currentStock} left in stock
+            Зөвхөн {currentStock} үлдсэн
           </Badge>
         ) : (
           <Badge variant="secondary" className="bg-green-100 text-green-700">
             <Check className="mr-1 h-3 w-3" />
-            In Stock
+            Нөөцөд байгаа
           </Badge>
         )}
       </div>
@@ -256,7 +256,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
       {/* Quantity & Add to Cart */}
       <div className="space-y-4">
         <div className="flex items-center gap-4">
-          <span className="text-sm font-medium text-gray-700">Quantity</span>
+          <span className="text-sm font-medium text-gray-700">Тоо ширхэг</span>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
@@ -287,7 +287,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
             disabled={isOutOfStock}
             onClick={handleAddToCart}
           >
-            Add to Cart
+            Сагсанд нэмэх
           </Button>
           <Button
             size="lg"
@@ -317,7 +317,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
           disabled={isOutOfStock}
           onClick={handleBuyNow}
         >
-          Buy Now
+          Одоо худалдаж авах
         </Button>
       </div>
 
@@ -330,8 +330,8 @@ export function ProductInfo({ product }: ProductInfoProps) {
             <Truck className="h-5 w-5 text-orange-600" />
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-900">Free Shipping</p>
-            <p className="text-xs text-gray-500">On orders over $50</p>
+            <p className="text-sm font-medium text-gray-900">Үнэгүй хүргэлт</p>
+            <p className="text-xs text-gray-500">50,000₮-с дээш захиалгад</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -339,8 +339,8 @@ export function ProductInfo({ product }: ProductInfoProps) {
             <RotateCcw className="h-5 w-5 text-orange-600" />
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-900">Easy Returns</p>
-            <p className="text-xs text-gray-500">30-day return policy</p>
+            <p className="text-sm font-medium text-gray-900">Хялбар буцаалт</p>
+            <p className="text-xs text-gray-500">30 хоногийн буцаалтын бодлого</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -348,8 +348,8 @@ export function ProductInfo({ product }: ProductInfoProps) {
             <Shield className="h-5 w-5 text-orange-600" />
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-900">Secure Payment</p>
-            <p className="text-xs text-gray-500">100% protected</p>
+            <p className="text-sm font-medium text-gray-900">Аюулгүй төлбөр</p>
+            <p className="text-xs text-gray-500">100% хамгаалалттай</p>
           </div>
         </div>
       </div>
@@ -358,7 +358,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
 
       {/* Description */}
       <div>
-        <h3 className="font-semibold text-gray-900">About this item</h3>
+        <h3 className="font-semibold text-gray-900">Энэ бүтээгдэхүүний тухай</h3>
         <p className="mt-2 text-gray-600 whitespace-pre-line">{product.description}</p>
       </div>
     </div>

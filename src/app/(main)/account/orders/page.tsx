@@ -36,11 +36,11 @@ interface Order {
 }
 
 const statusConfig: Record<string, { label: string; color: string }> = {
-  pending: { label: 'Pending', color: 'bg-yellow-100 text-yellow-700' },
-  processing: { label: 'Processing', color: 'bg-blue-100 text-blue-700' },
-  shipped: { label: 'Shipped', color: 'bg-purple-100 text-purple-700' },
-  delivered: { label: 'Delivered', color: 'bg-green-100 text-green-700' },
-  cancelled: { label: 'Cancelled', color: 'bg-red-100 text-red-700' },
+  pending: { label: 'Хүлээгдэж буй', color: 'bg-yellow-100 text-yellow-700' },
+  processing: { label: 'Боловсруулж байна', color: 'bg-blue-100 text-blue-700' },
+  shipped: { label: 'Илгээсэн', color: 'bg-purple-100 text-purple-700' },
+  delivered: { label: 'Хүргэгдсэн', color: 'bg-green-100 text-green-700' },
+  cancelled: { label: 'Цуцлагдсан', color: 'bg-red-100 text-red-700' },
 }
 
 export default async function OrdersPage() {
@@ -53,7 +53,7 @@ export default async function OrdersPage() {
         <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-red-100">
           <Package className="h-10 w-10 text-red-400" />
         </div>
-        <h2 className="mt-4 text-xl font-semibold text-gray-900">Error loading orders</h2>
+        <h2 className="mt-4 text-xl font-semibold text-gray-900">Захиалга ачаалахад алдаа гарлаа</h2>
         <p className="mt-2 text-gray-500">{error}</p>
       </div>
     )
@@ -65,12 +65,12 @@ export default async function OrdersPage() {
         <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gray-100">
           <Package className="h-10 w-10 text-gray-400" />
         </div>
-        <h2 className="mt-4 text-xl font-semibold text-gray-900">No orders yet</h2>
+        <h2 className="mt-4 text-xl font-semibold text-gray-900">Одоогоор захиалга байхгүй</h2>
         <p className="mt-2 text-gray-500">
-          When you place orders, they will appear here.
+          Захиалга хийхэд энд харагдана.
         </p>
         <Button asChild className="mt-6 bg-orange-500 hover:bg-orange-600">
-          <Link href="/products">Start Shopping</Link>
+          <Link href="/products">Дэлгүүр хэсэх</Link>
         </Button>
       </div>
     )
@@ -80,8 +80,8 @@ export default async function OrdersPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-xl font-semibold text-gray-900">Order History</h2>
-        <p className="text-sm text-gray-500">{orders.length} order{orders.length !== 1 ? 's' : ''}</p>
+        <h2 className="text-xl font-semibold text-gray-900">Захиалгын түүх</h2>
+        <p className="text-sm text-gray-500">{orders.length} захиалга</p>
       </div>
 
       {/* Orders List */}
@@ -92,9 +92,9 @@ export default async function OrdersPage() {
             <div className="flex flex-wrap items-center justify-between gap-4 border-b bg-gray-50 px-4 py-3">
               <div className="flex flex-wrap gap-6 text-sm">
                 <div>
-                  <span className="text-gray-500">Order placed</span>
+                  <span className="text-gray-500">Захиалсан огноо</span>
                   <p className="font-medium text-gray-900">
-                    {order.date.toLocaleDateString('en-US', {
+                    {order.date.toLocaleDateString('mn-MN', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
@@ -102,11 +102,11 @@ export default async function OrdersPage() {
                   </p>
                 </div>
                 <div>
-                  <span className="text-gray-500">Total</span>
+                  <span className="text-gray-500">Нийт</span>
                   <p className="font-medium text-gray-900">{formatPrice(order.total)}</p>
                 </div>
                 <div>
-                  <span className="text-gray-500">Order #</span>
+                  <span className="text-gray-500">Захиалгын дугаар</span>
                   <p className="font-medium text-gray-900">{order.id}</p>
                 </div>
               </div>
@@ -136,7 +136,7 @@ export default async function OrdersPage() {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-medium text-gray-900">{item.name}</h4>
-                    <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                    <p className="text-sm text-gray-500">Тоо: {item.quantity}</p>
                     {item.variantOptions && Object.keys(item.variantOptions).length > 0 && (
                       <p className="text-sm text-gray-500">
                         {Object.entries(item.variantOptions)
@@ -151,7 +151,7 @@ export default async function OrdersPage() {
                   <div className="flex flex-col gap-2">
                     {item.slug && (
                       <Button variant="outline" size="sm" asChild>
-                        <Link href={`/products/${item.slug}`}>Buy Again</Link>
+                        <Link href={`/products/${item.slug}`}>Дахин авах</Link>
                       </Button>
                     )}
                   </div>
@@ -163,12 +163,12 @@ export default async function OrdersPage() {
             <div className="flex justify-end gap-2 border-t px-4 py-3">
               {order.trackingNumber && (
                 <Button variant="outline" size="sm">
-                  Track Package
+                  Илгээмж хянах
                 </Button>
               )}
               <Button variant="outline" size="sm" asChild>
                 <Link href={`/account/orders/${order.orderId}`}>
-                  View Order Details
+                  Дэлгэрэнгүй үзэх
                   <ChevronRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>

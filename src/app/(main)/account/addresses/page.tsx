@@ -82,15 +82,15 @@ export default function AddressesPage() {
         <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gray-100">
           <MapPin className="h-10 w-10 text-gray-400" />
         </div>
-        <h2 className="mt-4 text-xl font-semibold text-gray-900">No addresses saved</h2>
+        <h2 className="mt-4 text-xl font-semibold text-gray-900">Хадгалсан хаяг байхгүй</h2>
         <p className="mt-2 text-gray-500">
-          Add a shipping address to make checkout faster.
+          Төлбөр тооцоог хурдасгахын тулд хүргэлтийн хаяг нэмнэ үү.
         </p>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button className="mt-6 bg-orange-500 hover:bg-orange-600">
               <Plus className="mr-2 h-4 w-4" />
-              Add Address
+              Хаяг нэмэх
             </Button>
           </DialogTrigger>
           <AddressDialog onClose={() => setIsDialogOpen(false)} />
@@ -103,12 +103,12 @@ export default function AddressesPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900">Saved Addresses</h2>
+        <h2 className="text-xl font-semibold text-gray-900">Хадгалсан хаягууд</h2>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button className="bg-orange-500 hover:bg-orange-600">
               <Plus className="mr-2 h-4 w-4" />
-              Add Address
+              Хаяг нэмэх
             </Button>
           </DialogTrigger>
           <AddressDialog onClose={() => setIsDialogOpen(false)} />
@@ -124,7 +124,7 @@ export default function AddressesPage() {
           >
             {address.isDefault && (
               <Badge className="absolute right-4 top-4 bg-orange-100 text-orange-700">
-                Default
+                Үндсэн
               </Badge>
             )}
 
@@ -143,7 +143,7 @@ export default function AddressesPage() {
             <div className="mt-4 flex gap-2">
               <Button variant="outline" size="sm">
                 <Pencil className="mr-1 h-3 w-3" />
-                Edit
+                Засах
               </Button>
               {!address.isDefault && (
                 <>
@@ -153,7 +153,7 @@ export default function AddressesPage() {
                     onClick={() => handleSetDefault(address.id)}
                   >
                     <Check className="mr-1 h-3 w-3" />
-                    Set Default
+                    Үндсэн болгох
                   </Button>
                   <Button
                     variant="outline"
@@ -162,7 +162,7 @@ export default function AddressesPage() {
                     onClick={() => handleDelete(address.id)}
                   >
                     <Trash2 className="mr-1 h-3 w-3" />
-                    Delete
+                    Устгах
                   </Button>
                 </>
               )}
@@ -178,31 +178,31 @@ function AddressDialog({ onClose }: { onClose: () => void }) {
   return (
     <DialogContent className="max-w-md">
       <DialogHeader>
-        <DialogTitle>Add New Address</DialogTitle>
+        <DialogTitle>Шинэ хаяг нэмэх</DialogTitle>
       </DialogHeader>
       <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onClose(); }}>
         <div>
-          <Label htmlFor="name">Full Name</Label>
+          <Label htmlFor="name">Бүтэн нэр</Label>
           <Input id="name" className="mt-1" />
         </div>
         <div>
-          <Label htmlFor="street">Street Address</Label>
+          <Label htmlFor="street">Гудамжны хаяг</Label>
           <Input id="street" className="mt-1" />
         </div>
         <div>
-          <Label htmlFor="apartment">Apartment, suite, etc. (optional)</Label>
+          <Label htmlFor="apartment">Байр, тоот гэх мэт (заавал биш)</Label>
           <Input id="apartment" className="mt-1" />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="city">City</Label>
+            <Label htmlFor="city">Хот</Label>
             <Input id="city" className="mt-1" />
           </div>
           <div>
-            <Label htmlFor="state">State</Label>
+            <Label htmlFor="state">Дүүрэг/Аймаг</Label>
             <Select>
               <SelectTrigger className="mt-1">
-                <SelectValue placeholder="Select" />
+                <SelectValue placeholder="Сонгох" />
               </SelectTrigger>
               <SelectContent>
                 {US_STATES.map((state) => (
@@ -216,20 +216,20 @@ function AddressDialog({ onClose }: { onClose: () => void }) {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="zipCode">ZIP Code</Label>
+            <Label htmlFor="zipCode">Шуудангийн код</Label>
             <Input id="zipCode" className="mt-1" />
           </div>
           <div>
-            <Label htmlFor="phone">Phone</Label>
+            <Label htmlFor="phone">Утас</Label>
             <Input id="phone" type="tel" className="mt-1" />
           </div>
         </div>
         <div className="flex justify-end gap-2 pt-4">
           <Button type="button" variant="outline" onClick={onClose}>
-            Cancel
+            Цуцлах
           </Button>
           <Button type="submit" className="bg-orange-500 hover:bg-orange-600">
-            Save Address
+            Хаяг хадгалах
           </Button>
         </div>
       </form>

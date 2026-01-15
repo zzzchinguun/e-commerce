@@ -76,28 +76,28 @@ export default function AnalyticsPage() {
   const stats = data
     ? [
         {
-          title: 'Total Revenue',
+          title: 'Нийт орлого',
           value: data.stats.totalRevenue,
           change: data.stats.revenueChange,
           icon: DollarSign,
           format: 'currency',
         },
         {
-          title: 'Orders',
+          title: 'Захиалгууд',
           value: data.stats.orderCount,
           change: data.stats.orderChange,
           icon: ShoppingCart,
           format: 'number',
         },
         {
-          title: 'Product Views',
+          title: 'Бүтээгдэхүүний үзэлт',
           value: data.stats.productViews,
           change: data.stats.viewsChange,
           icon: Eye,
           format: 'number',
         },
         {
-          title: 'Conversion Rate',
+          title: 'Хөрвүүлэлтийн хувь',
           value: data.stats.conversionRate,
           change: data.stats.conversionChange,
           icon: TrendingUp,
@@ -118,9 +118,9 @@ export default function AnalyticsPage() {
     return (
       <div className="flex h-96 flex-col items-center justify-center text-center">
         <ShoppingCart className="h-12 w-12 text-gray-300" />
-        <h2 className="mt-4 text-lg font-semibold text-gray-900">No data available</h2>
+        <h2 className="mt-4 text-lg font-semibold text-gray-900">Өгөгдөл байхгүй байна</h2>
         <p className="mt-2 text-sm text-gray-500">
-          Start selling to see your analytics data here.
+          Статистик өгөгдлийг харахын тулд борлуулалт эхлүүлнэ үү.
         </p>
       </div>
     )
@@ -131,18 +131,18 @@ export default function AnalyticsPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
-          <p className="text-gray-500">Track your store performance</p>
+          <h1 className="text-2xl font-bold text-gray-900">Статистик</h1>
+          <p className="text-gray-500">Дэлгүүрийнхээ гүйцэтгэлийг хянах</p>
         </div>
         <Select value={period} onValueChange={setPeriod}>
           <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Select period" />
+            <SelectValue placeholder="Хугацаа сонгох" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="24h">Last 24 hours</SelectItem>
-            <SelectItem value="7d">Last 7 days</SelectItem>
-            <SelectItem value="30d">Last 30 days</SelectItem>
-            <SelectItem value="90d">Last 90 days</SelectItem>
+            <SelectItem value="24h">Сүүлийн 24 цаг</SelectItem>
+            <SelectItem value="7d">Сүүлийн 7 хоног</SelectItem>
+            <SelectItem value="30d">Сүүлийн 30 хоног</SelectItem>
+            <SelectItem value="90d">Сүүлийн 90 хоног</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -184,14 +184,14 @@ export default function AnalyticsPage() {
         {/* Top Products */}
         <Card>
           <CardHeader>
-            <CardTitle>Top Products</CardTitle>
+            <CardTitle>Шилдэг бүтээгдэхүүн</CardTitle>
           </CardHeader>
           <CardContent>
             {data.topProducts.length === 0 ? (
               <div className="flex h-48 items-center justify-center text-center">
                 <div>
                   <ShoppingCart className="mx-auto h-8 w-8 text-gray-300" />
-                  <p className="mt-2 text-sm text-gray-500">No products yet</p>
+                  <p className="mt-2 text-sm text-gray-500">Бүтээгдэхүүн байхгүй байна</p>
                 </div>
               </div>
             ) : (
@@ -208,7 +208,7 @@ export default function AnalyticsPage() {
                       <div>
                         <p className="font-medium text-gray-900 line-clamp-1">{product.name}</p>
                         <p className="text-sm text-gray-500">
-                          {product.views.toLocaleString()} views · {product.sales.toLocaleString()} sales
+                          {product.views.toLocaleString()} үзэлт · {product.sales.toLocaleString()} борлуулалт
                         </p>
                       </div>
                     </div>
@@ -223,14 +223,14 @@ export default function AnalyticsPage() {
         {/* Recent Activity */}
         <Card>
           <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
+            <CardTitle>Сүүлийн үйл ажиллагаа</CardTitle>
           </CardHeader>
           <CardContent>
             {data.recentActivity.length === 0 ? (
               <div className="flex h-48 items-center justify-center text-center">
                 <div>
                   <Eye className="mx-auto h-8 w-8 text-gray-300" />
-                  <p className="mt-2 text-sm text-gray-500">No recent activity</p>
+                  <p className="mt-2 text-sm text-gray-500">Сүүлийн үйл ажиллагаа байхгүй</p>
                 </div>
               </div>
             ) : (
@@ -270,12 +270,12 @@ export default function AnalyticsPage() {
       {/* Summary Card */}
       <Card>
         <CardHeader>
-          <CardTitle>Period Summary</CardTitle>
+          <CardTitle>Хугацааны тойм</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 sm:grid-cols-4">
             <div className="rounded-lg border p-4">
-              <p className="text-sm text-gray-500">Avg Order Value</p>
+              <p className="text-sm text-gray-500">Дундаж захиалгын дүн</p>
               <p className="mt-1 text-2xl font-bold text-gray-900">
                 {data.stats.orderCount > 0
                   ? formatPrice(data.stats.totalRevenue / data.stats.orderCount)
@@ -283,7 +283,7 @@ export default function AnalyticsPage() {
               </p>
             </div>
             <div className="rounded-lg border p-4">
-              <p className="text-sm text-gray-500">Revenue per View</p>
+              <p className="text-sm text-gray-500">Үзэлт тутмын орлого</p>
               <p className="mt-1 text-2xl font-bold text-gray-900">
                 {data.stats.productViews > 0
                   ? formatPrice(data.stats.totalRevenue / data.stats.productViews)
@@ -291,13 +291,13 @@ export default function AnalyticsPage() {
               </p>
             </div>
             <div className="rounded-lg border p-4">
-              <p className="text-sm text-gray-500">Total Products</p>
+              <p className="text-sm text-gray-500">Нийт бүтээгдэхүүн</p>
               <p className="mt-1 text-2xl font-bold text-gray-900">
                 {data.topProducts.length}
               </p>
             </div>
             <div className="rounded-lg border p-4">
-              <p className="text-sm text-gray-500">Conversion Rate</p>
+              <p className="text-sm text-gray-500">Хөрвүүлэлтийн хувь</p>
               <p className="mt-1 text-2xl font-bold text-gray-900">
                 {data.stats.conversionRate}%
               </p>

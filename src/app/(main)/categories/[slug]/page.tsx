@@ -47,12 +47,12 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   const category = await getCategory(slug)
 
   if (!category) {
-    return { title: 'Category Not Found' }
+    return { title: 'Ангилал олдсонгүй' }
   }
 
   return {
-    title: `${category.name} - Shop Now`,
-    description: category.description || `Browse our ${category.name} collection`,
+    title: `${category.name} - Худалдан авах`,
+    description: category.description || `${category.name} цуглуулгыг үзэх`,
   }
 }
 
@@ -130,11 +130,11 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
       <nav className="mb-6 text-sm text-gray-500">
         <ol className="flex items-center gap-2">
           <li>
-            <Link href="/" className="hover:text-orange-600">Home</Link>
+            <Link href="/" className="hover:text-orange-600">Нүүр</Link>
           </li>
           <li><ChevronRight className="h-4 w-4" /></li>
           <li>
-            <Link href="/categories" className="hover:text-orange-600">Categories</Link>
+            <Link href="/categories" className="hover:text-orange-600">Ангилалууд</Link>
           </li>
           <li><ChevronRight className="h-4 w-4" /></li>
           <li className="text-gray-900">{category.name}</li>
@@ -147,7 +147,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         {category.description && (
           <p className="mt-2 text-gray-600">{category.description}</p>
         )}
-        <p className="mt-1 text-sm text-gray-500">{count} products</p>
+        <p className="mt-1 text-sm text-gray-500">{count} бүтээгдэхүүн</p>
       </div>
 
       {/* Active Filters */}
@@ -175,7 +175,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
               <ProductFilters className="lg:hidden" />
             </Suspense>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-500">{count} products</span>
+              <span className="text-sm text-gray-500">{count} бүтээгдэхүүн</span>
               <Suspense fallback={<Skeleton className="h-10 w-[180px]" />}>
                 <ProductSort />
               </Suspense>
@@ -188,9 +188,9 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
               <ProductGrid products={transformedProducts} columns={4} />
             ) : (
               <div className="py-12 text-center">
-                <p className="text-gray-500">No products found in this category</p>
+                <p className="text-gray-500">Энэ ангилалд бүтээгдэхүүн олдсонгүй</p>
                 <p className="mt-2 text-sm text-gray-400">
-                  Check back soon for new arrivals
+                  Удахгүй шинэ бүтээгдэхүүн нэмэгдэнэ
                 </p>
               </div>
             )}
@@ -207,11 +207,11 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                   }).toString()}`}
                   className="rounded-lg border px-4 py-2 text-sm hover:bg-gray-50"
                 >
-                  Previous
+                  Өмнөх
                 </a>
               )}
               <span className="px-4 py-2 text-sm text-gray-500">
-                Page {page} of {totalPages}
+                Хуудас {page} / {totalPages}
               </span>
               {page < totalPages && (
                 <a
@@ -221,7 +221,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                   }).toString()}`}
                   className="rounded-lg border px-4 py-2 text-sm hover:bg-gray-50"
                 >
-                  Next
+                  Дараах
                 </a>
               )}
             </div>

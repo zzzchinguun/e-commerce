@@ -33,7 +33,7 @@ export function SearchBar() {
           <Input
             ref={inputRef}
             type="text"
-            placeholder="Search products, brands, and more..."
+            placeholder="Бүтээгдэхүүн, брэнд хайх..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => setIsFocused(true)}
@@ -62,7 +62,7 @@ export function SearchBar() {
       {isFocused && query.length > 0 && (
         <div className="absolute left-0 right-0 top-full z-50 mt-1 rounded-md border bg-white shadow-lg">
           <div className="p-3 text-sm text-gray-500">
-            Press Enter to search for &quot;{query}&quot;
+            &quot;{query}&quot; хайхын тулд Enter дарна уу
           </div>
         </div>
       )}

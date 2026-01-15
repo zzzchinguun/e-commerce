@@ -3,8 +3,8 @@ import Link from 'next/link'
 import { SignupForm } from '@/components/auth/signup-form'
 
 export const metadata: Metadata = {
-  title: 'Create Account',
-  description: 'Create your Marketplace account',
+  title: 'Бүртгүүлэх',
+  description: 'Marketplace бүртгэл үүсгэх',
 }
 
 export default function SignupPage() {
@@ -12,21 +12,21 @@ export default function SignupPage() {
     <div className="w-full max-w-md">
       <div className="rounded-lg border bg-white p-8 shadow-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Create account</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Бүртгэл үүсгэх</h1>
           <p className="mt-2 text-sm text-gray-600">
-            Join millions of shoppers on Marketplace
+            Мянга мянган сэтгэл ханамжтай хэрэглэгчидтэй нэгдээрэй
           </p>
         </div>
 
         <SignupForm />
 
         <div className="mt-6 text-center text-sm">
-          <span className="text-gray-600">Already have an account? </span>
+          <span className="text-gray-600">Бүртгэлтэй юу? </span>
           <Link
             href="/login"
             className="font-medium text-orange-600 hover:text-orange-500"
           >
-            Sign in
+            Нэвтрэх
           </Link>
         </div>
       </div>
@@ -34,14 +34,14 @@ export default function SignupPage() {
       {/* Footer links */}
       <div className="mt-8 text-center text-xs text-gray-500">
         <p>
-          By creating an account, you agree to our{' '}
+          Бүртгүүлснээр та манай{' '}
           <Link href="/terms" className="underline hover:text-gray-700">
-            Terms of Service
+            Үйлчилгээний нөхцөл
           </Link>{' '}
-          and{' '}
+          болон{' '}
           <Link href="/privacy" className="underline hover:text-gray-700">
-            Privacy Policy
-          </Link>
+            Нууцлалын бодлого
+          </Link>-г зөвшөөрч байна
         </p>
       </div>
     </div>

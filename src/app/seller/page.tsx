@@ -39,9 +39,9 @@ export default async function SellerDashboard() {
         <div className="rounded-full bg-yellow-100 p-4">
           <Clock className="h-8 w-8 text-yellow-600" />
         </div>
-        <h2 className="mt-4 text-xl font-semibold text-gray-900">Account Pending Approval</h2>
+        <h2 className="mt-4 text-xl font-semibold text-gray-900">Бүртгэл баталгаажихыг хүлээж байна</h2>
         <p className="mt-2 text-center text-gray-500 max-w-md">
-          Your seller account is currently under review. You&apos;ll be notified once it&apos;s approved.
+          Таны худалдагчийн бүртгэл шалгагдаж байна. Баталгаажсан даруй танд мэдэгдэх болно.
         </p>
       </div>
     )
@@ -53,9 +53,9 @@ export default async function SellerDashboard() {
         <div className="rounded-full bg-red-100 p-4">
           <Package className="h-8 w-8 text-red-600" />
         </div>
-        <h2 className="mt-4 text-xl font-semibold text-gray-900">Account Suspended</h2>
+        <h2 className="mt-4 text-xl font-semibold text-gray-900">Бүртгэл түдгэлзүүлсэн</h2>
         <p className="mt-2 text-center text-gray-500 max-w-md">
-          Your seller account has been suspended. Please contact support for more information.
+          Таны худалдагчийн бүртгэл түдгэлзүүлсэн байна. Дэлгэрэнгүй мэдээлэл авахын тулд тусламжийн төвтэй холбоо барина уу.
         </p>
       </div>
     )
@@ -79,22 +79,22 @@ export default async function SellerDashboard() {
 
   const statCards = [
     {
-      name: 'Total Revenue',
+      name: 'Нийт орлого',
       value: formatPrice(stats.revenue),
       icon: DollarSign,
     },
     {
-      name: 'Total Sales',
+      name: 'Нийт борлуулалт',
       value: stats.totalSales.toString(),
       icon: ShoppingCart,
     },
     {
-      name: 'Products',
+      name: 'Бүтээгдэхүүн',
       value: stats.productCount.toString(),
       icon: Package,
     },
     {
-      name: 'Pending Orders',
+      name: 'Хүлээгдэж буй захиалга',
       value: stats.pendingOrders.toString(),
       icon: Clock,
     },
@@ -104,9 +104,9 @@ export default async function SellerDashboard() {
     <div className="space-y-6">
       {/* Welcome Banner */}
       <div className="rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 p-6 text-white">
-        <h1 className="text-2xl font-bold">Welcome back, {profile.store_name}!</h1>
+        <h1 className="text-2xl font-bold">Тавтай морил, {profile.store_name}!</h1>
         <p className="mt-1 text-orange-100">
-          Here&apos;s what&apos;s happening with your store today.
+          Өнөөдөр таны дэлгүүрт юу болж байгааг харна уу.
         </p>
         <div className="mt-4 flex gap-3">
           <Button
@@ -114,14 +114,14 @@ export default async function SellerDashboard() {
             variant="secondary"
             className="bg-white text-orange-600 hover:bg-orange-50"
           >
-            <Link href="/seller/products/new">Add New Product</Link>
+            <Link href="/seller/products/new">Шинэ бүтээгдэхүүн нэмэх</Link>
           </Button>
           <Button
             asChild
             variant="outline"
             className="border-white/30 text-white hover:bg-white/10"
           >
-            <Link href="/seller/orders">View Orders</Link>
+            <Link href="/seller/orders">Захиалгууд харах</Link>
           </Button>
         </div>
       </div>
@@ -149,16 +149,16 @@ export default async function SellerDashboard() {
         {/* Recent Orders */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Recent Orders</CardTitle>
+            <CardTitle>Сүүлийн захиалгууд</CardTitle>
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/seller/orders">View All</Link>
+              <Link href="/seller/orders">Бүгдийг харах</Link>
             </Button>
           </CardHeader>
           <CardContent>
             {recentOrders.length === 0 ? (
               <div className="py-8 text-center">
                 <ShoppingCart className="mx-auto h-12 w-12 text-gray-300" />
-                <p className="mt-2 text-sm text-gray-500">No orders yet</p>
+                <p className="mt-2 text-sm text-gray-500">Захиалга байхгүй байна</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -183,7 +183,7 @@ export default async function SellerDashboard() {
                         </Badge>
                       </div>
                       <p className="text-sm text-gray-500">
-                        {order.products?.name || 'Unknown product'}
+                        {order.products?.name || 'Тодорхойгүй бүтээгдэхүүн'}
                       </p>
                     </div>
                     <div className="text-right">
@@ -207,32 +207,32 @@ export default async function SellerDashboard() {
         {/* Quick Actions */}
         <Card>
           <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+            <CardTitle>Түргэн үйлдлүүд</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 sm:grid-cols-2">
               <Button variant="outline" className="h-auto flex-col gap-2 py-4" asChild>
                 <Link href="/seller/products/new">
                   <Package className="h-6 w-6 text-orange-500" />
-                  <span>Add Product</span>
+                  <span>Бүтээгдэхүүн нэмэх</span>
                 </Link>
               </Button>
               <Button variant="outline" className="h-auto flex-col gap-2 py-4" asChild>
                 <Link href="/seller/orders">
                   <ShoppingCart className="h-6 w-6 text-orange-500" />
-                  <span>Manage Orders</span>
+                  <span>Захиалга удирдах</span>
                 </Link>
               </Button>
               <Button variant="outline" className="h-auto flex-col gap-2 py-4" asChild>
                 <Link href="/seller/analytics">
                   <TrendingUp className="h-6 w-6 text-orange-500" />
-                  <span>View Analytics</span>
+                  <span>Статистик харах</span>
                 </Link>
               </Button>
               <Button variant="outline" className="h-auto flex-col gap-2 py-4" asChild>
                 <Link href="/seller/settings">
                   <DollarSign className="h-6 w-6 text-orange-500" />
-                  <span>Payout Settings</span>
+                  <span>Төлбөрийн тохиргоо</span>
                 </Link>
               </Button>
             </div>

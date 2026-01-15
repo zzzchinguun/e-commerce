@@ -8,8 +8,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { getPublicProducts } from '@/actions/products'
 
 export const metadata: Metadata = {
-  title: 'Products',
-  description: 'Browse our wide selection of products',
+  title: 'Бүтээгдэхүүн',
+  description: 'Бүтээгдэхүүний өргөн сонголтоос хайх',
 }
 
 function ProductGridSkeleton() {
@@ -98,17 +98,17 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         {searchQuery ? (
           <>
             <h1 className="text-2xl font-bold text-gray-900">
-              Search results for &quot;{searchQuery}&quot;
+              Хайлтын үр дүн: &quot;{searchQuery}&quot;
             </h1>
             <p className="mt-1 text-gray-500">
-              {count} products found
+              {count} бүтээгдэхүүн олдлоо
             </p>
           </>
         ) : (
           <>
-            <h1 className="text-2xl font-bold text-gray-900">All Products</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Бүх бүтээгдэхүүн</h1>
             <p className="mt-1 text-gray-500">
-              Browse our wide selection of products
+              Бүтээгдэхүүний өргөн сонголтоос хайх
             </p>
           </>
         )}
@@ -140,7 +140,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             </Suspense>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-500">
-                {count} products
+                {count} бүтээгдэхүүн
               </span>
               <Suspense fallback={<Skeleton className="h-10 w-[180px]" />}>
                 <ProductSort />
@@ -154,10 +154,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               <ProductGrid products={transformedProducts} columns={4} />
             ) : (
               <div className="py-12 text-center">
-                <p className="text-gray-500">No products found</p>
+                <p className="text-gray-500">Бүтээгдэхүүн олдсонгүй</p>
                 {searchQuery && (
                   <p className="mt-2 text-sm text-gray-400">
-                    Try adjusting your search or filters
+                    Хайлт эсвэл шүүлтүүрээ өөрчилж үзнэ үү
                   </p>
                 )}
               </div>
@@ -175,11 +175,11 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   }).toString()}`}
                   className="rounded-lg border px-4 py-2 text-sm hover:bg-gray-50"
                 >
-                  Previous
+                  Өмнөх
                 </a>
               )}
               <span className="px-4 py-2 text-sm text-gray-500">
-                Page {page} of {totalPages}
+                Хуудас {page} / {totalPages}
               </span>
               {page < totalPages && (
                 <a
@@ -189,7 +189,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   }).toString()}`}
                   className="rounded-lg border px-4 py-2 text-sm hover:bg-gray-50"
                 >
-                  Next
+                  Дараах
                 </a>
               )}
             </div>

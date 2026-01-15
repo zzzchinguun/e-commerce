@@ -116,9 +116,9 @@ const transactions = [
 ]
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ElementType }> = {
-  completed: { label: 'Completed', color: 'bg-green-100 text-green-700', icon: CheckCircle },
-  pending: { label: 'Pending', color: 'bg-yellow-100 text-yellow-700', icon: Clock },
-  failed: { label: 'Failed', color: 'bg-red-100 text-red-700', icon: AlertCircle },
+  completed: { label: 'Дууссан', color: 'bg-green-100 text-green-700', icon: CheckCircle },
+  pending: { label: 'Хүлээгдэж буй', color: 'bg-yellow-100 text-yellow-700', icon: Clock },
+  failed: { label: 'Амжилтгүй', color: 'bg-red-100 text-red-700', icon: AlertCircle },
 }
 
 export default function EarningsPage() {
@@ -129,17 +129,17 @@ export default function EarningsPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Earnings</h1>
-          <p className="text-gray-500">Track your revenue and payouts</p>
+          <h1 className="text-2xl font-bold text-gray-900">Орлого</h1>
+          <p className="text-gray-500">Орлого болон төлбөрийг хянах</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">
             <Download className="mr-2 h-4 w-4" />
-            Export
+            Экспорт
           </Button>
           <Button className="bg-orange-500 hover:bg-orange-600">
             <Wallet className="mr-2 h-4 w-4" />
-            Request Payout
+            Төлбөр хүсэх
           </Button>
         </div>
       </div>
@@ -152,12 +152,12 @@ export default function EarningsPage() {
               <div className="rounded-lg bg-green-100 p-2">
                 <DollarSign className="h-5 w-5 text-green-600" />
               </div>
-              <span className="text-sm text-gray-500">Available Balance</span>
+              <span className="text-sm text-gray-500">Боломжит үлдэгдэл</span>
             </div>
             <p className="mt-3 text-2xl font-bold text-gray-900">
               {formatPrice(earningsStats.availableBalance)}
             </p>
-            <p className="mt-1 text-xs text-gray-500">Ready for payout</p>
+            <p className="mt-1 text-xs text-gray-500">Төлбөрт бэлэн</p>
           </CardContent>
         </Card>
 
@@ -167,12 +167,12 @@ export default function EarningsPage() {
               <div className="rounded-lg bg-yellow-100 p-2">
                 <Clock className="h-5 w-5 text-yellow-600" />
               </div>
-              <span className="text-sm text-gray-500">Pending Balance</span>
+              <span className="text-sm text-gray-500">Хүлээгдэж буй үлдэгдэл</span>
             </div>
             <p className="mt-3 text-2xl font-bold text-gray-900">
               {formatPrice(earningsStats.pendingBalance)}
             </p>
-            <p className="mt-1 text-xs text-gray-500">Processing (2-5 days)</p>
+            <p className="mt-1 text-xs text-gray-500">Боловсруулж байна (2-5 хоног)</p>
           </CardContent>
         </Card>
 
@@ -182,14 +182,14 @@ export default function EarningsPage() {
               <div className="rounded-lg bg-blue-100 p-2">
                 <ArrowUpRight className="h-5 w-5 text-blue-600" />
               </div>
-              <span className="text-sm text-gray-500">This Month</span>
+              <span className="text-sm text-gray-500">Энэ сар</span>
             </div>
             <p className="mt-3 text-2xl font-bold text-gray-900">
               {formatPrice(earningsStats.thisMonth)}
             </p>
             <div className="mt-1 flex items-center gap-1 text-xs text-green-600">
               <ArrowUpRight className="h-3 w-3" />
-              <span>12.5% vs last month</span>
+              <span>Өмнөх сараас 12.5%</span>
             </div>
           </CardContent>
         </Card>
@@ -200,12 +200,12 @@ export default function EarningsPage() {
               <div className="rounded-lg bg-orange-100 p-2">
                 <CreditCard className="h-5 w-5 text-orange-600" />
               </div>
-              <span className="text-sm text-gray-500">Total Earned</span>
+              <span className="text-sm text-gray-500">Нийт олсон орлого</span>
             </div>
             <p className="mt-3 text-2xl font-bold text-gray-900">
               {formatPrice(earningsStats.totalEarned)}
             </p>
-            <p className="mt-1 text-xs text-gray-500">Lifetime earnings</p>
+            <p className="mt-1 text-xs text-gray-500">Нийт орлого</p>
           </CardContent>
         </Card>
       </div>
@@ -218,15 +218,15 @@ export default function EarningsPage() {
               <CreditCard className="h-6 w-6 text-purple-600" />
             </div>
             <div>
-              <p className="font-medium text-gray-900">Stripe Connect Account</p>
+              <p className="font-medium text-gray-900">Stripe Connect данс</p>
               <p className="text-sm text-gray-500">
-                Connected · Payouts enabled
+                Холбогдсон · Төлбөр идэвхжсэн
               </p>
             </div>
           </div>
           <Button variant="outline" size="sm">
             <ExternalLink className="mr-2 h-4 w-4" />
-            Manage in Stripe
+            Stripe-д удирдах
           </Button>
         </CardContent>
       </Card>
@@ -234,15 +234,15 @@ export default function EarningsPage() {
       {/* Payout History */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Payout History</CardTitle>
+          <CardTitle>Төлбөрийн түүх</CardTitle>
           <Select value={period} onValueChange={setPeriod}>
             <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Select period" />
+              <SelectValue placeholder="Хугацаа сонгох" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="7d">Last 7 days</SelectItem>
-              <SelectItem value="30d">Last 30 days</SelectItem>
-              <SelectItem value="90d">Last 90 days</SelectItem>
+              <SelectItem value="7d">Сүүлийн 7 хоног</SelectItem>
+              <SelectItem value="30d">Сүүлийн 30 хоног</SelectItem>
+              <SelectItem value="90d">Сүүлийн 90 хоног</SelectItem>
             </SelectContent>
           </Select>
         </CardHeader>
@@ -250,11 +250,11 @@ export default function EarningsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Payout ID</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Method</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>Төлбөрийн ID</TableHead>
+                <TableHead>Огноо</TableHead>
+                <TableHead>Арга</TableHead>
+                <TableHead>Дүн</TableHead>
+                <TableHead>Төлөв</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -291,17 +291,17 @@ export default function EarningsPage() {
       {/* Transaction History */}
       <Card>
         <CardHeader>
-          <CardTitle>Recent Transactions</CardTitle>
+          <CardTitle>Сүүлийн гүйлгээнүүд</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Transaction</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Fee</TableHead>
-                <TableHead>Net</TableHead>
+                <TableHead>Гүйлгээ</TableHead>
+                <TableHead>Огноо</TableHead>
+                <TableHead>Дүн</TableHead>
+                <TableHead>Шимтгэл</TableHead>
+                <TableHead>Цэвэр</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

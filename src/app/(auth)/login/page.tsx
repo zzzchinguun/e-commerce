@@ -5,8 +5,8 @@ import { LoginForm } from '@/components/auth/login-form'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export const metadata: Metadata = {
-  title: 'Sign In',
-  description: 'Sign in to your Marketplace account',
+  title: 'Нэвтрэх',
+  description: 'Marketplace бүртгэлдээ нэвтрэх',
 }
 
 function LoginFormSkeleton() {
@@ -32,9 +32,9 @@ export default function LoginPage() {
     <div className="w-full max-w-md">
       <div className="rounded-lg border bg-white p-8 shadow-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Тавтай морил</h1>
           <p className="mt-2 text-sm text-gray-600">
-            Sign in to your account to continue
+            Үргэлжлүүлэхийн тулд бүртгэлдээ нэвтэрнэ үү
           </p>
         </div>
 
@@ -43,12 +43,12 @@ export default function LoginPage() {
         </Suspense>
 
         <div className="mt-6 text-center text-sm">
-          <span className="text-gray-600">Don&apos;t have an account? </span>
+          <span className="text-gray-600">Бүртгэл байхгүй юу? </span>
           <Link
             href="/signup"
             className="font-medium text-orange-600 hover:text-orange-500"
           >
-            Create one
+            Бүртгүүлэх
           </Link>
         </div>
       </div>
@@ -56,14 +56,14 @@ export default function LoginPage() {
       {/* Footer links */}
       <div className="mt-8 text-center text-xs text-gray-500">
         <p>
-          By signing in, you agree to our{' '}
+          Нэвтрэснээр та манай{' '}
           <Link href="/terms" className="underline hover:text-gray-700">
-            Terms of Service
+            Үйлчилгээний нөхцөл
           </Link>{' '}
-          and{' '}
+          болон{' '}
           <Link href="/privacy" className="underline hover:text-gray-700">
-            Privacy Policy
-          </Link>
+            Нууцлалын бодлого
+          </Link>-г зөвшөөрч байна
         </p>
       </div>
     </div>

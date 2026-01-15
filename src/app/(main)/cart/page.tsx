@@ -24,12 +24,12 @@ export default function CartPage() {
           <div className="rounded-full bg-gray-100 p-8">
             <ShoppingBag className="h-16 w-16 text-gray-400" />
           </div>
-          <h1 className="mt-6 text-2xl font-bold text-gray-900">Your cart is empty</h1>
+          <h1 className="mt-6 text-2xl font-bold text-gray-900">Таны сагс хоосон байна</h1>
           <p className="mt-2 text-gray-500">
-            Looks like you haven&apos;t added any items to your cart yet.
+            Та одоогоор сагсандаа бараа нэмээгүй байна.
           </p>
           <Button asChild className="mt-8 bg-orange-500 hover:bg-orange-600">
-            <Link href="/products">Continue Shopping</Link>
+            <Link href="/products">Худалдаа үргэлжлүүлэх</Link>
           </Button>
         </div>
       </div>
@@ -41,10 +41,10 @@ export default function CartPage() {
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">
-          Shopping Cart ({items.length} {items.length === 1 ? 'item' : 'items'})
+          Худалдааны сагс ({items.length} {items.length === 1 ? 'бараа' : 'бараа'})
         </h1>
         <Button variant="ghost" className="text-red-500 hover:text-red-600" onClick={clearCart}>
-          Clear Cart
+          Сагс хоослох
         </Button>
       </div>
 
@@ -85,7 +85,7 @@ export default function CartPage() {
                           {item.product.name}
                         </Link>
                         <p className="mt-1 text-sm text-gray-500">
-                          Sold by {item.product.seller.storeName}
+                          Худалдагч: {item.product.seller.storeName}
                         </p>
                         {item.variantOptions && (
                           <p className="mt-1 text-sm text-gray-500">
@@ -151,20 +151,20 @@ export default function CartPage() {
             className="mt-4 inline-flex items-center gap-2 text-sm text-orange-600 hover:underline"
           >
             <ArrowLeft className="h-4 w-4" />
-            Continue Shopping
+            Худалдаа үргэлжлүүлэх
           </Link>
         </div>
 
         {/* Order Summary */}
         <div className="lg:col-span-1">
           <div className="sticky top-24 rounded-lg border bg-white p-6">
-            <h2 className="text-lg font-semibold text-gray-900">Order Summary</h2>
+            <h2 className="text-lg font-semibold text-gray-900">Захиалгын хураангуй</h2>
 
             {/* Promo Code */}
             <div className="mt-4">
-              <label className="text-sm font-medium text-gray-700">Promo Code</label>
+              <label className="text-sm font-medium text-gray-700">Промо код</label>
               <div className="mt-1 flex gap-2">
-                <Input placeholder="Enter code" className="flex-1" />
+                <Input placeholder="Код оруулах" className="flex-1" />
                 <Button variant="outline">
                   <Tag className="h-4 w-4" />
                 </Button>
@@ -176,21 +176,21 @@ export default function CartPage() {
             {/* Price Breakdown */}
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Subtotal</span>
+                <span className="text-gray-500">Нийт дүн</span>
                 <span className="text-gray-900">{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Shipping</span>
+                <span className="text-gray-500">Хүргэлт</span>
                 <span className="text-gray-900">
                   {shipping === 0 ? (
-                    <span className="text-green-600">FREE</span>
+                    <span className="text-green-600">ҮНЭГҮЙ</span>
                   ) : (
                     formatPrice(shipping)
                   )}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Estimated Tax</span>
+                <span className="text-gray-500">Татвар (тооцоолсон)</span>
                 <span className="text-gray-900">{formatPrice(tax)}</span>
               </div>
             </div>
@@ -198,19 +198,19 @@ export default function CartPage() {
             <Separator className="my-4" />
 
             <div className="flex justify-between">
-              <span className="text-lg font-semibold text-gray-900">Total</span>
+              <span className="text-lg font-semibold text-gray-900">Нийт</span>
               <span className="text-lg font-bold text-gray-900">{formatPrice(total)}</span>
             </div>
 
             {shipping === 0 && (
               <p className="mt-2 text-sm text-green-600">
-                You qualify for free shipping!
+                Та үнэгүй хүргэлтэнд хамрагдлаа!
               </p>
             )}
 
             {subtotal < 50 && (
               <p className="mt-2 text-sm text-gray-500">
-                Add {formatPrice(50 - subtotal)} more for free shipping
+                Үнэгүй хүргэлтэнд {formatPrice(50 - subtotal)} нэмнэ үү
               </p>
             )}
 
@@ -219,16 +219,16 @@ export default function CartPage() {
               size="lg"
               className="mt-6 w-full bg-orange-500 hover:bg-orange-600"
             >
-              <Link href="/checkout">Proceed to Checkout</Link>
+              <Link href="/checkout">Төлбөр төлөх</Link>
             </Button>
 
             {/* Trust Badges */}
             <div className="mt-6 flex justify-center gap-4 text-xs text-gray-500">
-              <span>Secure Checkout</span>
+              <span>Аюулгүй төлбөр</span>
               <span>•</span>
-              <span>30-Day Returns</span>
+              <span>30 хоногийн буцаалт</span>
               <span>•</span>
-              <span>24/7 Support</span>
+              <span>24/7 Тусламж</span>
             </div>
           </div>
         </div>

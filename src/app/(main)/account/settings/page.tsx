@@ -28,7 +28,7 @@ import {
 import type { User } from '@supabase/supabase-js'
 
 const profileSchema = z.object({
-  fullName: z.string().min(1, 'Name is required'),
+  fullName: z.string().min(1, 'Нэр оруулна уу'),
   email: z.string().email(),
   phone: z.string().optional(),
 })
@@ -83,9 +83,9 @@ export default function SettingsPage() {
       })
 
       if (error) throw error
-      toast.success('Profile updated successfully')
+      toast.success('Профайл амжилттай шинэчлэгдлээ')
     } catch (error) {
-      toast.error('Failed to update profile')
+      toast.error('Профайл шинэчлэхэд алдаа гарлаа')
     } finally {
       setSaving(false)
     }
@@ -114,7 +114,7 @@ export default function SettingsPage() {
     <div className="space-y-6">
       {/* Profile Settings */}
       <div className="rounded-lg border bg-white p-6">
-        <h2 className="text-lg font-semibold text-gray-900">Profile Settings</h2>
+        <h2 className="text-lg font-semibold text-gray-900">Профайл тохиргоо</h2>
 
         {/* Avatar */}
         <div className="mt-6 flex items-center gap-4">
@@ -126,7 +126,7 @@ export default function SettingsPage() {
           </Avatar>
           <Button variant="outline" disabled>
             <Camera className="mr-2 h-4 w-4" />
-            Change Photo
+            Зураг солих
           </Button>
         </div>
 
@@ -134,7 +134,7 @@ export default function SettingsPage() {
         <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <Label htmlFor="fullName">Full Name</Label>
+              <Label htmlFor="fullName">Бүтэн нэр</Label>
               <Input
                 id="fullName"
                 {...register('fullName')}
@@ -145,7 +145,7 @@ export default function SettingsPage() {
               )}
             </div>
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Имэйл</Label>
               <Input
                 id="email"
                 type="email"
@@ -153,17 +153,17 @@ export default function SettingsPage() {
                 disabled
                 className="mt-1 bg-gray-50"
               />
-              <p className="mt-1 text-xs text-gray-500">Email cannot be changed</p>
+              <p className="mt-1 text-xs text-gray-500">Имэйл өөрчлөх боломжгүй</p>
             </div>
           </div>
           <div className="sm:w-1/2">
-            <Label htmlFor="phone">Phone Number</Label>
+            <Label htmlFor="phone">Утасны дугаар</Label>
             <Input
               id="phone"
               type="tel"
               {...register('phone')}
               className="mt-1"
-              placeholder="(555) 123-4567"
+              placeholder="(99) 12-34-56-78"
             />
           </div>
           <Button
@@ -172,7 +172,7 @@ export default function SettingsPage() {
             disabled={saving}
           >
             {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Save Changes
+            Өөрчлөлт хадгалах
           </Button>
         </form>
       </div>
@@ -181,15 +181,15 @@ export default function SettingsPage() {
       <div className="rounded-lg border bg-white p-6">
         <div className="flex items-center gap-2">
           <Bell className="h-5 w-5 text-gray-500" />
-          <h2 className="text-lg font-semibold text-gray-900">Notifications</h2>
+          <h2 className="text-lg font-semibold text-gray-900">Мэдэгдэл</h2>
         </div>
 
         <div className="mt-6 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-gray-900">Order Updates</p>
+              <p className="font-medium text-gray-900">Захиалгын мэдээлэл</p>
               <p className="text-sm text-gray-500">
-                Get notified about your order status
+                Захиалгын төлөвийн талаар мэдэгдэл авах
               </p>
             </div>
             <Switch
@@ -202,9 +202,9 @@ export default function SettingsPage() {
           <Separator />
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-gray-900">Promotions & Deals</p>
+              <p className="font-medium text-gray-900">Урамшуулал & Хямдрал</p>
               <p className="text-sm text-gray-500">
-                Receive exclusive offers and discounts
+                Онцгой санал болон хямдралын мэдээлэл авах
               </p>
             </div>
             <Switch
@@ -217,9 +217,9 @@ export default function SettingsPage() {
           <Separator />
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-gray-900">Newsletter</p>
+              <p className="font-medium text-gray-900">Мэдээллийн товхимол</p>
               <p className="text-sm text-gray-500">
-                Weekly updates about new products
+                Шинэ бүтээгдэхүүний долоо хоногийн мэдээлэл
               </p>
             </div>
             <Switch
@@ -236,31 +236,31 @@ export default function SettingsPage() {
       <div className="rounded-lg border bg-white p-6">
         <div className="flex items-center gap-2">
           <Shield className="h-5 w-5 text-gray-500" />
-          <h2 className="text-lg font-semibold text-gray-900">Security</h2>
+          <h2 className="text-lg font-semibold text-gray-900">Аюулгүй байдал</h2>
         </div>
 
         <div className="mt-6 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-gray-900">Password</p>
+              <p className="font-medium text-gray-900">Нууц үг</p>
               <p className="text-sm text-gray-500">
-                Change your account password
+                Бүртгэлийн нууц үгээ солих
               </p>
             </div>
-            <Button variant="outline">Change Password</Button>
+            <Button variant="outline">Нууц үг солих</Button>
           </div>
           <Separator />
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-gray-900">Connected Accounts</p>
+              <p className="font-medium text-gray-900">Холбогдсон бүртгэлүүд</p>
               <p className="text-sm text-gray-500">
                 {user?.app_metadata?.provider === 'google'
-                  ? 'Connected with Google'
-                  : 'No connected accounts'}
+                  ? 'Google-ээр холбогдсон'
+                  : 'Холбогдсон бүртгэл байхгүй'}
               </p>
             </div>
             <Button variant="outline" disabled>
-              Manage
+              Удирдах
             </Button>
           </div>
         </div>
@@ -270,29 +270,29 @@ export default function SettingsPage() {
       <div className="rounded-lg border border-red-200 bg-red-50 p-6">
         <div className="flex items-center gap-2">
           <Trash2 className="h-5 w-5 text-red-500" />
-          <h2 className="text-lg font-semibold text-red-700">Danger Zone</h2>
+          <h2 className="text-lg font-semibold text-red-700">Аюултай бүс</h2>
         </div>
         <p className="mt-2 text-sm text-red-600">
-          Once you delete your account, there is no going back. Please be certain.
+          Бүртгэлээ устгасны дараа буцаах боломжгүй. Сайн бодоорой.
         </p>
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button variant="destructive" className="mt-4">
-              Delete Account
+              Бүртгэл устгах
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogTitle>Та итгэлтэй байна уу?</AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                account and remove all your data from our servers.
+                Энэ үйлдлийг буцаах боломжгүй. Таны бүртгэл болон бүх өгөгдөл
+                серверээс бүрмөсөн устгагдана.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>Цуцлах</AlertDialogCancel>
               <AlertDialogAction className="bg-red-500 hover:bg-red-600">
-                Delete Account
+                Бүртгэл устгах
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

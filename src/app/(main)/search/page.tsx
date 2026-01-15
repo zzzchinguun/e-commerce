@@ -26,10 +26,10 @@ export async function generateMetadata({ searchParams }: SearchPageProps): Promi
   const query = params.q || ''
 
   return {
-    title: query ? `Search results for "${query}"` : 'Search Products',
+    title: query ? `"${query}" хайлтын үр дүн` : 'Бүтээгдэхүүн хайх',
     description: query
-      ? `Find products matching "${query}"`
-      : 'Search our wide selection of products',
+      ? `"${query}"-д тохирох бүтээгдэхүүн олох`
+      : 'Бүтээгдэхүүний өргөн сонголтоос хайх',
   }
 }
 
@@ -107,17 +107,17 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         {searchQuery ? (
           <>
             <h1 className="text-2xl font-bold text-gray-900">
-              Search results for &quot;{searchQuery}&quot;
+              Хайлтын үр дүн: &quot;{searchQuery}&quot;
             </h1>
             <p className="mt-1 text-gray-500">
-              {count} {count === 1 ? 'product' : 'products'} found
+              {count} бүтээгдэхүүн олдлоо
             </p>
           </>
         ) : (
           <>
-            <h1 className="text-2xl font-bold text-gray-900">Search Products</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Бүтээгдэхүүн хайх</h1>
             <p className="mt-1 text-gray-500">
-              Enter a search term to find products
+              Хайх үгээ оруулна уу
             </p>
           </>
         )}
@@ -149,7 +149,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             </Suspense>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-500">
-                {count} {count === 1 ? 'product' : 'products'}
+                {count} бүтээгдэхүүн
               </span>
               <Suspense fallback={<Skeleton className="h-10 w-[180px]" />}>
                 <ProductSort />
@@ -167,27 +167,27 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 {searchQuery ? (
                   <>
                     <h2 className="mt-4 text-lg font-semibold text-gray-900">
-                      No results found for &quot;{searchQuery}&quot;
+                      &quot;{searchQuery}&quot; хайлтаар үр дүн олдсонгүй
                     </h2>
                     <p className="mt-2 text-gray-500">
-                      Try adjusting your search or filters to find what you&apos;re looking for
+                      Хайлт эсвэл шүүлтүүрээ өөрчилж үзнэ үү
                     </p>
                     <div className="mt-4 space-x-3">
                       <Link
                         href="/products"
                         className="inline-block rounded-lg bg-orange-500 px-6 py-2 text-white hover:bg-orange-600"
                       >
-                        Browse All Products
+                        Бүх бүтээгдэхүүн үзэх
                       </Link>
                     </div>
                   </>
                 ) : (
                   <>
                     <h2 className="mt-4 text-lg font-semibold text-gray-900">
-                      Start your search
+                      Хайлтаа эхлүүлэх
                     </h2>
                     <p className="mt-2 text-gray-500">
-                      Use the search bar above to find products
+                      Дээрх хайлтын талбарыг ашиглан бүтээгдэхүүн хайна уу
                     </p>
                   </>
                 )}
@@ -206,11 +206,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   } as Record<string, string>).toString()}`}
                   className="rounded-lg border px-4 py-2 text-sm hover:bg-gray-50"
                 >
-                  Previous
+                  Өмнөх
                 </a>
               )}
               <span className="px-4 py-2 text-sm text-gray-500">
-                Page {page} of {totalPages}
+                Хуудас {page} / {totalPages}
               </span>
               {page < totalPages && (
                 <a
@@ -220,7 +220,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   } as Record<string, string>).toString()}`}
                   className="rounded-lg border px-4 py-2 text-sm hover:bg-gray-50"
                 >
-                  Next
+                  Дараах
                 </a>
               )}
             </div>

@@ -33,49 +33,49 @@ import { registerSeller } from '@/actions/seller'
 
 const sellerSchema = z.object({
   // Store Info
-  storeName: z.string().min(2, 'Store name must be at least 2 characters'),
-  storeDescription: z.string().min(10, 'Description must be at least 10 characters'),
-  businessEmail: z.string().email('Invalid email address'),
+  storeName: z.string().min(2, 'Дэлгүүрийн нэр дор хаяж 2 тэмдэгтээс бүрдсэн байх ёстой'),
+  storeDescription: z.string().min(10, 'Тайлбар дор хаяж 10 тэмдэгтээс бүрдсэн байх ёстой'),
+  businessEmail: z.string().email('И-мэйл хаяг буруу байна'),
   businessPhone: z.string().optional(),
 
   // Address
-  address: z.string().min(1, 'Address is required'),
-  city: z.string().min(1, 'City is required'),
-  country: z.string().min(1, 'Country is required'),
+  address: z.string().min(1, 'Хаяг шаардлагатай'),
+  city: z.string().min(1, 'Хот шаардлагатай'),
+  country: z.string().min(1, 'Улс шаардлагатай'),
 
   // Agreement
-  agreeTerms: z.boolean().refine((val) => val === true, 'You must agree to the terms'),
-  agreePolicy: z.boolean().refine((val) => val === true, 'You must agree to the seller policy'),
+  agreeTerms: z.boolean().refine((val) => val === true, 'Та нөхцөлийг зөвшөөрөх ёстой'),
+  agreePolicy: z.boolean().refine((val) => val === true, 'Та худалдагчийн бодлогыг зөвшөөрөх ёстой'),
 })
 
 type SellerInput = z.infer<typeof sellerSchema>
 
 const steps = [
-  { id: 1, title: 'Store Info', icon: Store },
-  { id: 2, title: 'Location', icon: MapPin },
-  { id: 3, title: 'Verification', icon: FileText },
+  { id: 1, title: 'Дэлгүүрийн мэдээлэл', icon: Store },
+  { id: 2, title: 'Байршил', icon: MapPin },
+  { id: 3, title: 'Баталгаажуулалт', icon: FileText },
 ]
 
 const benefits = [
   {
     icon: TrendingUp,
-    title: 'Reach Millions',
-    description: 'Access our growing customer base',
+    title: 'Сая сая хүнд хүрэх',
+    description: 'Бидний өсөн нэмэгдэж буй хэрэглэгчдэд хандах',
   },
   {
     icon: DollarSign,
-    title: 'Competitive Fees',
-    description: 'Low commission rates starting at 8%',
+    title: 'Өрсөлдөхүйц шимтгэл',
+    description: '8%-аас эхлэх бага комиссын хувь',
   },
   {
     icon: Package,
-    title: 'Easy Management',
-    description: 'Powerful tools to manage your store',
+    title: 'Хялбар удирдлага',
+    description: 'Дэлгүүрээ удирдах хүчирхэг хэрэгслүүд',
   },
   {
     icon: Shield,
-    title: 'Secure Payments',
-    description: 'Get paid reliably via Stripe',
+    title: 'Аюулгүй төлбөр',
+    description: 'Stripe-аар найдвартай төлбөр авах',
   },
 ]
 
@@ -139,11 +139,11 @@ export default function SellerRegisterPage() {
       if (result.error) {
         toast.error(result.error)
       } else {
-        toast.success('Application submitted successfully!')
+        toast.success('Өргөдөл амжилттай илгээгдлээ!')
         router.push('/seller/register/success')
       }
     } catch (error) {
-      toast.error('Failed to submit application')
+      toast.error('Өргөдөл илгээж чадсангүй')
     } finally {
       setIsSubmitting(false)
     }
@@ -158,7 +158,7 @@ export default function SellerRegisterPage() {
             MarketHub
           </Link>
           <Link href="/login">
-            <Button variant="ghost">Sign In</Button>
+            <Button variant="ghost">Нэвтрэх</Button>
           </Link>
         </div>
       </header>
@@ -168,11 +168,11 @@ export default function SellerRegisterPage() {
           {/* Left - Benefits */}
           <div className="hidden lg:block">
             <h1 className="text-4xl font-bold text-gray-900">
-              Start Selling on MarketHub
+              MarketHub дээр худалдаа эхлүүлэх
             </h1>
             <p className="mt-4 text-lg text-gray-600">
-              Join thousands of sellers and reach millions of customers.
-              Set up your store in minutes and start earning today.
+              Мянга мянган худалдагчидтай нэгдэж, сая сая хэрэглэгчдэд хүрээрэй.
+              Хэдхэн минутын дотор дэлгүүрээ нээж, өнөөдрөөс орлого олж эхлээрэй.
             </p>
 
             <div className="mt-12 grid gap-6 sm:grid-cols-2">
@@ -190,9 +190,9 @@ export default function SellerRegisterPage() {
             </div>
 
             <div className="mt-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 p-8 text-white">
-              <h3 className="text-xl font-semibold">Ready to grow your business?</h3>
+              <h3 className="text-xl font-semibold">Бизнесээ өсгөхөд бэлэн үү?</h3>
               <p className="mt-2 text-orange-100">
-                Average sellers see 40% revenue growth in their first year.
+                Дундаж худалдагчид эхний жилдээ 40%-ийн орлогын өсөлттэй байдаг.
               </p>
             </div>
           </div>
@@ -241,14 +241,14 @@ export default function SellerRegisterPage() {
             <Card>
               <CardHeader>
                 <CardTitle>
-                  {currentStep === 1 && 'Store Information'}
-                  {currentStep === 2 && 'Business Location'}
-                  {currentStep === 3 && 'Review & Submit'}
+                  {currentStep === 1 && 'Дэлгүүрийн мэдээлэл'}
+                  {currentStep === 2 && 'Бизнесийн байршил'}
+                  {currentStep === 3 && 'Шалгаж илгээх'}
                 </CardTitle>
                 <CardDescription>
-                  {currentStep === 1 && 'Tell us about your store'}
-                  {currentStep === 2 && 'Where is your business located?'}
-                  {currentStep === 3 && 'Agree to terms and submit your application'}
+                  {currentStep === 1 && 'Дэлгүүрийнхээ тухай бидэнд хэлнэ үү'}
+                  {currentStep === 2 && 'Таны бизнес хаана байрладаг вэ?'}
+                  {currentStep === 3 && 'Нөхцөлийг зөвшөөрч өргөдлөө илгээх'}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -257,14 +257,14 @@ export default function SellerRegisterPage() {
                   {currentStep === 1 && (
                     <div className="space-y-4">
                       <div>
-                        <Label htmlFor="storeName">Store Name *</Label>
+                        <Label htmlFor="storeName">Дэлгүүрийн нэр *</Label>
                         <div className="relative mt-1">
                           <Store className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                           <Input
                             id="storeName"
                             {...register('storeName')}
                             className="pl-9"
-                            placeholder="Your store name"
+                            placeholder="Таны дэлгүүрийн нэр"
                           />
                         </div>
                         {errors.storeName && (
@@ -273,13 +273,13 @@ export default function SellerRegisterPage() {
                       </div>
 
                       <div>
-                        <Label htmlFor="storeDescription">Store Description *</Label>
+                        <Label htmlFor="storeDescription">Дэлгүүрийн тайлбар *</Label>
                         <Textarea
                           id="storeDescription"
                           {...register('storeDescription')}
                           rows={3}
                           className="mt-1"
-                          placeholder="Describe what you sell and your store's unique value..."
+                          placeholder="Та юу зарж байгаа, дэлгүүрийнхээ давуу талыг тайлбарлана уу..."
                         />
                         {errors.storeDescription && (
                           <p className="mt-1 text-sm text-red-500">{errors.storeDescription.message}</p>
@@ -287,7 +287,7 @@ export default function SellerRegisterPage() {
                       </div>
 
                       <div>
-                        <Label htmlFor="businessEmail">Business Email *</Label>
+                        <Label htmlFor="businessEmail">Бизнесийн и-мэйл *</Label>
                         <div className="relative mt-1">
                           <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                           <Input
@@ -295,7 +295,7 @@ export default function SellerRegisterPage() {
                             type="email"
                             {...register('businessEmail')}
                             className="pl-9"
-                            placeholder="contact@yourstore.com"
+                            placeholder="холбоо@таныдэлгүүр.com"
                           />
                         </div>
                         {errors.businessEmail && (
@@ -304,14 +304,14 @@ export default function SellerRegisterPage() {
                       </div>
 
                       <div>
-                        <Label htmlFor="businessPhone">Business Phone (Optional)</Label>
+                        <Label htmlFor="businessPhone">Бизнесийн утас (Заавал биш)</Label>
                         <div className="relative mt-1">
                           <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                           <Input
                             id="businessPhone"
                             {...register('businessPhone')}
                             className="pl-9"
-                            placeholder="+1 (555) 000-0000"
+                            placeholder="+976 9000 0000"
                           />
                         </div>
                       </div>
@@ -322,14 +322,14 @@ export default function SellerRegisterPage() {
                   {currentStep === 2 && (
                     <div className="space-y-4">
                       <div>
-                        <Label htmlFor="address">Business Address *</Label>
+                        <Label htmlFor="address">Бизнесийн хаяг *</Label>
                         <div className="relative mt-1">
                           <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                           <Input
                             id="address"
                             {...register('address')}
                             className="pl-9"
-                            placeholder="Street address"
+                            placeholder="Гудамжны хаяг"
                           />
                         </div>
                         {errors.address && (
@@ -339,24 +339,24 @@ export default function SellerRegisterPage() {
 
                       <div className="grid gap-4 sm:grid-cols-2">
                         <div>
-                          <Label htmlFor="city">City *</Label>
+                          <Label htmlFor="city">Хот *</Label>
                           <Input
                             id="city"
                             {...register('city')}
                             className="mt-1"
-                            placeholder="City"
+                            placeholder="Хот"
                           />
                           {errors.city && (
                             <p className="mt-1 text-sm text-red-500">{errors.city.message}</p>
                           )}
                         </div>
                         <div>
-                          <Label htmlFor="country">Country *</Label>
+                          <Label htmlFor="country">Улс *</Label>
                           <Input
                             id="country"
                             {...register('country')}
                             className="mt-1"
-                            placeholder="Country"
+                            placeholder="Улс"
                           />
                           {errors.country && (
                             <p className="mt-1 text-sm text-red-500">{errors.country.message}</p>
@@ -370,11 +370,11 @@ export default function SellerRegisterPage() {
                   {currentStep === 3 && (
                     <div className="space-y-6">
                       <div className="rounded-lg bg-gray-50 p-4">
-                        <h4 className="font-medium text-gray-900">Application Summary</h4>
+                        <h4 className="font-medium text-gray-900">Өргөдлийн хураангуй</h4>
                         <div className="mt-3 space-y-2 text-sm">
-                          <p><span className="text-gray-500">Store Name:</span> {watch('storeName')}</p>
-                          <p><span className="text-gray-500">Email:</span> {watch('businessEmail')}</p>
-                          <p><span className="text-gray-500">Location:</span> {watch('city')}, {watch('country')}</p>
+                          <p><span className="text-gray-500">Дэлгүүрийн нэр:</span> {watch('storeName')}</p>
+                          <p><span className="text-gray-500">И-мэйл:</span> {watch('businessEmail')}</p>
+                          <p><span className="text-gray-500">Байршил:</span> {watch('city')}, {watch('country')}</p>
                         </div>
                       </div>
 
@@ -386,14 +386,14 @@ export default function SellerRegisterPage() {
                             onCheckedChange={(checked) => setValue('agreeTerms', checked as boolean)}
                           />
                           <label htmlFor="agreeTerms" className="text-sm text-gray-600">
-                            I agree to the{' '}
+                            Би{' '}
                             <Link href="/terms" className="text-orange-500 hover:underline">
-                              Terms of Service
+                              Үйлчилгээний нөхцөл
                             </Link>{' '}
-                            and{' '}
+                            болон{' '}
                             <Link href="/privacy" className="text-orange-500 hover:underline">
-                              Privacy Policy
-                            </Link>
+                              Нууцлалын бодлого
+                            </Link>-ыг зөвшөөрч байна
                           </label>
                         </div>
                         {errors.agreeTerms && (
@@ -407,11 +407,11 @@ export default function SellerRegisterPage() {
                             onCheckedChange={(checked) => setValue('agreePolicy', checked as boolean)}
                           />
                           <label htmlFor="agreePolicy" className="text-sm text-gray-600">
-                            I have read and agree to the{' '}
+                            Би{' '}
                             <Link href="/seller-policy" className="text-orange-500 hover:underline">
-                              Seller Policy
+                              Худалдагчийн бодлого
                             </Link>{' '}
-                            and commission structure
+                            болон комиссын бүтцийг уншиж зөвшөөрсөн
                           </label>
                         </div>
                         {errors.agreePolicy && (
@@ -421,8 +421,8 @@ export default function SellerRegisterPage() {
 
                       <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
                         <p className="text-sm text-yellow-800">
-                          <strong>Note:</strong> Your seller account will be reviewed by our team.
-                          This usually takes 1-2 business days. You'll receive an email once approved.
+                          <strong>Тэмдэглэл:</strong> Таны худалдагчийн бүртгэлийг манай баг шалгана.
+                          Энэ нь ихэвчлэн 1-2 ажлын өдөр шаарддаг. Баталгаажсан даруй танд и-мэйл ирнэ.
                         </p>
                       </div>
                     </div>
@@ -433,7 +433,7 @@ export default function SellerRegisterPage() {
                     {currentStep > 1 ? (
                       <Button type="button" variant="outline" onClick={prevStep}>
                         <ArrowLeft className="mr-2 h-4 w-4" />
-                        Back
+                        Буцах
                       </Button>
                     ) : (
                       <div />
@@ -445,7 +445,7 @@ export default function SellerRegisterPage() {
                         onClick={nextStep}
                         className="bg-orange-500 hover:bg-orange-600"
                       >
-                        Continue
+                        Үргэлжлүүлэх
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     ) : (
@@ -455,7 +455,7 @@ export default function SellerRegisterPage() {
                         disabled={isSubmitting}
                       >
                         {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Submit Application
+                        Өргөдөл илгээх
                       </Button>
                     )}
                   </div>

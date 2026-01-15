@@ -19,92 +19,92 @@ import { Input } from '@/components/ui/input'
 const helpCategories = [
   {
     icon: ShoppingCart,
-    title: 'Orders & Purchases',
-    description: 'Track orders, view history, and manage purchases',
+    title: 'Захиалга & Худалдан авалт',
+    description: 'Захиалга хянах, түүх харах, худалдан авалт удирдах',
     links: [
-      { name: 'How to track my order', href: '/help/track-order' },
-      { name: 'Cancel or modify an order', href: '/help/cancel-order' },
-      { name: 'Order status explained', href: '/help/order-status' },
-      { name: 'Invoice and receipts', href: '/help/invoices' },
+      { name: 'Захиалгаа хэрхэн хянах вэ', href: '/help/track-order' },
+      { name: 'Захиалга цуцлах эсвэл өөрчлөх', href: '/help/cancel-order' },
+      { name: 'Захиалгын төлөв тайлбар', href: '/help/order-status' },
+      { name: 'Нэхэмжлэх ба баримт', href: '/help/invoices' },
     ],
   },
   {
     icon: Truck,
-    title: 'Shipping & Delivery',
-    description: 'Shipping options, delivery times, and tracking',
+    title: 'Хүргэлт & Хүлээн авах',
+    description: 'Хүргэлтийн сонголт, хүргэх хугацаа, хянах',
     links: [
-      { name: 'Shipping options and costs', href: '/shipping' },
-      { name: 'Delivery timeframes', href: '/help/delivery-times' },
-      { name: 'International shipping', href: '/help/international' },
-      { name: 'Missing or lost packages', href: '/help/missing-package' },
+      { name: 'Хүргэлтийн сонголт ба зардал', href: '/shipping' },
+      { name: 'Хүргэлтийн хугацаа', href: '/help/delivery-times' },
+      { name: 'Олон улсын хүргэлт', href: '/help/international' },
+      { name: 'Алдагдсан эсвэл дутуу илгээмж', href: '/help/missing-package' },
     ],
   },
   {
     icon: RotateCcw,
-    title: 'Returns & Refunds',
-    description: 'Return policies, refund process, and exchanges',
+    title: 'Буцаалт & Нөхөн олговор',
+    description: 'Буцаалтын бодлого, нөхөн олговрын үйл явц, солилцоо',
     links: [
-      { name: 'Return policy', href: '/returns' },
-      { name: 'How to start a return', href: '/help/start-return' },
-      { name: 'Refund timeline', href: '/help/refund-timeline' },
-      { name: 'Damaged items', href: '/help/damaged-items' },
+      { name: 'Буцаалтын бодлого', href: '/returns' },
+      { name: 'Буцаалт хэрхэн эхлүүлэх вэ', href: '/help/start-return' },
+      { name: 'Нөхөн олговрын хугацаа', href: '/help/refund-timeline' },
+      { name: 'Гэмтсэн бараа', href: '/help/damaged-items' },
     ],
   },
   {
     icon: CreditCard,
-    title: 'Payment & Billing',
-    description: 'Payment methods, billing issues, and promotions',
+    title: 'Төлбөр & Нэхэмжлэл',
+    description: 'Төлбөрийн арга, нэхэмжлэлийн асуудал, урамшуулал',
     links: [
-      { name: 'Accepted payment methods', href: '/help/payment-methods' },
-      { name: 'Promo codes and discounts', href: '/help/promo-codes' },
-      { name: 'Payment security', href: '/help/payment-security' },
-      { name: 'Billing issues', href: '/help/billing-issues' },
+      { name: 'Хүлээн зөвшөөрөгдсөн төлбөрийн арга', href: '/help/payment-methods' },
+      { name: 'Промо код ба хөнгөлөлт', href: '/help/promo-codes' },
+      { name: 'Төлбөрийн аюулгүй байдал', href: '/help/payment-security' },
+      { name: 'Нэхэмжлэлийн асуудал', href: '/help/billing-issues' },
     ],
   },
   {
     icon: User,
-    title: 'Account & Profile',
-    description: 'Manage your account, password, and preferences',
+    title: 'Бүртгэл & Профайл',
+    description: 'Бүртгэл, нууц үг, тохиргоо удирдах',
     links: [
-      { name: 'Create an account', href: '/help/create-account' },
-      { name: 'Reset password', href: '/help/reset-password' },
-      { name: 'Update profile information', href: '/help/update-profile' },
-      { name: 'Delete account', href: '/help/delete-account' },
+      { name: 'Бүртгэл үүсгэх', href: '/help/create-account' },
+      { name: 'Нууц үг сэргээх', href: '/help/reset-password' },
+      { name: 'Профайл мэдээлэл шинэчлэх', href: '/help/update-profile' },
+      { name: 'Бүртгэл устгах', href: '/help/delete-account' },
     ],
   },
   {
     icon: Store,
-    title: 'Selling on Marketplace',
-    description: 'Information for sellers and store owners',
+    title: 'Marketplace-д зарах',
+    description: 'Худалдагч болон дэлгүүр эзэмшигчдэд зориулсан мэдээлэл',
     links: [
-      { name: 'How to become a seller', href: '/seller/register' },
-      { name: 'Seller fees and commissions', href: '/help/seller-fees' },
-      { name: 'Product listing guidelines', href: '/help/listing-guidelines' },
-      { name: 'Seller support', href: '/help/seller-support' },
+      { name: 'Худалдагч болох', href: '/seller/register' },
+      { name: 'Худалдагчийн хураамж ба шимтгэл', href: '/help/seller-fees' },
+      { name: 'Бүтээгдэхүүн байршуулах заавар', href: '/help/listing-guidelines' },
+      { name: 'Худалдагчийн дэмжлэг', href: '/help/seller-support' },
     ],
   },
 ]
 
 const popularQuestions = [
   {
-    question: 'Where is my order?',
-    answer: 'You can track your order by logging into your account and visiting the "My Orders" section. Click on the order to see real-time tracking updates.',
+    question: 'Миний захиалга хаана байна вэ?',
+    answer: 'Та бүртгэлдээ нэвтэрч "Миний захиалгууд" хэсэгт орж захиалгаа хянах боломжтой. Захиалга дээр дарж бодит цагийн хянах мэдээлэл харна уу.',
   },
   {
-    question: 'How do I return an item?',
-    answer: 'Go to "My Orders," find the item you want to return, and click "Return Item." Follow the prompts to print your prepaid return label.',
+    question: 'Барааг хэрхэн буцаах вэ?',
+    answer: '"Миний захиалгууд" хэсэгт очиж, буцаах барааг олоод "Бараа буцаах" дээр дарна уу. Урьдчилан төлсөн буцаалтын шошго хэвлэхийн тулд зааврыг дагана уу.',
   },
   {
-    question: 'When will I receive my refund?',
-    answer: 'Refunds are processed within 5-7 business days after we receive your return. It may take an additional 3-5 days to appear in your account.',
+    question: 'Нөхөн олговроо хэзээ авах вэ?',
+    answer: 'Нөхөн олговрыг буцаалтыг хүлээн авснаас хойш 5-7 ажлын өдрийн дотор боловсруулна. Таны дансанд харагдахад нэмэлт 3-5 өдөр шаардагдаж болно.',
   },
   {
-    question: 'Can I change my shipping address?',
-    answer: 'You can change your shipping address before the order ships. Go to "My Orders" and click "Edit" if the option is available.',
+    question: 'Хүргэлтийн хаягаа өөрчилж болох уу?',
+    answer: 'Захиалга илгээгдэхээс өмнө хүргэлтийн хаягаа өөрчлөх боломжтой. "Миний захиалгууд" хэсэгт очиж сонголт байгаа бол "Засварлах" дээр дарна уу.',
   },
   {
-    question: 'What payment methods do you accept?',
-    answer: 'We accept all major credit cards (Visa, Mastercard, American Express), debit cards, and various digital payment options.',
+    question: 'Ямар төлбөрийн арга хүлээн авдаг вэ?',
+    answer: 'Бид бүх үндсэн кредит карт (Visa, Mastercard, American Express), дебит карт, болон янз бүрийн дижитал төлбөрийн сонголтуудыг хүлээн авдаг.',
   },
 ]
 
@@ -116,9 +116,9 @@ export default function HelpPage() {
     <div className="container mx-auto px-4 py-12">
       {/* Header */}
       <div className="text-center mb-12">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">How can we help you?</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Бид танд юугаар туслах вэ?</h1>
         <p className="text-gray-600 max-w-2xl mx-auto mb-8">
-          Find answers to common questions or browse our help topics below.
+          Түгээмэл асуултуудын хариултыг олох эсвэл доорх тусламжийн сэдвүүдийг үзнэ үү.
         </p>
 
         {/* Search */}
@@ -126,7 +126,7 @@ export default function HelpPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
           <Input
             type="search"
-            placeholder="Search for help..."
+            placeholder="Тусламж хайх..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 h-12"
@@ -136,7 +136,7 @@ export default function HelpPage() {
 
       {/* Help Categories */}
       <section className="mb-16">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Browse Help Topics</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Тусламжийн сэдвүүд</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {helpCategories.map((category) => (
             <div
@@ -170,7 +170,7 @@ export default function HelpPage() {
 
       {/* Popular Questions */}
       <section className="mb-16">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Popular Questions</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Түгээмэл асуултууд</h2>
         <div className="space-y-4">
           {popularQuestions.map((item, index) => (
             <div key={index} className="border rounded-lg">
@@ -200,35 +200,35 @@ export default function HelpPage() {
 
       {/* Quick Links */}
       <section className="mb-16">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Quick Links</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Түргэн холбоосууд</h2>
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
           <Link
             href="/account/orders"
             className="flex items-center gap-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
           >
             <ShoppingCart className="h-5 w-5 text-orange-500" />
-            <span className="font-medium text-gray-900">My Orders</span>
+            <span className="font-medium text-gray-900">Миний захиалгууд</span>
           </Link>
           <Link
             href="/account"
             className="flex items-center gap-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
           >
             <User className="h-5 w-5 text-orange-500" />
-            <span className="font-medium text-gray-900">My Account</span>
+            <span className="font-medium text-gray-900">Миний бүртгэл</span>
           </Link>
           <Link
             href="/returns"
             className="flex items-center gap-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
           >
             <RotateCcw className="h-5 w-5 text-orange-500" />
-            <span className="font-medium text-gray-900">Returns</span>
+            <span className="font-medium text-gray-900">Буцаалт</span>
           </Link>
           <Link
             href="/contact"
             className="flex items-center gap-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
           >
             <HelpCircle className="h-5 w-5 text-orange-500" />
-            <span className="font-medium text-gray-900">Contact Us</span>
+            <span className="font-medium text-gray-900">Холбоо барих</span>
           </Link>
         </div>
       </section>
@@ -237,15 +237,15 @@ export default function HelpPage() {
       <section>
         <div className="bg-orange-50 border border-orange-200 rounded-lg p-8 text-center">
           <Shield className="h-12 w-12 text-orange-500 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Still need help?</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Нэмэлт тусламж хэрэгтэй юу?</h2>
           <p className="text-gray-600 mb-4">
-            Our support team is available Monday-Friday, 9am-6pm EST.
+            Манай дэмжлэгийн баг Даваа-Баасан, 09:00-18:00 цагт ажилладаг.
           </p>
           <Link
             href="/contact"
             className="inline-flex items-center justify-center px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
           >
-            Contact Support
+            Дэмжлэгтэй холбогдох
           </Link>
         </div>
       </section>

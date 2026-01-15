@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
   if (!product) {
     return {
-      title: 'Product Not Found',
+      title: 'Бүтээгдэхүүн олдсонгүй',
     }
   }
 
@@ -92,13 +92,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <ol className="flex items-center gap-2">
           <li>
             <Link href="/" className="hover:text-orange-600">
-              Home
+              Нүүр
             </Link>
           </li>
           <li>/</li>
           <li>
             <Link href="/products" className="hover:text-orange-600">
-              Products
+              Бүтээгдэхүүн
             </Link>
           </li>
           {product.category && (
@@ -137,9 +137,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
       {/* Product Details Tabs */}
       <Tabs defaultValue="reviews" className="w-full">
         <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-grid">
-          <TabsTrigger value="reviews">Reviews</TabsTrigger>
-          <TabsTrigger value="description">Description</TabsTrigger>
-          <TabsTrigger value="shipping">Shipping & Returns</TabsTrigger>
+          <TabsTrigger value="reviews">Сэтгэгдэл</TabsTrigger>
+          <TabsTrigger value="description">Тайлбар</TabsTrigger>
+          <TabsTrigger value="shipping">Хүргэлт & Буцаалт</TabsTrigger>
         </TabsList>
 
         <TabsContent value="reviews" className="mt-6" id="reviews">
@@ -152,7 +152,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
         <TabsContent value="description" className="mt-6">
           <div className="rounded-lg border p-6">
-            <h3 className="text-lg font-semibold text-gray-900">Product Description</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Бүтээгдэхүүний тайлбар</h3>
             <div className="mt-4 whitespace-pre-line text-gray-600">
               {product.description}
             </div>
@@ -163,22 +163,22 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <div className="rounded-lg border p-6">
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Shipping Information</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Хүргэлтийн мэдээлэл</h3>
                 <div className="mt-3 space-y-2 text-sm text-gray-600">
-                  <p>• Free standard shipping on orders over $50</p>
-                  <p>• Standard shipping: 5-7 business days ($4.99)</p>
-                  <p>• Express shipping: 2-3 business days ($9.99)</p>
-                  <p>• Next-day delivery available in select areas ($14.99)</p>
+                  <p>• 50,000₮-ээс дээш захиалгад үнэгүй хүргэлт</p>
+                  <p>• Энгийн хүргэлт: 5-7 ажлын өдөр (4,990₮)</p>
+                  <p>• Түргэн хүргэлт: 2-3 ажлын өдөр (9,990₮)</p>
+                  <p>• Маргааш хүргэх боломжтой (14,990₮)</p>
                 </div>
               </div>
               <Separator />
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Return Policy</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Буцаалтын бодлого</h3>
                 <div className="mt-3 space-y-2 text-sm text-gray-600">
-                  <p>• 30-day return window from delivery date</p>
-                  <p>• Items must be unused and in original packaging</p>
-                  <p>• Free returns on defective products</p>
-                  <p>• Refund processed within 5-7 business days</p>
+                  <p>• Хүргэлт хийгдсэнээс хойш 30 хоногийн дотор буцаах боломжтой</p>
+                  <p>• Бараа хэрэглэгдээгүй, анхны савлагаатай байх ёстой</p>
+                  <p>• Гэмтэлтэй бүтээгдэхүүнийг үнэгүй буцаана</p>
+                  <p>• Буцаалт 5-7 ажлын өдөрт шийдвэрлэгдэнэ</p>
                 </div>
               </div>
             </div>
@@ -191,7 +191,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <>
           <Separator className="my-12" />
           <FeaturedProducts
-            title="Customers Also Viewed"
+            title="Хэрэглэгчид мөн үзсэн"
             viewAllHref="/products"
             products={transformedRelatedProducts}
           />

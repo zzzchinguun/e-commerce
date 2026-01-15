@@ -27,14 +27,14 @@ import { getCategories } from '@/actions/categories'
 import { createClient } from '@/lib/supabase/client'
 
 const productSchema = z.object({
-  name: z.string().min(1, 'Product name is required'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
+  name: z.string().min(1, 'Бүтээгдэхүүний нэр шаардлагатай'),
+  description: z.string().min(10, 'Тайлбар дор хаяж 10 тэмдэгтээс бүрдсэн байх ёстой'),
   shortDescription: z.string().optional(),
-  price: z.number().min(0.01, 'Price must be greater than 0'),
+  price: z.number().min(0.01, 'Үнэ 0-ээс их байх ёстой'),
   compareAtPrice: z.number().optional(),
   sku: z.string().optional(),
   barcode: z.string().optional(),
-  stock: z.number().min(0, 'Stock cannot be negative'),
+  stock: z.number().min(0, 'Нөөц сөрөг байж болохгүй'),
   categoryId: z.string().optional(),
   status: z.enum(['draft', 'active', 'inactive']),
   trackInventory: z.boolean(),
@@ -122,14 +122,14 @@ export default function NewProductPage() {
 
       if (validUrls.length > 0) {
         setImages((prev) => [...prev, ...validUrls])
-        toast.success(`${validUrls.length} image(s) uploaded`)
+        toast.success(`${validUrls.length} зураг амжилттай байршуулагдлаа`)
       }
 
       if (validUrls.length < files.length) {
-        toast.error(`${files.length - validUrls.length} image(s) failed to upload`)
+        toast.error(`${files.length - validUrls.length} зураг байршуулж чадсангүй`)
       }
     } catch (error) {
-      toast.error('Failed to upload images')
+      toast.error('Зураг байршуулж чадсангүй')
       console.error('Upload error:', error)
     } finally {
       setUploadingImages(false)
@@ -164,11 +164,11 @@ export default function NewProductPage() {
       if (result.error) {
         toast.error(result.error)
       } else {
-        toast.success('Product created successfully!')
+        toast.success('Бүтээгдэхүүн амжилттай үүсгэгдлээ!')
         router.push('/seller/products')
       }
     } catch (error) {
-      toast.error('Failed to create product')
+      toast.error('Бүтээгдэхүүн үүсгэж чадсангүй')
     } finally {
       setIsSubmitting(false)
     }
@@ -184,8 +184,8 @@ export default function NewProductPage() {
           </Link>
         </Button>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Add New Product</h1>
-          <p className="text-gray-500">Create a new product listing</p>
+          <h1 className="text-2xl font-bold text-gray-900">Шинэ бүтээгдэхүүн нэмэх</h1>
+          <p className="text-gray-500">Шинэ бүтээгдэхүүний жагсаалт үүсгэх</p>
         </div>
       </div>
 
@@ -196,15 +196,15 @@ export default function NewProductPage() {
             {/* Basic Information */}
             <Card>
               <CardHeader>
-                <CardTitle>Basic Information</CardTitle>
+                <CardTitle>Үндсэн мэдээлэл</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="name">Product Name *</Label>
+                  <Label htmlFor="name">Бүтээгдэхүүний нэр *</Label>
                   <Input
                     id="name"
                     {...register('name')}
-                    placeholder="Enter product name"
+                    placeholder="Бүтээгдэхүүний нэрийг оруулна уу"
                     className="mt-1"
                   />
                   {errors.name && (
@@ -215,21 +215,21 @@ export default function NewProductPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="shortDescription">Short Description</Label>
+                  <Label htmlFor="shortDescription">Товч тайлбар</Label>
                   <Input
                     id="shortDescription"
                     {...register('shortDescription')}
-                    placeholder="Brief product summary"
+                    placeholder="Бүтээгдэхүүний товч тойм"
                     className="mt-1"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="description">Description *</Label>
+                  <Label htmlFor="description">Тайлбар *</Label>
                   <Textarea
                     id="description"
                     {...register('description')}
-                    placeholder="Describe your product in detail..."
+                    placeholder="Бүтээгдэхүүнийг дэлгэрэнгүй тайлбарлана уу..."
                     rows={5}
                     className="mt-1"
                   />
@@ -241,11 +241,11 @@ export default function NewProductPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="brand">Brand</Label>
+                  <Label htmlFor="brand">Брэнд</Label>
                   <Input
                     id="brand"
                     {...register('brand')}
-                    placeholder="e.g., Nike, Apple, Samsung"
+                    placeholder="жишээ нь: Nike, Apple, Samsung"
                     className="mt-1"
                   />
                 </div>
@@ -255,7 +255,7 @@ export default function NewProductPage() {
             {/* Images */}
             <Card>
               <CardHeader>
-                <CardTitle>Images</CardTitle>
+                <CardTitle>Зургууд</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -278,7 +278,7 @@ export default function NewProductPage() {
                       </button>
                       {index === 0 && (
                         <span className="absolute bottom-1 left-1 rounded bg-black/60 px-2 py-0.5 text-xs text-white">
-                          Main
+                          Үндсэн
                         </span>
                       )}
                     </div>
@@ -291,7 +291,7 @@ export default function NewProductPage() {
                       <>
                         <Upload className="h-8 w-8 text-gray-400" />
                         <span className="mt-2 text-sm text-gray-500">
-                          Upload Image
+                          Зураг байршуулах
                         </span>
                       </>
                     )}
@@ -306,7 +306,7 @@ export default function NewProductPage() {
                   </label>
                 </div>
                 <p className="mt-2 text-xs text-gray-500">
-                  Upload up to 8 images. First image will be the main product image.
+                  8 хүртэлх зураг байршуулах боломжтой. Эхний зураг нь бүтээгдэхүүний үндсэн зураг болно.
                 </p>
               </CardContent>
             </Card>
@@ -314,12 +314,12 @@ export default function NewProductPage() {
             {/* Pricing */}
             <Card>
               <CardHeader>
-                <CardTitle>Pricing</CardTitle>
+                <CardTitle>Үнэ</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <Label htmlFor="price">Price *</Label>
+                    <Label htmlFor="price">Үнэ *</Label>
                     <div className="relative mt-1">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
                         $
@@ -340,7 +340,7 @@ export default function NewProductPage() {
                     )}
                   </div>
                   <div>
-                    <Label htmlFor="compareAtPrice">Compare at Price</Label>
+                    <Label htmlFor="compareAtPrice">Харьцуулах үнэ</Label>
                     <div className="relative mt-1">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
                         $
@@ -355,7 +355,7 @@ export default function NewProductPage() {
                       />
                     </div>
                     <p className="mt-1 text-xs text-gray-500">
-                      Original price for showing discount
+                      Хямдралыг харуулах анхны үнэ
                     </p>
                   </div>
                 </div>
@@ -365,14 +365,14 @@ export default function NewProductPage() {
             {/* Inventory */}
             <Card>
               <CardHeader>
-                <CardTitle>Inventory</CardTitle>
+                <CardTitle>Нөөц</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-gray-900">Track Inventory</p>
+                    <p className="font-medium text-gray-900">Нөөцийг хянах</p>
                     <p className="text-sm text-gray-500">
-                      Track stock levels for this product
+                      Энэ бүтээгдэхүүний нөөцийн түвшинг хянах
                     </p>
                   </div>
                   <Switch
@@ -388,7 +388,7 @@ export default function NewProductPage() {
                     <Separator />
                     <div className="grid gap-4 sm:grid-cols-3">
                       <div>
-                        <Label htmlFor="stock">Stock Quantity *</Label>
+                        <Label htmlFor="stock">Нөөцийн тоо хэмжээ *</Label>
                         <Input
                           id="stock"
                           type="number"
@@ -411,7 +411,7 @@ export default function NewProductPage() {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="barcode">Barcode</Label>
+                        <Label htmlFor="barcode">Баркод</Label>
                         <Input
                           id="barcode"
                           {...register('barcode')}
@@ -431,7 +431,7 @@ export default function NewProductPage() {
             {/* Status */}
             <Card>
               <CardHeader>
-                <CardTitle>Status</CardTitle>
+                <CardTitle>Төлөв</CardTitle>
               </CardHeader>
               <CardContent>
                 <Select
@@ -441,16 +441,16 @@ export default function NewProductPage() {
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
+                    <SelectValue placeholder="Төлөв сонгох" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="draft">Draft</SelectItem>
-                    <SelectItem value="active">Active (Visible in store)</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
+                    <SelectItem value="draft">Ноорог</SelectItem>
+                    <SelectItem value="active">Идэвхтэй (Дэлгүүрт харагдана)</SelectItem>
+                    <SelectItem value="inactive">Идэвхгүй</SelectItem>
                   </SelectContent>
                 </Select>
                 <p className="mt-2 text-xs text-gray-500">
-                  Draft products are not visible to customers.
+                  Ноорог бүтээгдэхүүнүүд хэрэглэгчдэд харагдахгүй.
                 </p>
               </CardContent>
             </Card>
@@ -458,7 +458,7 @@ export default function NewProductPage() {
             {/* Category */}
             <Card>
               <CardHeader>
-                <CardTitle>Category</CardTitle>
+                <CardTitle>Ангилал</CardTitle>
               </CardHeader>
               <CardContent>
                 {loadingCategories ? (
@@ -468,7 +468,7 @@ export default function NewProductPage() {
                 ) : (
                   <Select onValueChange={(value) => setValue('categoryId', value)}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
+                      <SelectValue placeholder="Ангилал сонгох" />
                     </SelectTrigger>
                     <SelectContent>
                       {categories.map((category) => (
@@ -506,7 +506,7 @@ export default function NewProductPage() {
                     {isSubmitting && (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     )}
-                    Create Product
+                    Бүтээгдэхүүн үүсгэх
                   </Button>
                   <Button
                     type="button"
@@ -514,7 +514,7 @@ export default function NewProductPage() {
                     className="w-full"
                     onClick={() => router.push('/seller/products')}
                   >
-                    Cancel
+                    Цуцлах
                   </Button>
                 </div>
               </CardContent>

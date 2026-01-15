@@ -30,7 +30,7 @@ export function GoogleAuthButton() {
         toast.error(error.message)
       }
     } catch (error) {
-      toast.error('Something went wrong. Please try again.')
+      toast.error('Алдаа гарлаа. Дахин оролдоно уу.')
     } finally {
       setIsLoading(false)
     }
@@ -66,7 +66,7 @@ export function GoogleAuthButton() {
           />
         </svg>
       )}
-      Continue with Google
+      Google-ээр нэвтрэх
     </Button>
   )
 }

@@ -23,25 +23,25 @@ export default function SellerRegisterSuccessPage() {
         </div>
 
         <h1 className="text-3xl font-bold text-gray-900">
-          Application Submitted!
+          Өргөдөл илгээгдлээ!
         </h1>
         <p className="mt-4 text-lg text-gray-600">
-          Thank you for your interest in becoming a seller on MarketHub.
-          We&apos;ve received your application and our team will review it shortly.
+          MarketHub дээр худалдагч болох сонирхол илэрхийлсэнд баярлалаа.
+          Бид таны өргөдлийг хүлээн авсан бөгөөд манай баг удахгүй шалгана.
         </p>
 
         <Card className="mt-8 w-full">
           <CardContent className="pt-6">
-            <h2 className="text-lg font-semibold text-gray-900">What happens next?</h2>
+            <h2 className="text-lg font-semibold text-gray-900">Дараа нь юу болох вэ?</h2>
             <div className="mt-6 space-y-4">
               <div className="flex items-start gap-4">
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-orange-100 text-orange-600">
                   1
                 </div>
                 <div className="text-left">
-                  <p className="font-medium text-gray-900">Application Review</p>
+                  <p className="font-medium text-gray-900">Өргөдөл шалгах</p>
                   <p className="text-sm text-gray-500">
-                    Our team will review your application within 1-2 business days.
+                    Манай баг таны өргөдлийг 1-2 ажлын өдрийн дотор шалгана.
                   </p>
                 </div>
               </div>
@@ -51,9 +51,9 @@ export default function SellerRegisterSuccessPage() {
                   2
                 </div>
                 <div className="text-left">
-                  <p className="font-medium text-gray-900">Email Confirmation</p>
+                  <p className="font-medium text-gray-900">И-мэйл баталгаажуулалт</p>
                   <p className="text-sm text-gray-500">
-                    You&apos;ll receive an email once your account is approved.
+                    Таны бүртгэл баталгаажсан даруй и-мэйл хүлээн авна.
                   </p>
                 </div>
               </div>
@@ -63,9 +63,9 @@ export default function SellerRegisterSuccessPage() {
                   3
                 </div>
                 <div className="text-left">
-                  <p className="font-medium text-gray-900">Set Up Payments</p>
+                  <p className="font-medium text-gray-900">Төлбөр тохируулах</p>
                   <p className="text-sm text-gray-500">
-                    Connect your Stripe account to start receiving payments.
+                    Төлбөр хүлээн авахын тулд Stripe дансаа холбоно уу.
                   </p>
                 </div>
               </div>
@@ -75,9 +75,9 @@ export default function SellerRegisterSuccessPage() {
                   4
                 </div>
                 <div className="text-left">
-                  <p className="font-medium text-gray-900">Start Selling!</p>
+                  <p className="font-medium text-gray-900">Худалдаа эхлүүлэх!</p>
                   <p className="text-sm text-gray-500">
-                    List your first product and start earning.
+                    Эхний бүтээгдэхүүнээ жагсааж орлого олж эхлээрэй.
                   </p>
                 </div>
               </div>
@@ -89,12 +89,12 @@ export default function SellerRegisterSuccessPage() {
           <Button asChild variant="outline">
             <Link href="/">
               <Mail className="mr-2 h-4 w-4" />
-              Check Email
+              И-мэйл шалгах
             </Link>
           </Button>
           <Button asChild className="bg-orange-500 hover:bg-orange-600">
             <Link href="/">
-              Continue Shopping
+              Худалдан авалтаа үргэлжлүүлэх
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
@@ -102,7 +102,7 @@ export default function SellerRegisterSuccessPage() {
 
         <div className="mt-12 flex items-center gap-2 text-sm text-gray-500">
           <Clock className="h-4 w-4" />
-          <span>Average approval time: 24 hours</span>
+          <span>Дундаж баталгаажуулалтын хугацаа: 24 цаг</span>
         </div>
       </div>
     </div>

@@ -20,12 +20,12 @@ export default function CheckoutPage() {
           <div className="rounded-full bg-gray-100 p-8">
             <ShoppingBag className="h-16 w-16 text-gray-400" />
           </div>
-          <h1 className="mt-6 text-2xl font-bold text-gray-900">Your cart is empty</h1>
+          <h1 className="mt-6 text-2xl font-bold text-gray-900">Таны сагс хоосон байна</h1>
           <p className="mt-2 text-gray-500">
-            Add some items to your cart to checkout.
+            Төлбөр төлөхийн тулд сагсандаа бараа нэмнэ үү.
           </p>
           <Button asChild className="mt-8 bg-orange-500 hover:bg-orange-600">
-            <Link href="/products">Continue Shopping</Link>
+            <Link href="/products">Худалдаа үргэлжлүүлэх</Link>
           </Button>
         </div>
       </div>
@@ -41,9 +41,9 @@ export default function CheckoutPage() {
           className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-orange-600"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to cart
+          Сагс руу буцах
         </Link>
-        <h1 className="mt-4 text-2xl font-bold text-gray-900 md:text-3xl">Checkout</h1>
+        <h1 className="mt-4 text-2xl font-bold text-gray-900 md:text-3xl">Төлбөр төлөх</h1>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-2">
@@ -56,7 +56,7 @@ export default function CheckoutPage() {
         <div className="order-1 lg:order-2">
           <div className="sticky top-24 rounded-lg border bg-white p-6">
             <h2 className="text-lg font-semibold text-gray-900">
-              Your Order ({items.length} {items.length === 1 ? 'item' : 'items'})
+              Таны захиалга ({items.length} {items.length === 1 ? 'бараа' : 'бараа'})
             </h2>
 
             <div className="mt-4 max-h-[400px] overflow-y-auto">
@@ -109,7 +109,7 @@ export default function CheckoutPage() {
               href="/cart"
               className="text-sm text-orange-600 hover:underline"
             >
-              Edit cart
+              Сагс засах
             </Link>
           </div>
         </div>

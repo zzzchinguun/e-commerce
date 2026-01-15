@@ -18,37 +18,37 @@ import { toast } from 'sonner'
 const contactInfo = [
   {
     icon: Mail,
-    title: 'Email Us',
+    title: 'Имэйл хаяг',
     details: 'support@marketplace.com',
-    subtext: 'We reply within 24 hours',
+    subtext: '24 цагийн дотор хариу өгнө',
   },
   {
     icon: Phone,
-    title: 'Call Us',
-    details: '+1 (555) 123-4567',
-    subtext: 'Mon-Fri, 9am-6pm EST',
+    title: 'Утас',
+    details: '+976 7777-1234',
+    subtext: 'Даваа-Баасан, 09:00-18:00',
   },
   {
     icon: MapPin,
-    title: 'Visit Us',
-    details: '123 Commerce Street',
-    subtext: 'New York, NY 10001',
+    title: 'Хаяг',
+    details: 'Чингисийн өргөн чөлөө 15',
+    subtext: 'Улаанбаатар, Монгол',
   },
   {
     icon: Clock,
-    title: 'Business Hours',
-    details: 'Monday - Friday',
-    subtext: '9:00 AM - 6:00 PM EST',
+    title: 'Ажлын цаг',
+    details: 'Даваа - Баасан',
+    subtext: '09:00 - 18:00',
   },
 ]
 
 const subjects = [
-  { value: 'general', label: 'General Inquiry' },
-  { value: 'order', label: 'Order Issue' },
-  { value: 'return', label: 'Returns & Refunds' },
-  { value: 'technical', label: 'Technical Support' },
-  { value: 'seller', label: 'Seller Inquiry' },
-  { value: 'partnership', label: 'Partnership Opportunities' },
+  { value: 'general', label: 'Ерөнхий асуулт' },
+  { value: 'order', label: 'Захиалгын асуудал' },
+  { value: 'return', label: 'Буцаалт & Нөхөн олговор' },
+  { value: 'technical', label: 'Техникийн дэмжлэг' },
+  { value: 'seller', label: 'Худалдагчийн асуулт' },
+  { value: 'partnership', label: 'Хамтын ажиллагааны санал' },
 ]
 
 export default function ContactPage() {
@@ -68,7 +68,7 @@ export default function ContactPage() {
     // Simulate form submission
     await new Promise((resolve) => setTimeout(resolve, 1500))
 
-    toast.success('Message sent successfully! We\'ll get back to you within 24 hours.')
+    toast.success('Мессеж амжилттай илгээгдлээ! 24 цагийн дотор хариу өгнө.')
     setFormData({
       name: '',
       email: '',
@@ -83,9 +83,9 @@ export default function ContactPage() {
     <div className="container mx-auto px-4 py-12">
       {/* Header */}
       <div className="text-center mb-12">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Contact Us</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Холбоо барих</h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          Have a question or need help? We&apos;re here to assist you. Choose the most convenient way to reach us.
+          Асуулт байна уу эсвэл тусламж хэрэгтэй юу? Бид танд туслахад бэлэн. Хамгийн тохиромжтой холбогдох аргаа сонгоно уу.
         </p>
       </div>
 
@@ -109,25 +109,25 @@ export default function ContactPage() {
       {/* Contact Form */}
       <div className="grid lg:grid-cols-2 gap-12">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Send Us a Message</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Бидэнд мессеж илгээх</h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name *</Label>
+                <Label htmlFor="name">Бүтэн нэр *</Label>
                 <Input
                   id="name"
-                  placeholder="John Doe"
+                  placeholder="Бат Болд"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address *</Label>
+                <Label htmlFor="email">Имэйл хаяг *</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="john@example.com"
+                  placeholder="bat@example.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
@@ -137,14 +137,14 @@ export default function ContactPage() {
 
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="subject">Subject *</Label>
+                <Label htmlFor="subject">Гарчиг *</Label>
                 <Select
                   value={formData.subject}
                   onValueChange={(value) => setFormData({ ...formData, subject: value })}
                   required
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a subject" />
+                    <SelectValue placeholder="Гарчиг сонгох" />
                   </SelectTrigger>
                   <SelectContent>
                     {subjects.map((subject) => (
@@ -156,7 +156,7 @@ export default function ContactPage() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="orderNumber">Order Number (optional)</Label>
+                <Label htmlFor="orderNumber">Захиалгын дугаар (заавал биш)</Label>
                 <Input
                   id="orderNumber"
                   placeholder="ORD-XXXXX"
@@ -167,10 +167,10 @@ export default function ContactPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="message">Message *</Label>
+              <Label htmlFor="message">Мессеж *</Label>
               <Textarea
                 id="message"
-                placeholder="How can we help you?"
+                placeholder="Бид танд юугаар туслах вэ?"
                 rows={6}
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -186,12 +186,12 @@ export default function ContactPage() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Sending...
+                  Илгээж байна...
                 </>
               ) : (
                 <>
                   <Send className="mr-2 h-4 w-4" />
-                  Send Message
+                  Мессеж илгээх
                 </>
               )}
             </Button>
@@ -200,34 +200,34 @@ export default function ContactPage() {
 
         {/* FAQ Section */}
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Түгээмэл асуултууд</h2>
           <div className="space-y-4">
             <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="font-semibold text-gray-900 mb-2">How do I track my order?</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Захиалгаа хэрхэн хянах вэ?</h3>
               <p className="text-sm text-gray-600">
-                You can track your order by logging into your account and visiting the Orders section.
-                You&apos;ll find real-time updates on your shipment status.
+                Та бүртгэлдээ нэвтэрч, Захиалгууд хэсэгт орж захиалгаа хянах боломжтой.
+                Хүргэлтийн төлөвийн талаар бодит цагийн мэдээлэл авах болно.
               </p>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="font-semibold text-gray-900 mb-2">What is your return policy?</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Буцаалтын бодлого ямар вэ?</h3>
               <p className="text-sm text-gray-600">
-                We offer a 30-day return policy for most items. Products must be unused and in their
-                original packaging. Visit our Returns page for more details.
+                Бид ихэнх бараанд 30 хоногийн буцаалтын бодлого санал болгодог. Бүтээгдэхүүн
+                ашиглагдаагүй, анхны сав баглаатай байх ёстой. Дэлгэрэнгүйг Буцаалт хуудаснаас харна уу.
               </p>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="font-semibold text-gray-900 mb-2">How do I become a seller?</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Худалдагч болохын тулд яах вэ?</h3>
               <p className="text-sm text-gray-600">
-                Click on &quot;Sell on Marketplace&quot; in the footer to start your seller registration.
-                Our team will review your application within 2-3 business days.
+                Хөлийн хэсэгт байрлах &quot;Marketplace-д зарах&quot; товч дээр дарж худалдагчийн
+                бүртгэлээ эхлүүлнэ үү. Манай баг таны өргөдлийг 2-3 ажлын өдрийн дотор хянана.
               </p>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="font-semibold text-gray-900 mb-2">Is my payment information secure?</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Төлбөрийн мэдээлэл аюулгүй юу?</h3>
               <p className="text-sm text-gray-600">
-                Yes, we use industry-standard SSL encryption and partner with Stripe for payment
-                processing. Your payment details are never stored on our servers.
+                Тийм, бид салбарын стандарт SSL шифрлэлт ашиглаж, Stripe-тай хамтран төлбөр
+                боловсруулдаг. Таны төлбөрийн мэдээлэл манай серверт хэзээ ч хадгалагддаггүй.
               </p>
             </div>
           </div>

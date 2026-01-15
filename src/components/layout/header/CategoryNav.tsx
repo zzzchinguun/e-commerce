@@ -12,19 +12,19 @@ import {
 
 // Main categories - these would typically come from the database
 const mainCategories = [
-  { name: 'Electronics', slug: 'electronics' },
-  { name: 'Clothing', slug: 'clothing' },
-  { name: 'Home & Garden', slug: 'home-garden' },
-  { name: 'Sports', slug: 'sports-outdoors' },
-  { name: 'Books', slug: 'books' },
-  { name: 'Beauty', slug: 'beauty-health' },
-  { name: 'Toys', slug: 'toys-games' },
+  { name: 'Электроник', slug: 'electronics' },
+  { name: 'Хувцас', slug: 'clothing' },
+  { name: 'Гэр & Цэцэрлэг', slug: 'home-garden' },
+  { name: 'Спорт', slug: 'sports-outdoors' },
+  { name: 'Ном', slug: 'books' },
+  { name: 'Гоо сайхан', slug: 'beauty-health' },
+  { name: 'Тоглоом', slug: 'toys-games' },
 ]
 
 const quickLinks = [
-  { name: "Today's Deals", href: '/deals' },
-  { name: 'New Arrivals', href: '/products?sort=newest' },
-  { name: 'Best Sellers', href: '/products?sort=best_selling' },
+  { name: 'Өнөөдрийн хямдрал', href: '/deals' },
+  { name: 'Шинэ бүтээгдэхүүн', href: '/products?sort=newest' },
+  { name: 'Хамгийн их зарагдсан', href: '/products?sort=best_selling' },
 ]
 
 export function CategoryNav() {
@@ -39,7 +39,7 @@ export function CategoryNav() {
             className="flex items-center gap-1 text-white hover:bg-slate-700"
           >
             <Menu className="h-4 w-4" />
-            All Categories
+            Бүх ангилал
             <ChevronDown className="h-3 w-3" />
           </Button>
         </DropdownMenuTrigger>

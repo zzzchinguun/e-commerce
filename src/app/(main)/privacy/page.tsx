@@ -1,188 +1,188 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy',
-  description: 'Learn how we collect, use, and protect your personal information',
+  title: 'Нууцлалын бодлого',
+  description: 'Бид таны хувийн мэдээллийг хэрхэн цуглуулж, ашиглаж, хамгаалдаг талаар мэдэж авах',
 }
 
 export default function PrivacyPage() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Privacy Policy</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-8">Нууцлалын бодлого</h1>
 
       <div className="prose prose-gray max-w-none">
         <p className="text-gray-600 mb-6">
-          Last updated: January 15, 2026
+          Сүүлд шинэчилсэн: 2026 оны 1-р сарын 15
         </p>
 
         <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">1. Introduction</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">1. Танилцуулга</h2>
           <p className="text-gray-600 mb-4">
-            Welcome to Marketplace. We are committed to protecting your personal information and your right
-            to privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your
-            information when you use our website and services.
+            Marketplace-д тавтай морил. Бид таны хувийн мэдээлэл болон нууцлалын эрхийг хамгаалахад
+            тууштай ажилладаг. Энэхүү Нууцлалын бодлого нь бид таны мэдээллийг манай вэбсайт болон
+            үйлчилгээг ашиглахад хэрхэн цуглуулж, ашиглаж, задруулж, хамгаалдаг талаар тайлбарлана.
           </p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">2. Information We Collect</h2>
-          <h3 className="text-lg font-medium text-gray-900 mb-3">Personal Information</h3>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">2. Бидний цуглуулдаг мэдээлэл</h2>
+          <h3 className="text-lg font-medium text-gray-900 mb-3">Хувийн мэдээлэл</h3>
           <p className="text-gray-600 mb-4">
-            We collect personal information that you voluntarily provide, including:
+            Бид та сайн дураараа өгсөн хувийн мэдээллийг цуглуулдаг:
           </p>
           <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-4">
-            <li>Name and contact information (email, phone, address)</li>
-            <li>Account credentials (username, password)</li>
-            <li>Payment information (processed securely through Stripe)</li>
-            <li>Profile information and preferences</li>
-            <li>Order history and transaction details</li>
-            <li>Communications with customer support</li>
+            <li>Нэр болон холбоо барих мэдээлэл (имэйл, утас, хаяг)</li>
+            <li>Бүртгэлийн мэдээлэл (хэрэглэгчийн нэр, нууц үг)</li>
+            <li>Төлбөрийн мэдээлэл (Stripe-ээр аюулгүй боловсруулна)</li>
+            <li>Профайлын мэдээлэл болон тохиргоо</li>
+            <li>Захиалгын түүх болон гүйлгээний дэлгэрэнгүй</li>
+            <li>Хэрэглэгчийн дэмжлэгтэй харилцсан бичлэг</li>
           </ul>
 
-          <h3 className="text-lg font-medium text-gray-900 mb-3">Automatically Collected Information</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-3">Автоматаар цуглуулсан мэдээлэл</h3>
           <p className="text-gray-600 mb-4">
-            When you visit our website, we automatically collect certain information:
+            Та манай вэбсайтад зочлоход бид зарим мэдээллийг автоматаар цуглуулна:
           </p>
           <ul className="list-disc pl-6 text-gray-600 space-y-2">
-            <li>Device information (browser type, operating system)</li>
-            <li>IP address and location data</li>
-            <li>Browsing behavior and page interactions</li>
-            <li>Cookies and similar tracking technologies</li>
-          </ul>
-        </section>
-
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">3. How We Use Your Information</h2>
-          <p className="text-gray-600 mb-4">
-            We use your information for the following purposes:
-          </p>
-          <ul className="list-disc pl-6 text-gray-600 space-y-2">
-            <li>Process and fulfill your orders</li>
-            <li>Create and manage your account</li>
-            <li>Process payments and prevent fraud</li>
-            <li>Send order confirmations and shipping updates</li>
-            <li>Respond to inquiries and provide customer support</li>
-            <li>Send marketing communications (with your consent)</li>
-            <li>Improve our website and services</li>
-            <li>Comply with legal obligations</li>
+            <li>Төхөөрөмжийн мэдээлэл (хөтчийн төрөл, үйлдлийн систем)</li>
+            <li>IP хаяг болон байршлын мэдээлэл</li>
+            <li>Үзэх зан үйл болон хуудасны харилцан үйлдэл</li>
+            <li>Күүки болон ижил төстэй хянах технологи</li>
           </ul>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">4. Information Sharing</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">3. Таны мэдээллийг хэрхэн ашигладаг</h2>
           <p className="text-gray-600 mb-4">
-            We may share your information with:
+            Бид таны мэдээллийг дараах зорилгоор ашигладаг:
           </p>
           <ul className="list-disc pl-6 text-gray-600 space-y-2">
-            <li><strong>Sellers:</strong> To fulfill your orders (name, address, order details)</li>
-            <li><strong>Payment Processors:</strong> Stripe processes payments securely</li>
-            <li><strong>Shipping Partners:</strong> To deliver your orders</li>
-            <li><strong>Service Providers:</strong> For analytics, email services, and hosting</li>
-            <li><strong>Legal Authorities:</strong> When required by law or to protect our rights</li>
+            <li>Захиалга боловсруулж, биелүүлэх</li>
+            <li>Бүртгэл үүсгэж, удирдах</li>
+            <li>Төлбөр боловсруулж, залилангаас сэргийлэх</li>
+            <li>Захиалгын баталгаа болон хүргэлтийн мэдээлэл илгээх</li>
+            <li>Хүсэлтэд хариулж, хэрэглэгчийн дэмжлэг үзүүлэх</li>
+            <li>Маркетингийн мэдээлэл илгээх (таны зөвшөөрлөөр)</li>
+            <li>Вэбсайт болон үйлчилгээгээ сайжруулах</li>
+            <li>Хуулийн үүргийг дагаж мөрдөх</li>
+          </ul>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">4. Мэдээлэл хуваалцах</h2>
+          <p className="text-gray-600 mb-4">
+            Бид таны мэдээллийг дараах талуудтай хуваалцаж болно:
+          </p>
+          <ul className="list-disc pl-6 text-gray-600 space-y-2">
+            <li><strong>Худалдагчид:</strong> Захиалгыг биелүүлэхийн тулд (нэр, хаяг, захиалгын дэлгэрэнгүй)</li>
+            <li><strong>Төлбөр боловсруулагч:</strong> Stripe төлбөрийг аюулгүй боловсруулна</li>
+            <li><strong>Хүргэлтийн түншүүд:</strong> Захиалгыг хүргэхийн тулд</li>
+            <li><strong>Үйлчилгээ үзүүлэгчид:</strong> Аналитик, имэйл үйлчилгээ, хостингийн хувьд</li>
+            <li><strong>Хууль хяналтын байгууллага:</strong> Хуулиар шаардлагатай үед эсвэл эрхээ хамгаалахын тулд</li>
           </ul>
           <p className="text-gray-600 mt-4">
-            We do not sell your personal information to third parties.
+            Бид таны хувийн мэдээллийг гуравдагч талд зарахгүй.
           </p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">5. Data Security</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">5. Мэдээллийн аюулгүй байдал</h2>
           <p className="text-gray-600 mb-4">
-            We implement appropriate security measures to protect your information:
+            Бид таны мэдээллийг хамгаалахын тулд зохих аюулгүй байдлын арга хэмжээ авдаг:
           </p>
           <ul className="list-disc pl-6 text-gray-600 space-y-2">
-            <li>SSL/TLS encryption for data transmission</li>
-            <li>Secure password hashing</li>
-            <li>Regular security assessments</li>
-            <li>Limited employee access to personal data</li>
-            <li>PCI-DSS compliant payment processing</li>
+            <li>Мэдээлэл дамжуулахад SSL/TLS шифрлэлт</li>
+            <li>Аюулгүй нууц үгийн хэшлэлт</li>
+            <li>Тогтмол аюулгүй байдлын үнэлгээ</li>
+            <li>Ажилтнуудын хувийн мэдээлэлд хандах хязгаарлалт</li>
+            <li>PCI-DSS стандартад нийцсэн төлбөр боловсруулалт</li>
           </ul>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">6. Cookies and Tracking</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">6. Күүки болон хянах</h2>
           <p className="text-gray-600 mb-4">
-            We use cookies and similar technologies to:
+            Бид күүки болон ижил төстэй технологийг дараах зорилгоор ашигладаг:
           </p>
           <ul className="list-disc pl-6 text-gray-600 space-y-2">
-            <li>Keep you logged into your account</li>
-            <li>Remember your preferences and cart items</li>
-            <li>Analyze website traffic and usage patterns</li>
-            <li>Deliver personalized content and ads</li>
-          </ul>
-          <p className="text-gray-600 mt-4">
-            You can manage cookie preferences through your browser settings. Note that disabling cookies
-            may affect website functionality.
-          </p>
-        </section>
-
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">7. Your Privacy Rights</h2>
-          <p className="text-gray-600 mb-4">
-            Depending on your location, you may have the following rights:
-          </p>
-          <ul className="list-disc pl-6 text-gray-600 space-y-2">
-            <li><strong>Access:</strong> Request a copy of your personal data</li>
-            <li><strong>Correction:</strong> Update inaccurate information</li>
-            <li><strong>Deletion:</strong> Request deletion of your data</li>
-            <li><strong>Portability:</strong> Receive your data in a portable format</li>
-            <li><strong>Opt-out:</strong> Unsubscribe from marketing communications</li>
-            <li><strong>Restrict Processing:</strong> Limit how we use your data</li>
+            <li>Бүртгэлд нэвтэрсэн байлгах</li>
+            <li>Тохиргоо болон сагсны барааг санах</li>
+            <li>Вэбсайтын хандалт, ашиглалтыг шинжлэх</li>
+            <li>Тохируулсан агуулга болон зар хүргэх</li>
           </ul>
           <p className="text-gray-600 mt-4">
-            To exercise these rights, please contact us at privacy@marketplace.com.
+            Та хөтчийн тохиргоогоор күүкийн тохиргоог удирдах боломжтой. Күүкийг идэвхгүй болгох нь
+            вэбсайтын функцэд нөлөөлж болохыг анхаарна уу.
           </p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">8. Data Retention</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">7. Таны нууцлалын эрх</h2>
           <p className="text-gray-600 mb-4">
-            We retain your personal information for as long as necessary to:
+            Байршлаас хамааран та дараах эрхтэй байж болно:
           </p>
           <ul className="list-disc pl-6 text-gray-600 space-y-2">
-            <li>Provide our services and fulfill transactions</li>
-            <li>Comply with legal obligations</li>
-            <li>Resolve disputes and enforce agreements</li>
+            <li><strong>Хандах:</strong> Хувийн мэдээллийнхээ хуулбарыг авах</li>
+            <li><strong>Засах:</strong> Буруу мэдээллийг шинэчлэх</li>
+            <li><strong>Устгах:</strong> Мэдээллээ устгуулахыг хүсэх</li>
+            <li><strong>Зөөвөрлөх:</strong> Мэдээллээ зөөвөрлөх боломжтой форматаар авах</li>
+            <li><strong>Татгалзах:</strong> Маркетингийн мэдээллийн захиалгаас гарах</li>
+            <li><strong>Боловсруулалтыг хязгаарлах:</strong> Мэдээллээ хэрхэн ашиглахыг хязгаарлах</li>
           </ul>
           <p className="text-gray-600 mt-4">
-            When no longer needed, we securely delete or anonymize your data.
+            Эдгээр эрхийг хэрэгжүүлэхийн тулд privacy@marketplace.com хаягаар бидэнтэй холбогдоно уу.
           </p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">9. Children&apos;s Privacy</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">8. Мэдээлэл хадгалах</h2>
           <p className="text-gray-600 mb-4">
-            Our Service is not intended for children under 13. We do not knowingly collect personal
-            information from children under 13. If you believe we have collected such information,
-            please contact us immediately.
+            Бид таны хувийн мэдээллийг дараах зорилгоор шаардлагатай хугацаанд хадгална:
+          </p>
+          <ul className="list-disc pl-6 text-gray-600 space-y-2">
+            <li>Үйлчилгээ үзүүлж, гүйлгээ биелүүлэх</li>
+            <li>Хуулийн үүргийг дагаж мөрдөх</li>
+            <li>Маргаан шийдвэрлэж, гэрээ хэрэгжүүлэх</li>
+          </ul>
+          <p className="text-gray-600 mt-4">
+            Шаардлагагүй болсон үед бид мэдээллийг аюулгүй устгах эсвэл нэргүйжүүлнэ.
           </p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">10. International Transfers</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">9. Хүүхдийн нууцлал</h2>
           <p className="text-gray-600 mb-4">
-            Your information may be transferred to and processed in countries other than your own.
-            We ensure appropriate safeguards are in place for such transfers in accordance with
-            applicable data protection laws.
+            Манай Үйлчилгээ 13 наснаас доош хүүхдүүдэд зориулагдаагүй. Бид 13 наснаас доош хүүхдээс
+            хувийн мэдээлэл санаатайгаар цуглуулдаггүй. Хэрэв бид ийм мэдээлэл цуглуулсан гэж үзвэл
+            бидэнтэй нэн даруй холбогдоно уу.
           </p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">11. Changes to This Policy</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">10. Олон улсын дамжуулалт</h2>
           <p className="text-gray-600 mb-4">
-            We may update this Privacy Policy from time to time. We will notify you of any material
-            changes by posting the new policy on this page and updating the &quot;Last updated&quot; date.
+            Таны мэдээллийг таны улсаас өөр улсад дамжуулж, боловсруулж болно.
+            Бид холбогдох мэдээлэл хамгаалах хуулийн дагуу ийм дамжуулалтад зохих хамгаалалт
+            хангасан эсэхийг баталгаажуулна.
           </p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">12. Contact Us</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">11. Энэ бодлогод оруулсан өөрчлөлт</h2>
+          <p className="text-gray-600 mb-4">
+            Бид энэ Нууцлалын бодлогыг цаг цагаас нь шинэчилж болно. Бид шинэ бодлогыг энэ хуудсанд
+            нийтэлж, &quot;Сүүлд шинэчилсэн&quot; огноог шинэчлэх замаар чухал өөрчлөлтийн талаар мэдэгдэнэ.
+          </p>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">12. Холбоо барих</h2>
           <p className="text-gray-600">
-            If you have questions about this Privacy Policy or our data practices, contact us at:
+            Хэрэв танд энэ Нууцлалын бодлого эсвэл манай мэдээлэл боловсруулах практикийн талаар асуулт байвал бидэнтэй холбогдоно уу:
           </p>
           <p className="text-gray-600 mt-2">
-            Email: privacy@marketplace.com<br />
-            Address: 123 Commerce Street, New York, NY 10001
+            Имэйл: privacy@marketplace.com<br />
+            Хаяг: Чингисийн өргөн чөлөө 15, Улаанбаатар, Монгол
           </p>
         </section>
       </div>

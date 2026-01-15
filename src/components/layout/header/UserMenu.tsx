@@ -26,11 +26,11 @@ export function UserMenu() {
       const supabase = createClient()
       await supabase.auth.signOut()
       logout()
-      toast.success('Signed out successfully')
+      toast.success('Амжилттай гарлаа')
       router.push('/')
       router.refresh()
     } catch (error) {
-      toast.error('Failed to sign out')
+      toast.error('Гарахад алдаа гарлаа')
     }
   }
 
@@ -43,7 +43,7 @@ export function UserMenu() {
           className="flex flex-col items-center text-white hover:bg-slate-800"
         >
           <User className="h-5 w-5" />
-          <span className="text-[10px]">Sign in</span>
+          <span className="text-[10px]">Нэвтрэх</span>
         </Button>
       </Link>
     )
@@ -59,14 +59,14 @@ export function UserMenu() {
         >
           <User className="h-5 w-5" />
           <span className="max-w-[60px] truncate text-[10px]">
-            {user?.full_name?.split(' ')[0] || 'Account'}
+            {user?.full_name?.split(' ')[0] || 'Бүртгэл'}
           </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>
           <div className="flex flex-col">
-            <span className="font-medium">{user?.full_name || 'User'}</span>
+            <span className="font-medium">{user?.full_name || 'Хэрэглэгч'}</span>
             <span className="text-xs text-gray-500">{user?.email}</span>
           </div>
         </DropdownMenuLabel>
@@ -74,28 +74,28 @@ export function UserMenu() {
         <DropdownMenuItem asChild>
           <Link href="/account" className="cursor-pointer">
             <User className="mr-2 h-4 w-4" />
-            My Account
+            Миний бүртгэл
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href="/account/orders" className="cursor-pointer">
             <Package className="mr-2 h-4 w-4" />
-            Orders
+            Захиалгууд
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href="/wishlist" className="cursor-pointer">
             <Heart className="mr-2 h-4 w-4" />
-            Wishlist
+            Хадгалсан
           </Link>
         </DropdownMenuItem>
         {user?.role === 'seller' && (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/seller/dashboard" className="cursor-pointer">
+              <Link href="/seller" className="cursor-pointer">
                 <Store className="mr-2 h-4 w-4" />
-                Seller Dashboard
+                Худалдагчийн самбар
               </Link>
             </DropdownMenuItem>
           </>
@@ -106,7 +106,7 @@ export function UserMenu() {
             <DropdownMenuItem asChild>
               <Link href="/admin" className="cursor-pointer">
                 <Settings className="mr-2 h-4 w-4" />
-                Admin Panel
+                Админ самбар
               </Link>
             </DropdownMenuItem>
           </>
@@ -117,7 +117,7 @@ export function UserMenu() {
           className="cursor-pointer text-red-600 focus:text-red-600"
         >
           <LogOut className="mr-2 h-4 w-4" />
-          Sign out
+          Гарах
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

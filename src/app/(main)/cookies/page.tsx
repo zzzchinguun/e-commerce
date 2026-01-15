@@ -1,127 +1,127 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Cookie Policy',
-  description: 'Learn about how we use cookies and manage your cookie preferences',
+  title: 'Күүкийн бодлого',
+  description: 'Бид күүкийг хэрхэн ашигладаг болон күүкийн тохиргоогоо удирдах талаар мэдэж авах',
 }
 
 export default function CookiesPage() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Cookie Policy</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-8">Күүкийн бодлого</h1>
 
       <div className="prose prose-gray max-w-none">
         <p className="text-gray-600 mb-6">
-          Last updated: January 15, 2026
+          Сүүлд шинэчилсэн: 2026 оны 1-р сарын 15
         </p>
 
         <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">What Are Cookies?</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Күүки гэж юу вэ?</h2>
           <p className="text-gray-600 mb-4">
-            Cookies are small text files that are stored on your device when you visit a website.
-            They help the website remember information about your visit, which can make it easier
-            to visit again and make the site more useful to you.
+            Күүки бол таныг вэбсайтад зочлоход төхөөрөмж дээр хадгалагддаг жижиг текст файлууд юм.
+            Тэд вэбсайтад таны зочилсон мэдээллийг санахад тусалдаг бөгөөд энэ нь дахин зочлоход
+            хялбар болгож, сайтыг танд илүү хэрэгтэй болгодог.
           </p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">How We Use Cookies</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Бид күүкийг хэрхэн ашигладаг</h2>
           <p className="text-gray-600 mb-4">
-            Marketplace uses cookies for several purposes:
+            Marketplace күүкийг хэд хэдэн зорилгоор ашигладаг:
           </p>
 
-          <h3 className="text-lg font-medium text-gray-900 mb-3">Essential Cookies</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-3">Зайлшгүй күүки</h3>
           <p className="text-gray-600 mb-4">
-            These cookies are necessary for the website to function properly. They enable core
-            functionality such as:
-          </p>
-          <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-4">
-            <li>User authentication and secure login</li>
-            <li>Shopping cart functionality</li>
-            <li>Remembering your preferences</li>
-            <li>Security features to protect your account</li>
-          </ul>
-
-          <h3 className="text-lg font-medium text-gray-900 mb-3">Performance Cookies</h3>
-          <p className="text-gray-600 mb-4">
-            These cookies help us understand how visitors interact with our website by collecting
-            anonymous information:
+            Эдгээр күүки нь вэбсайт зөв ажиллахад шаардлагатай. Тэд дараах үндсэн
+            функцийг идэвхжүүлдэг:
           </p>
           <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-4">
-            <li>Pages visited and time spent on each page</li>
-            <li>Error messages encountered</li>
-            <li>Website loading times</li>
-            <li>User navigation patterns</li>
+            <li>Хэрэглэгчийн баталгаажуулалт ба аюулгүй нэвтрэлт</li>
+            <li>Худалдааны сагсны функц</li>
+            <li>Таны тохиргоог санах</li>
+            <li>Бүртгэлийг хамгаалах аюулгүй байдлын функцууд</li>
           </ul>
 
-          <h3 className="text-lg font-medium text-gray-900 mb-3">Functionality Cookies</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-3">Гүйцэтгэлийн күүки</h3>
           <p className="text-gray-600 mb-4">
-            These cookies allow the website to remember choices you make:
+            Эдгээр күүки нь зочдод манай вэбсайттай хэрхэн харьцдагийг ойлгоход тусалдаг бөгөөд
+            нэргүй мэдээлэл цуглуулдаг:
           </p>
           <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-4">
-            <li>Your language and region preferences</li>
-            <li>Recently viewed products</li>
-            <li>Your display preferences (e.g., grid vs. list view)</li>
-            <li>Saved shipping addresses</li>
+            <li>Зочилсон хуудсууд болон хуудас бүрт зарцуулсан хугацаа</li>
+            <li>Тохиолдсон алдааны мэдээлэл</li>
+            <li>Вэбсайт ачаалах хугацаа</li>
+            <li>Хэрэглэгчийн навигацийн хэв маяг</li>
           </ul>
 
-          <h3 className="text-lg font-medium text-gray-900 mb-3">Marketing Cookies</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-3">Функциональ күүки</h3>
           <p className="text-gray-600 mb-4">
-            These cookies track your browsing activity to deliver relevant advertisements:
+            Эдгээр күүки нь вэбсайтад таны хийсэн сонголтуудыг санахад тусалдаг:
+          </p>
+          <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-4">
+            <li>Таны хэл болон бүсийн тохиргоо</li>
+            <li>Саяхан үзсэн бүтээгдэхүүнүүд</li>
+            <li>Таны харуулах тохиргоо (жишээ нь, торон эсвэл жагсаалт)</li>
+            <li>Хадгалсан хүргэлтийн хаягууд</li>
+          </ul>
+
+          <h3 className="text-lg font-medium text-gray-900 mb-3">Маркетингийн күүки</h3>
+          <p className="text-gray-600 mb-4">
+            Эдгээр күүки нь холбогдох зар хүргэхийн тулд таны үзэх үйлдлийг хянадаг:
           </p>
           <ul className="list-disc pl-6 text-gray-600 space-y-2">
-            <li>Products you&apos;ve viewed or added to cart</li>
-            <li>Categories you&apos;ve browsed</li>
-            <li>Your interactions with our marketing emails</li>
+            <li>Таны үзсэн эсвэл сагсанд нэмсэн бүтээгдэхүүнүүд</li>
+            <li>Таны үзсэн ангиллууд</li>
+            <li>Манай маркетингийн имэйлтэй таны харилцан үйлдэл</li>
           </ul>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Third-Party Cookies</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Гуравдагч талын күүки</h2>
           <p className="text-gray-600 mb-4">
-            We use services from third parties that may set their own cookies:
+            Бид өөрсдийн күүки тохируулж болох гуравдагч талын үйлчилгээг ашигладаг:
           </p>
           <div className="bg-gray-50 rounded-lg p-4 space-y-3">
             <div>
               <p className="font-medium text-gray-900">Google Analytics</p>
-              <p className="text-sm text-gray-600">Used to analyze website traffic and user behavior</p>
+              <p className="text-sm text-gray-600">Вэбсайтын хандалт болон хэрэглэгчийн зан үйлийг шинжлэхэд ашиглагддаг</p>
             </div>
             <div>
               <p className="font-medium text-gray-900">Stripe</p>
-              <p className="text-sm text-gray-600">Used for secure payment processing</p>
+              <p className="text-sm text-gray-600">Аюулгүй төлбөр боловсруулахад ашиглагддаг</p>
             </div>
             <div>
-              <p className="font-medium text-gray-900">Social Media Plugins</p>
-              <p className="text-sm text-gray-600">Facebook, Twitter, and Instagram buttons may set cookies</p>
+              <p className="font-medium text-gray-900">Нийгмийн сүлжээний залгаасууд</p>
+              <p className="text-sm text-gray-600">Facebook, Twitter, Instagram товчлуурууд күүки тохируулж болно</p>
             </div>
           </div>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Managing Your Cookie Preferences</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Күүкийн тохиргоог удирдах</h2>
           <p className="text-gray-600 mb-4">
-            You have several options for managing cookies:
+            Танд күүкийг удирдах хэд хэдэн сонголт бий:
           </p>
 
-          <h3 className="text-lg font-medium text-gray-900 mb-3">Browser Settings</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-3">Хөтчийн тохиргоо</h3>
           <p className="text-gray-600 mb-4">
-            Most web browsers allow you to control cookies through their settings. You can:
+            Ихэнх вэб хөтчүүд тохиргоогоороо күүкийг удирдах боломжийг олгодог. Та:
           </p>
           <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-4">
-            <li>View what cookies are stored on your device</li>
-            <li>Delete all or specific cookies</li>
-            <li>Block all cookies or cookies from specific sites</li>
-            <li>Configure your browser to notify you when cookies are set</li>
+            <li>Төхөөрөмж дээр ямар күүки хадгалагдсаныг харах</li>
+            <li>Бүх эсвэл тодорхой күүкийг устгах</li>
+            <li>Бүх күүки эсвэл тодорхой сайтын күүкийг хаах</li>
+            <li>Хөтчийгөө күүки тохируулах үед мэдэгдэхээр тохируулах</li>
           </ul>
 
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
             <p className="text-amber-800 text-sm">
-              <strong>Note:</strong> Blocking essential cookies may prevent you from using
-              certain features of our website, such as logging in or adding items to your cart.
+              <strong>Тэмдэглэл:</strong> Зайлшгүй күүкийг хаах нь нэвтрэх эсвэл сагсанд бараа
+              нэмэх зэрэг манай вэбсайтын зарим функцийг ашиглахад саад болж болно.
             </p>
           </div>
 
-          <h3 className="text-lg font-medium text-gray-900 mb-3">Browser-Specific Instructions</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-3">Хөтчийн тусгай заавар</h3>
           <ul className="list-disc pl-6 text-gray-600 space-y-2">
             <li><a href="https://support.google.com/chrome/answer/95647" className="text-orange-600 hover:underline" target="_blank" rel="noopener noreferrer">Google Chrome</a></li>
             <li><a href="https://support.mozilla.org/en-US/kb/cookies-information-websites-store-on-your-computer" className="text-orange-600 hover:underline" target="_blank" rel="noopener noreferrer">Mozilla Firefox</a></li>
@@ -131,38 +131,38 @@ export default function CookiesPage() {
         </section>
 
         <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Cookie Retention</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Күүки хадгалах хугацаа</h2>
           <p className="text-gray-600 mb-4">
-            Cookies are retained for different periods depending on their purpose:
+            Күүки зорилгоосоо хамааран өөр өөр хугацаагаар хадгалагддаг:
           </p>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse border">
               <thead>
                 <tr className="bg-gray-50">
-                  <th className="border p-3 text-left font-medium text-gray-900">Cookie Type</th>
-                  <th className="border p-3 text-left font-medium text-gray-900">Retention Period</th>
+                  <th className="border p-3 text-left font-medium text-gray-900">Күүкийн төрөл</th>
+                  <th className="border p-3 text-left font-medium text-gray-900">Хадгалах хугацаа</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td className="border p-3 text-gray-600">Session Cookies</td>
-                  <td className="border p-3 text-gray-600">Deleted when you close your browser</td>
+                  <td className="border p-3 text-gray-600">Сессийн күүки</td>
+                  <td className="border p-3 text-gray-600">Хөтчийг хаахад устана</td>
                 </tr>
                 <tr>
-                  <td className="border p-3 text-gray-600">Authentication Cookies</td>
-                  <td className="border p-3 text-gray-600">30 days (or until you log out)</td>
+                  <td className="border p-3 text-gray-600">Баталгаажуулалтын күүки</td>
+                  <td className="border p-3 text-gray-600">30 хоног (эсвэл гарах хүртэл)</td>
                 </tr>
                 <tr>
-                  <td className="border p-3 text-gray-600">Preference Cookies</td>
-                  <td className="border p-3 text-gray-600">1 year</td>
+                  <td className="border p-3 text-gray-600">Тохиргооны күүки</td>
+                  <td className="border p-3 text-gray-600">1 жил</td>
                 </tr>
                 <tr>
-                  <td className="border p-3 text-gray-600">Analytics Cookies</td>
-                  <td className="border p-3 text-gray-600">2 years</td>
+                  <td className="border p-3 text-gray-600">Аналитикийн күүки</td>
+                  <td className="border p-3 text-gray-600">2 жил</td>
                 </tr>
                 <tr>
-                  <td className="border p-3 text-gray-600">Marketing Cookies</td>
-                  <td className="border p-3 text-gray-600">90 days</td>
+                  <td className="border p-3 text-gray-600">Маркетингийн күүки</td>
+                  <td className="border p-3 text-gray-600">90 хоног</td>
                 </tr>
               </tbody>
             </table>
@@ -170,22 +170,22 @@ export default function CookiesPage() {
         </section>
 
         <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Updates to This Policy</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Энэ бодлогод оруулсан шинэчлэлт</h2>
           <p className="text-gray-600 mb-4">
-            We may update this Cookie Policy from time to time to reflect changes in our practices
-            or for legal, regulatory, or operational reasons. We will post any changes on this page
-            and update the &quot;Last updated&quot; date.
+            Бид практикийн өөрчлөлт эсвэл хууль эрх зүйн, зохицуулалтын, эсвэл үйл ажиллагааны
+            шалтгаанаар энэ Күүкийн бодлогыг цаг цагаас нь шинэчилж болно. Бид аливаа өөрчлөлтийг
+            энэ хуудсанд нийтэлж, &quot;Сүүлд шинэчилсэн&quot; огноог шинэчлэнэ.
           </p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Contact Us</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Холбоо барих</h2>
           <p className="text-gray-600">
-            If you have questions about our use of cookies, please contact us at:
+            Хэрэв танд манай күүкийн хэрэглээний талаар асуулт байвал бидэнтэй холбогдоно уу:
           </p>
           <p className="text-gray-600 mt-2">
-            Email: privacy@marketplace.com<br />
-            Address: 123 Commerce Street, New York, NY 10001
+            Имэйл: privacy@marketplace.com<br />
+            Хаяг: Чингисийн өргөн чөлөө 15, Улаанбаатар, Монгол
           </p>
         </section>
       </div>

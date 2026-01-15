@@ -53,7 +53,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
         storeSlug: '',
       },
     })
-    toast.success('Added to cart')
+    toast.success('Сагсанд нэмэгдлээ')
   }
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
@@ -61,7 +61,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
     e.stopPropagation()
     if (isInWishlist) {
       removeFromWishlist(product.id)
-      toast.success('Removed from wishlist')
+      toast.success('Хадгалсан жагсаалтаас хасагдлаа')
     } else {
       addToWishlist({
         id: product.id,
@@ -75,7 +75,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
           storeSlug: '',
         },
       })
-      toast.success('Added to wishlist')
+      toast.success('Хадгалсан жагсаалтанд нэмэгдлээ')
     }
   }
 
@@ -125,7 +125,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
               onClick={handleAddToCart}
             >
               <ShoppingCart className="mr-2 h-4 w-4" />
-              Add to Cart
+              Сагсанд нэмэх
             </Button>
           </div>
         </div>

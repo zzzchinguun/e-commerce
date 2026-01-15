@@ -29,34 +29,34 @@ export default function TrackOrderPage() {
     <div className="container mx-auto px-4 py-12 max-w-2xl">
       <div className="text-center mb-8">
         <Package className="h-12 w-12 text-orange-500 mx-auto mb-4" />
-        <h1 className="text-3xl font-bold text-gray-900">Track Your Order</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Захиалга хянах</h1>
         <p className="mt-2 text-gray-600">
-          Enter your order number and email to see the current status of your order
+          Захиалгын дугаар болон имэйлээ оруулж захиалгынхаа одоогийн төлөвийг харна уу
         </p>
       </div>
 
       <div className="bg-white rounded-lg border p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="orderNumber">Order Number</Label>
+            <Label htmlFor="orderNumber">Захиалгын дугаар</Label>
             <Input
               id="orderNumber"
-              placeholder="e.g., ORD-12345678"
+              placeholder="жишээ нь, ORD-12345678"
               value={orderNumber}
               onChange={(e) => setOrderNumber(e.target.value)}
               required
             />
             <p className="text-xs text-gray-500">
-              You can find this in your order confirmation email
+              Үүнийг захиалгын баталгаажуулах имэйлээс олж болно
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email Address</Label>
+            <Label htmlFor="email">Имэйл хаяг</Label>
             <Input
               id="email"
               type="email"
-              placeholder="The email used for your order"
+              placeholder="Захиалгад ашигласан имэйл"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -71,12 +71,12 @@ export default function TrackOrderPage() {
             {isSearching ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Searching...
+                Хайж байна...
               </>
             ) : (
               <>
                 <Search className="mr-2 h-4 w-4" />
-                Track Order
+                Захиалга хайх
               </>
             )}
           </Button>
@@ -85,14 +85,14 @@ export default function TrackOrderPage() {
         {searchResult === 'not_found' && (
           <div className="mt-6 p-4 bg-gray-50 rounded-lg text-center">
             <p className="text-gray-600">
-              No order found with those details. Please check your order number and email.
+              Эдгээр мэдээллээр захиалга олдсонгүй. Захиалгын дугаар болон имэйлээ шалгана уу.
             </p>
             <p className="mt-2 text-sm text-gray-500">
-              If you have an account, you can also{' '}
+              Хэрэв танд бүртгэл байгаа бол нэвтэрсний дараа{' '}
               <Link href="/account/orders" className="text-orange-600 hover:underline">
-                view your orders
+                захиалгуудаа харах
               </Link>{' '}
-              after logging in.
+              боломжтой.
             </p>
           </div>
         )}
@@ -100,15 +100,15 @@ export default function TrackOrderPage() {
 
       {/* Order Status Guide */}
       <div className="mt-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Status Guide</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Захиалгын төлөвийн тайлбар</h2>
         <div className="space-y-4">
           <div className="flex items-start gap-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-100 text-yellow-600">
               <Clock className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-medium text-gray-900">Processing</h3>
-              <p className="text-sm text-gray-600">Your order has been received and is being prepared</p>
+              <h3 className="font-medium text-gray-900">Боловсруулж байна</h3>
+              <p className="text-sm text-gray-600">Таны захиалгыг хүлээн авч, бэлтгэж байна</p>
             </div>
           </div>
           <div className="flex items-start gap-4">
@@ -116,8 +116,8 @@ export default function TrackOrderPage() {
               <Package className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-medium text-gray-900">Shipped</h3>
-              <p className="text-sm text-gray-600">Your order has been handed to the shipping carrier</p>
+              <h3 className="font-medium text-gray-900">Илгээгдсэн</h3>
+              <p className="text-sm text-gray-600">Таны захиалгыг хүргэлтийн компанид өгсөн</p>
             </div>
           </div>
           <div className="flex items-start gap-4">
@@ -125,8 +125,8 @@ export default function TrackOrderPage() {
               <Truck className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-medium text-gray-900">Out for Delivery</h3>
-              <p className="text-sm text-gray-600">Your order is on its way to your address</p>
+              <h3 className="font-medium text-gray-900">Хүргэлтэнд гарсан</h3>
+              <p className="text-sm text-gray-600">Таны захиалга хаяг руу явж байна</p>
             </div>
           </div>
           <div className="flex items-start gap-4">
@@ -134,8 +134,8 @@ export default function TrackOrderPage() {
               <CheckCircle className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-medium text-gray-900">Delivered</h3>
-              <p className="text-sm text-gray-600">Your order has been delivered successfully</p>
+              <h3 className="font-medium text-gray-900">Хүргэгдсэн</h3>
+              <p className="text-sm text-gray-600">Таны захиалга амжилттай хүргэгдсэн</p>
             </div>
           </div>
         </div>
@@ -143,15 +143,15 @@ export default function TrackOrderPage() {
 
       {/* Help Section */}
       <div className="mt-8 bg-orange-50 rounded-lg p-6 text-center">
-        <h2 className="font-semibold text-gray-900">Need Help?</h2>
+        <h2 className="font-semibold text-gray-900">Тусламж хэрэгтэй юу?</h2>
         <p className="mt-1 text-sm text-gray-600">
-          If you have questions about your order, our support team is here to help.
+          Хэрэв танд захиалгын талаар асуулт байвал манай дэмжлэгийн баг туслахад бэлэн.
         </p>
         <Link
           href="/contact"
           className="mt-3 inline-block text-orange-600 hover:underline"
         >
-          Contact Support
+          Дэмжлэгтэй холбогдох
         </Link>
       </div>
     </div>

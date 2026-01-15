@@ -11,35 +11,36 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Marketplace - Shop Everything',
-    template: '%s | Marketplace',
+    default: 'MSTORE - Бүх зүйлээ энд',
+    template: '%s | MSTORE',
   },
   description:
-    'Discover millions of products from trusted sellers. Shop electronics, clothing, home goods, and more with fast shipping and great prices.',
+    'Итгэмжлэгдсэн худалдагчдын сая сая бүтээгдэхүүнээс сонгоорой. Электроник, хувцас, гэр ахуйн бараа болон бусад бүтээгдэхүүнийг хурдан хүргэлт, хямд үнээр худалдаж аваарай.',
   keywords: [
-    'e-commerce',
-    'online shopping',
-    'marketplace',
-    'buy online',
-    'electronics',
-    'clothing',
-    'home goods',
+    'цахим худалдаа',
+    'онлайн дэлгүүр',
+    'MSTORE',
+    'онлайн худалдаа',
+    'электроник',
+    'хувцас',
+    'гэр ахуй',
+    'монгол',
   ],
-  authors: [{ name: 'Marketplace' }],
-  creator: 'Marketplace',
+  authors: [{ name: 'MSTORE' }],
+  creator: 'MSTORE',
   openGraph: {
     type: 'website',
-    locale: 'en_US',
-    siteName: 'Marketplace',
-    title: 'Marketplace - Shop Everything',
+    locale: 'mn_MN',
+    siteName: 'MSTORE',
+    title: 'MSTORE - Бүх зүйлээ энд',
     description:
-      'Discover millions of products from trusted sellers. Shop electronics, clothing, home goods, and more.',
+      'Итгэмжлэгдсэн худалдагчдын сая сая бүтээгдэхүүнээс сонгоорой. Электроник, хувцас, гэр ахуйн бараа болон бусад.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Marketplace - Shop Everything',
+    title: 'MSTORE - Бүх зүйлээ энд',
     description:
-      'Discover millions of products from trusted sellers. Shop electronics, clothing, home goods, and more.',
+      'Итгэмжлэгдсэн худалдагчдын сая сая бүтээгдэхүүнээс сонгоорой. Электроник, хувцас, гэр ахуйн бараа болон бусад.',
   },
   robots: {
     index: true,
@@ -53,7 +54,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="mn" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
         <Providers>{children}</Providers>
       </body>

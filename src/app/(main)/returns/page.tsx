@@ -2,14 +2,14 @@ import { Metadata } from 'next'
 import { RotateCcw, Clock, CheckCircle, XCircle, AlertTriangle, Package } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Returns & Refunds',
-  description: 'Learn about our return policy, refund process, and exchange options',
+  title: 'Буцаалт & Нөхөн олговор',
+  description: 'Манай буцаалтын бодлого, нөхөн олговрын үйл явц, солилцооны сонголтуудын талаар мэдэж авах',
 }
 
 export default function ReturnsPage() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Returns & Refunds</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-8">Буцаалт & Нөхөн олговор</h1>
 
       {/* Overview */}
       <section className="mb-12">
@@ -17,10 +17,10 @@ export default function ReturnsPage() {
           <div className="flex items-start gap-4">
             <RotateCcw className="h-8 w-8 text-green-600" />
             <div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">30-Day Return Policy</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">30 хоногийн буцаалтын бодлого</h2>
               <p className="text-gray-600">
-                We want you to be completely satisfied with your purchase. If you&apos;re not happy,
-                you can return most items within 30 days of delivery for a full refund.
+                Бид таныг худалдан авалтдаа бүрэн сэтгэл хангалуун байгаасай гэж хүсдэг. Хэрэв та сэтгэл
+                ханамжгүй бол ихэнх барааг хүлээн авснаас хойш 30 хоногийн дотор буцааж бүрэн нөхөн олговор авах боломжтой.
               </p>
             </div>
           </div>
@@ -29,34 +29,34 @@ export default function ReturnsPage() {
 
       {/* Return Eligibility */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Return Eligibility</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Буцаалтын шаардлага</h2>
         <div className="grid md:grid-cols-2 gap-6">
           <div className="border rounded-lg p-6">
             <div className="flex items-center gap-2 mb-4">
               <CheckCircle className="h-5 w-5 text-green-500" />
-              <h3 className="font-semibold text-gray-900">Eligible for Return</h3>
+              <h3 className="font-semibold text-gray-900">Буцаалтад тохирох</h3>
             </div>
             <ul className="space-y-2 text-gray-600 text-sm">
-              <li>• Items in original, unused condition</li>
-              <li>• Products with original tags attached</li>
-              <li>• Items in original packaging</li>
-              <li>• Items returned within 30 days</li>
-              <li>• Defective or damaged items</li>
-              <li>• Wrong item received</li>
+              <li>• Анхны, ашиглагдаагүй нөхцөлтэй бараа</li>
+              <li>• Анхны шошготой бүтээгдэхүүн</li>
+              <li>• Анхны сав баглаатай бараа</li>
+              <li>• 30 хоногийн дотор буцаасан бараа</li>
+              <li>• Гэмтэлтэй эсвэл эвдэрсэн бараа</li>
+              <li>• Буруу бараа хүлээн авсан</li>
             </ul>
           </div>
           <div className="border rounded-lg p-6">
             <div className="flex items-center gap-2 mb-4">
               <XCircle className="h-5 w-5 text-red-500" />
-              <h3 className="font-semibold text-gray-900">Not Eligible for Return</h3>
+              <h3 className="font-semibold text-gray-900">Буцаалтад тохирохгүй</h3>
             </div>
             <ul className="space-y-2 text-gray-600 text-sm">
-              <li>• Personalized or custom items</li>
-              <li>• Intimate or sanitary goods</li>
-              <li>• Perishable products</li>
-              <li>• Digital downloads</li>
-              <li>• Items marked &quot;Final Sale&quot;</li>
-              <li>• Items showing signs of use</li>
+              <li>• Тусгайлан хийсэн эсвэл захиалгаар хийсэн бараа</li>
+              <li>• Дотуур хувцас эсвэл ариун цэврийн бараа</li>
+              <li>• Муудаж болох бүтээгдэхүүн</li>
+              <li>• Дижитал татан авалт</li>
+              <li>• &quot;Эцсийн хямдрал&quot; гэж тэмдэглэсэн бараа</li>
+              <li>• Ашигласан шинж тэмдэгтэй бараа</li>
             </ul>
           </div>
         </div>
@@ -64,17 +64,17 @@ export default function ReturnsPage() {
 
       {/* How to Return */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">How to Return an Item</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Бараа буцаах арга</h2>
         <div className="space-y-6">
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-semibold">
               1
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 mb-1">Initiate Your Return</h3>
+              <h3 className="font-semibold text-gray-900 mb-1">Буцаалтаа эхлүүлэх</h3>
               <p className="text-gray-600 text-sm">
-                Log into your account, go to &quot;My Orders,&quot; find the order, and click &quot;Return Item.&quot;
-                Select the item(s) you want to return and the reason for the return.
+                Бүртгэлдээ нэвтэрч, &quot;Миний захиалгууд&quot; хэсэгт очоод &quot;Бараа буцаах&quot; дарна уу.
+                Буцаах бараа(нууд) болон буцаах шалтгааныг сонгоно уу.
               </p>
             </div>
           </div>
@@ -83,10 +83,10 @@ export default function ReturnsPage() {
               2
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 mb-1">Print Return Label</h3>
+              <h3 className="font-semibold text-gray-900 mb-1">Буцаалтын шошго хэвлэх</h3>
               <p className="text-gray-600 text-sm">
-                Once approved, you&apos;ll receive a prepaid return shipping label via email.
-                Print the label and attach it to your package.
+                Зөвшөөрөгдсөний дараа урьдчилан төлсөн буцаалтын хүргэлтийн шошгыг имэйлээр хүлээн авна.
+                Шошгыг хэвлэж илгээмжиндээ наана уу.
               </p>
             </div>
           </div>
@@ -95,10 +95,10 @@ export default function ReturnsPage() {
               3
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 mb-1">Pack Your Item</h3>
+              <h3 className="font-semibold text-gray-900 mb-1">Барааг савлах</h3>
               <p className="text-gray-600 text-sm">
-                Place the item in its original packaging (if possible) or a secure box.
-                Include all original tags, accessories, and documentation.
+                Барааг анхны сав баглаанд (боломжтой бол) эсвэл найдвартай хайрцагт хийнэ.
+                Бүх анхны шошго, дагалдах хэрэгсэл, баримт бичгийг хамт оруулна уу.
               </p>
             </div>
           </div>
@@ -107,10 +107,10 @@ export default function ReturnsPage() {
               4
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 mb-1">Ship Your Return</h3>
+              <h3 className="font-semibold text-gray-900 mb-1">Буцаалтаа илгээх</h3>
               <p className="text-gray-600 text-sm">
-                Drop off your package at any authorized shipping location. Keep your tracking
-                number for reference.
+                Илгээмжээ зөвшөөрөгдсөн хүргэлтийн байршилд хүлээлгэж өгнө үү. Хяналтын
+                дугаараа хадгална уу.
               </p>
             </div>
           </div>
@@ -119,35 +119,35 @@ export default function ReturnsPage() {
 
       {/* Refund Information */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Refund Information</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Нөхөн олговрын мэдээлэл</h2>
         <div className="bg-gray-50 rounded-lg p-6 space-y-4">
           <div className="flex items-start gap-3">
             <Clock className="h-5 w-5 text-orange-500 mt-0.5" />
             <div>
-              <h3 className="font-semibold text-gray-900">Processing Time</h3>
+              <h3 className="font-semibold text-gray-900">Боловсруулах хугацаа</h3>
               <p className="text-gray-600 text-sm">
-                Refunds are processed within 5-7 business days after we receive your return.
-                It may take an additional 3-5 business days for the refund to appear in your account.
+                Нөхөн олговрыг буцаалтыг хүлээн авснаас хойш 5-7 ажлын өдрийн дотор боловсруулна.
+                Таны дансанд харагдахад нэмэлт 3-5 ажлын өдөр шаардагдаж болно.
               </p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <Package className="h-5 w-5 text-orange-500 mt-0.5" />
             <div>
-              <h3 className="font-semibold text-gray-900">Refund Method</h3>
+              <h3 className="font-semibold text-gray-900">Нөхөн олговрын арга</h3>
               <p className="text-gray-600 text-sm">
-                Refunds are issued to the original payment method. If paid by credit card,
-                the refund will appear on your card statement.
+                Нөхөн олговрыг анхны төлбөрийн аргаар олгоно. Хэрэв кредит картаар төлсөн бол
+                нөхөн олговор картын хуулганд харагдана.
               </p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <AlertTriangle className="h-5 w-5 text-orange-500 mt-0.5" />
             <div>
-              <h3 className="font-semibold text-gray-900">Shipping Costs</h3>
+              <h3 className="font-semibold text-gray-900">Хүргэлтийн зардал</h3>
               <p className="text-gray-600 text-sm">
-                Original shipping costs are non-refundable unless the return is due to our error
-                (wrong item, defective product, etc.). Return shipping is free for defective items.
+                Анхны хүргэлтийн зардлыг буцаахгүй, гэхдээ буцаалт нь манай алдаанаас болсон бол
+                (буруу бараа, гэмтэлтэй бүтээгдэхүүн гэх мэт) буцаана. Гэмтэлтэй барааны буцаалтын хүргэлт үнэгүй.
               </p>
             </div>
           </div>
@@ -156,80 +156,80 @@ export default function ReturnsPage() {
 
       {/* Exchanges */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Exchanges</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Солилцоо</h2>
         <p className="text-gray-600 mb-4">
-          We don&apos;t offer direct exchanges. If you need a different size, color, or item:
+          Бид шууд солилцоо санал болгодоггүй. Хэрэв танд өөр хэмжээ, өнгө, эсвэл бараа хэрэгтэй бол:
         </p>
         <ol className="list-decimal pl-6 text-gray-600 space-y-2">
-          <li>Return the original item following our return process</li>
-          <li>Place a new order for the item you want</li>
-          <li>Your refund will be processed once we receive the return</li>
+          <li>Анхны барааг манай буцаалтын үйл явцын дагуу буцаана</li>
+          <li>Хүссэн бараагаа шинээр захиална</li>
+          <li>Буцаалтыг хүлээн авсны дараа нөхөн олговрыг боловсруулна</li>
         </ol>
         <p className="text-gray-600 mt-4 text-sm italic">
-          Tip: If the item you want might sell out, place your new order right away and
-          return the original item for a refund.
+          Зөвлөгөө: Хэрэв хүссэн бараа дуусаж болзошгүй бол шинэ захиалгаа шууд хийгээд
+          анхны барааг нөхөн олговрын төлөө буцаана уу.
         </p>
       </section>
 
       {/* Damaged or Defective Items */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Damaged or Defective Items</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Гэмтсэн эсвэл гэмтэлтэй бараа</h2>
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-6">
           <p className="text-gray-700 mb-4">
-            If you received a damaged or defective item, we apologize for the inconvenience.
-            Please contact us within 48 hours of delivery with:
+            Хэрэв та гэмтсэн эсвэл гэмтэлтэй бараа хүлээн авсан бол уучлалт гуйя.
+            Хүлээн авснаас хойш 48 цагийн дотор дараах мэдээллийн хамт бидэнтэй холбогдоно уу:
           </p>
           <ul className="list-disc pl-6 text-gray-600 space-y-2">
-            <li>Your order number</li>
-            <li>Photos of the damage or defect</li>
-            <li>Photos of the packaging (for shipping damage)</li>
-            <li>Description of the issue</li>
+            <li>Таны захиалгын дугаар</li>
+            <li>Гэмтэл эсвэл согогийн зураг</li>
+            <li>Сав баглааны зураг (хүргэлтийн гэмтлийн хувьд)</li>
+            <li>Асуудлын тайлбар</li>
           </ul>
           <p className="text-gray-700 mt-4">
-            We&apos;ll expedite the return process and cover all shipping costs for defective items.
+            Бид буцаалтын үйл явцыг түргэсгэж, гэмтэлтэй барааны бүх хүргэлтийн зардлыг хариуцна.
           </p>
         </div>
       </section>
 
       {/* Marketplace Seller Returns */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Marketplace Seller Returns</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Marketplace худалдагчийн буцаалт</h2>
         <p className="text-gray-600 mb-4">
-          Items sold by third-party sellers on our marketplace may have different return policies.
-          Check the product listing for seller-specific return information.
+          Манай marketplace дээрх гуравдагч талын худалдагчдын зарсан барааны буцаалтын бодлого өөр байж болно.
+          Худалдагчийн буцаалтын мэдээллийг бүтээгдэхүүний жагсаалтаас шалгана уу.
         </p>
         <div className="border-l-4 border-orange-400 pl-4">
           <p className="text-gray-600">
-            <strong>Note:</strong> All sellers on our marketplace are required to offer at least
-            a 14-day return window. If a seller doesn&apos;t honor their return policy, contact our
-            support team and we&apos;ll help resolve the issue.
+            <strong>Тэмдэглэл:</strong> Манай marketplace дээрх бүх худалдагч хамгийн багадаа
+            14 хоногийн буцаалтын хугацаа санал болгох ёстой. Хэрэв худалдагч буцаалтын бодлогоо
+            хүндэтгэхгүй бол манай дэмжлэгийн багтай холбогдоно уу, бид асуудлыг шийдвэрлэхэд тусална.
           </p>
         </div>
       </section>
 
       {/* FAQ */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Frequently Asked Questions</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Түгээмэл асуултууд</h2>
         <div className="space-y-4">
           <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="font-semibold text-gray-900 mb-2">Can I return a gift?</h3>
+            <h3 className="font-semibold text-gray-900 mb-2">Бэлэг буцааж болох уу?</h3>
             <p className="text-sm text-gray-600">
-              Yes, gift recipients can return items. You&apos;ll receive a gift card for the value
-              of the item (minus any discounts applied to the original purchase).
+              Тийм, бэлэг хүлээн авагчид бараа буцаах боломжтой. Та барааны үнийн дүнтэй тэнцэх
+              бэлгийн карт авах болно (анхны худалдан авалтад хэрэглэсэн хөнгөлөлтийг хасна).
             </p>
           </div>
           <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="font-semibold text-gray-900 mb-2">What if I lost my receipt?</h3>
+            <h3 className="font-semibold text-gray-900 mb-2">Баримтаа алдсан бол яах вэ?</h3>
             <p className="text-sm text-gray-600">
-              No problem! Log into your account to access your order history, or contact support
-              with your email address to look up your order.
+              Асуудалгүй! Бүртгэлдээ нэвтэрч захиалгын түүхээ харах боломжтой, эсвэл дэмжлэгтэй
+              имэйл хаягаараа холбогдож захиалгаа хайлгана уу.
             </p>
           </div>
           <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="font-semibold text-gray-900 mb-2">Can I return an item after 30 days?</h3>
+            <h3 className="font-semibold text-gray-900 mb-2">30 хоногийн дараа бараа буцааж болох уу?</h3>
             <p className="text-sm text-gray-600">
-              Returns after 30 days are evaluated on a case-by-case basis. Contact support to
-              discuss your situation. Note: Late returns may receive store credit instead of a refund.
+              30 хоногийн дараах буцаалтыг тохиолдол бүрээр үнэлнэ. Нөхцөл байдлаа ярилцахын тулд дэмжлэгтэй холбогдоно уу.
+              Тэмдэглэл: Хоцорсон буцаалт нөхөн олговрын оронд дэлгүүрийн кредит авч болно.
             </p>
           </div>
         </div>
@@ -237,17 +237,17 @@ export default function ReturnsPage() {
 
       {/* Contact */}
       <section>
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Need Help?</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Тусламж хэрэгтэй юу?</h2>
         <p className="text-gray-600">
-          If you have questions about returns or need assistance, please contact our support team at{' '}
+          Хэрэв танд буцаалтын талаар асуулт байгаа эсвэл тусламж хэрэгтэй бол манай дэмжлэгийн багтай{' '}
           <a href="mailto:returns@marketplace.com" className="text-orange-600 hover:underline">
             returns@marketplace.com
           </a>{' '}
-          or visit our{' '}
+          хаягаар холбогдоно уу эсвэл манай{' '}
           <a href="/contact" className="text-orange-600 hover:underline">
-            Contact Us
+            Холбоо барих
           </a>{' '}
-          page.
+          хуудсаар зочилно уу.
         </p>
       </section>
     </div>

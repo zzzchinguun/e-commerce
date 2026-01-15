@@ -40,7 +40,7 @@ export function ForgotPasswordForm() {
 
       setEmailSent(true)
     } catch (error) {
-      toast.error('Something went wrong. Please try again.')
+      toast.error('Алдаа гарлаа. Дахин оролдоно уу.')
     } finally {
       setIsLoading(false)
     }
@@ -52,17 +52,17 @@ export function ForgotPasswordForm() {
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
           <CheckCircle className="h-6 w-6 text-green-600" />
         </div>
-        <h3 className="text-lg font-medium text-gray-900">Check your email</h3>
+        <h3 className="text-lg font-medium text-gray-900">Имэйлээ шалгана уу</h3>
         <p className="mt-2 text-sm text-gray-600">
-          We&apos;ve sent a password reset link to your email address. Please
-          click the link to reset your password.
+          Таны имэйл хаяг руу нууц үг сэргээх холбоос илгээлээ. Нууц үгээ
+          сэргээхийн тулд холбоос дээр дарна уу.
         </p>
         <Button
           variant="outline"
           className="mt-6"
           onClick={() => setEmailSent(false)}
         >
-          Try a different email
+          Өөр имэйл ашиглах
         </Button>
       </div>
     )
@@ -71,7 +71,7 @@ export function ForgotPasswordForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">Имэйл</Label>
         <Input
           id="email"
           type="email"
@@ -91,7 +91,7 @@ export function ForgotPasswordForm() {
         disabled={isLoading}
       >
         {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        Send reset link
+        Сэргээх холбоос илгээх
       </Button>
     </form>
   )

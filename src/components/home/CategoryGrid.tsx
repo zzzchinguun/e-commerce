@@ -24,56 +24,56 @@ interface Category {
 
 const categories: Category[] = [
   {
-    name: 'Electronics',
+    name: 'Электроник',
     slug: 'electronics',
     icon: Laptop,
     color: 'text-blue-600',
     bgColor: 'bg-blue-50 hover:bg-blue-100',
   },
   {
-    name: 'Fashion',
+    name: 'Загвар',
     slug: 'fashion',
     icon: Shirt,
     color: 'text-purple-600',
     bgColor: 'bg-purple-50 hover:bg-purple-100',
   },
   {
-    name: 'Home & Garden',
+    name: 'Гэр & Цэцэрлэг',
     slug: 'home-garden',
     icon: Home,
     color: 'text-green-600',
     bgColor: 'bg-green-50 hover:bg-green-100',
   },
   {
-    name: 'Health & Beauty',
+    name: 'Эрүүл мэнд & Гоо сайхан',
     slug: 'health-beauty',
     icon: Heart,
     color: 'text-pink-600',
     bgColor: 'bg-pink-50 hover:bg-pink-100',
   },
   {
-    name: 'Sports',
+    name: 'Спорт',
     slug: 'sports-outdoors',
     icon: Dumbbell,
     color: 'text-orange-600',
     bgColor: 'bg-orange-50 hover:bg-orange-100',
   },
   {
-    name: 'Automotive',
+    name: 'Автомашин',
     slug: 'automotive',
     icon: Car,
     color: 'text-slate-600',
     bgColor: 'bg-slate-50 hover:bg-slate-100',
   },
   {
-    name: 'Books',
+    name: 'Ном',
     slug: 'books-media',
     icon: BookOpen,
     color: 'text-amber-600',
     bgColor: 'bg-amber-50 hover:bg-amber-100',
   },
   {
-    name: 'Gaming',
+    name: 'Тоглоом',
     slug: 'toys-games',
     icon: Gamepad2,
     color: 'text-red-600',
@@ -85,7 +85,7 @@ export function CategoryGrid() {
   return (
     <section className="py-10">
       <div className="container mx-auto px-4">
-        <h2 className="mb-6 text-2xl font-bold text-gray-900">Shop by Category</h2>
+        <h2 className="mb-6 text-2xl font-bold text-gray-900">Ангилалаар үзэх</h2>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-8">
           {categories.map((category) => (
             <Link
