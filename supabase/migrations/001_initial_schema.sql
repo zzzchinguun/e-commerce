@@ -516,7 +516,7 @@ BEGIN
 
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
 -- Increment product views
 CREATE OR REPLACE FUNCTION public.increment_product_views(p_product_id UUID)
@@ -524,7 +524,7 @@ RETURNS VOID AS $$
 BEGIN
     UPDATE public.products SET view_count = view_count + 1 WHERE id = p_product_id;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
 -- ============================================
 -- TRIGGERS

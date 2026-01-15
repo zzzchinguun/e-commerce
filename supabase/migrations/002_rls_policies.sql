@@ -30,12 +30,12 @@ ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 CREATE OR REPLACE FUNCTION public.get_user_role()
 RETURNS user_role AS $$
     SELECT role FROM public.users WHERE id = auth.uid()
-$$ LANGUAGE sql SECURITY DEFINER STABLE;
+$$ LANGUAGE sql SECURITY DEFINER STABLE SET search_path = '';
 
 CREATE OR REPLACE FUNCTION public.is_admin()
 RETURNS BOOLEAN AS $$
     SELECT role = 'admin' FROM public.users WHERE id = auth.uid()
-$$ LANGUAGE sql SECURITY DEFINER STABLE;
+$$ LANGUAGE sql SECURITY DEFINER STABLE SET search_path = '';
 
 CREATE OR REPLACE FUNCTION public.is_seller()
 RETURNS BOOLEAN AS $$
@@ -43,12 +43,12 @@ RETURNS BOOLEAN AS $$
         SELECT 1 FROM public.seller_profiles
         WHERE user_id = auth.uid() AND status = 'approved'
     )
-$$ LANGUAGE sql SECURITY DEFINER STABLE;
+$$ LANGUAGE sql SECURITY DEFINER STABLE SET search_path = '';
 
 CREATE OR REPLACE FUNCTION public.get_seller_profile_id()
 RETURNS UUID AS $$
     SELECT id FROM public.seller_profiles WHERE user_id = auth.uid()
-$$ LANGUAGE sql SECURITY DEFINER STABLE;
+$$ LANGUAGE sql SECURITY DEFINER STABLE SET search_path = '';
 
 -- ============================================
 -- USERS POLICIES
