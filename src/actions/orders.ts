@@ -8,6 +8,187 @@ type SellerProfile = Tables<'seller_profiles'>
 type OrderItem = Tables<'order_items'>
 
 // ============================================
+// CUSTOMER ORDER ACTIONS
+// ============================================
+
+export async function getUserOrders(options?: {
+  status?: string
+  limit?: number
+  offset?: number
+}) {
+  const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { error: 'Not authenticated', orders: [] }
+  }
+
+  // Build query for user's orders
+  let query = supabase
+    .from('orders')
+    .select(`
+      id,
+      order_number,
+      status,
+      payment_status,
+      subtotal,
+      shipping_total,
+      tax_total,
+      grand_total,
+      shipping_address,
+      tracking_number,
+      created_at,
+      order_items (
+        id,
+        product_id,
+        product_name,
+        variant_options,
+        unit_price,
+        quantity,
+        total,
+        status,
+        products (
+          slug,
+          product_images (
+            url,
+            is_primary
+          )
+        )
+      )
+    `)
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+
+  // Apply status filter
+  if (options?.status && options.status !== 'all') {
+    query = query.eq('status', options.status)
+  }
+
+  if (options?.limit) {
+    query = query.limit(options.limit)
+  }
+
+  if (options?.offset) {
+    query = query.range(options.offset, options.offset + (options.limit || 10) - 1)
+  }
+
+  const { data: orders, error, count } = await query
+
+  if (error) {
+    return { error: error.message, orders: [] }
+  }
+
+  // Transform orders data
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const transformedOrders = (orders as any[] || []).map((order) => ({
+    id: order.order_number,
+    orderId: order.id,
+    date: new Date(order.created_at),
+    status: order.status,
+    paymentStatus: order.payment_status,
+    total: order.grand_total,
+    subtotal: order.subtotal,
+    shippingTotal: order.shipping_total,
+    taxTotal: order.tax_total,
+    trackingNumber: order.tracking_number,
+    shippingAddress: order.shipping_address,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    items: (order.order_items || []).map((item: any) => {
+      const primaryImage = item.products?.product_images?.find(
+        (img: { is_primary: boolean }) => img.is_primary
+      )
+      const firstImage = item.products?.product_images?.[0]
+      return {
+        id: item.id,
+        productId: item.product_id,
+        name: item.product_name,
+        slug: item.products?.slug,
+        quantity: item.quantity,
+        price: item.unit_price,
+        total: item.total,
+        status: item.status,
+        variantOptions: item.variant_options,
+        image: primaryImage?.url || firstImage?.url || null,
+      }
+    }),
+  }))
+
+  return { orders: transformedOrders, count }
+}
+
+export async function getOrderById(orderId: string) {
+  const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { error: 'Not authenticated' }
+  }
+
+  const { data: order, error } = await supabase
+    .from('orders')
+    .select(`
+      id,
+      order_number,
+      status,
+      payment_status,
+      subtotal,
+      shipping_total,
+      tax_total,
+      grand_total,
+      shipping_address,
+      billing_address,
+      tracking_number,
+      shipping_carrier,
+      estimated_delivery_date,
+      notes,
+      created_at,
+      confirmed_at,
+      shipped_at,
+      delivered_at,
+      order_items (
+        id,
+        product_id,
+        product_name,
+        variant_options,
+        sku,
+        unit_price,
+        quantity,
+        subtotal,
+        tax_amount,
+        total,
+        status,
+        seller_id,
+        products (
+          slug,
+          product_images (
+            url,
+            is_primary
+          )
+        ),
+        seller_profiles (
+          store_name,
+          store_slug
+        )
+      )
+    `)
+    .eq('id', orderId)
+    .eq('user_id', user.id)
+    .single()
+
+  if (error || !order) {
+    return { error: error?.message || 'Order not found' }
+  }
+
+  return { order }
+}
+
+// ============================================
 // SELLER ORDER ACTIONS
 // ============================================
 

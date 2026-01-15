@@ -8,6 +8,536 @@ type SellerProfile = Tables<'seller_profiles'>
 type Product = Tables<'products'>
 
 // ============================================
+// PUBLIC PRODUCT ACTIONS (No auth required)
+// ============================================
+
+export type PublicProduct = {
+  id: string
+  name: string
+  slug: string
+  price: number
+  compareAtPrice: number | null
+  image: string | null
+  rating: number
+  reviewCount: number
+  seller: {
+    id: string
+    storeName: string
+    storeSlug: string
+  }
+}
+
+export type ProductDetail = {
+  id: string
+  name: string
+  slug: string
+  description: string
+  price: number
+  compareAtPrice: number | null
+  rating: number
+  reviewCount: number
+  stock: number
+  images: string[]
+  seller: {
+    id: string
+    storeName: string
+    storeSlug: string
+    rating: number
+  }
+  variants: {
+    id: string
+    name: string
+    price: number
+    compareAtPrice: number | null
+    stock: number
+    options: Record<string, string>
+  }[]
+  options: {
+    name: string
+    values: string[]
+  }[]
+  category: {
+    id: string
+    name: string
+    slug: string
+  } | null
+}
+
+export async function getPublicProducts(options?: {
+  category?: string
+  search?: string
+  minPrice?: number
+  maxPrice?: number
+  rating?: number
+  sort?: 'newest' | 'price_asc' | 'price_desc' | 'popular' | 'rating'
+  limit?: number
+  offset?: number
+}): Promise<{ products: PublicProduct[]; count: number; error?: string }> {
+  const supabase = await createClient()
+
+  // Build query for active products only
+  let query = supabase
+    .from('products')
+    .select(`
+      id,
+      name,
+      slug,
+      base_price,
+      compare_at_price,
+      rating_average,
+      rating_count,
+      sales_count,
+      created_at,
+      seller_profiles!inner (
+        id,
+        store_name,
+        store_slug,
+        status
+      ),
+      product_images (
+        url,
+        is_primary,
+        position
+      ),
+      categories (
+        id,
+        slug
+      )
+    `, { count: 'exact' })
+    .eq('status', 'active')
+    .eq('seller_profiles.status', 'approved')
+
+  // Apply filters
+  if (options?.category) {
+    query = query.eq('categories.slug', options.category)
+  }
+
+  if (options?.search) {
+    query = query.ilike('name', `%${options.search}%`)
+  }
+
+  if (options?.minPrice) {
+    query = query.gte('base_price', options.minPrice)
+  }
+
+  if (options?.maxPrice) {
+    query = query.lte('base_price', options.maxPrice)
+  }
+
+  if (options?.rating) {
+    query = query.gte('rating_average', options.rating)
+  }
+
+  // Apply sorting
+  switch (options?.sort) {
+    case 'price_asc':
+      query = query.order('base_price', { ascending: true })
+      break
+    case 'price_desc':
+      query = query.order('base_price', { ascending: false })
+      break
+    case 'popular':
+      query = query.order('sales_count', { ascending: false, nullsFirst: false })
+      break
+    case 'rating':
+      query = query.order('rating_average', { ascending: false, nullsFirst: false })
+      break
+    case 'newest':
+    default:
+      query = query.order('created_at', { ascending: false })
+      break
+  }
+
+  // Apply pagination
+  const limit = options?.limit || 24
+  const offset = options?.offset || 0
+  query = query.range(offset, offset + limit - 1)
+
+  const { data: products, error, count } = await query
+
+  if (error) {
+    return { products: [], count: 0, error: error.message }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const transformedProducts: PublicProduct[] = (products as any[])?.map((product) => {
+    const primaryImage = product.product_images?.find((img: { is_primary: boolean }) => img.is_primary)?.url
+    const firstImage = product.product_images?.[0]?.url
+
+    return {
+      id: product.id,
+      name: product.name,
+      slug: product.slug,
+      price: product.base_price,
+      compareAtPrice: product.compare_at_price,
+      image: primaryImage || firstImage || null,
+      rating: product.rating_average || 0,
+      reviewCount: product.rating_count || 0,
+      seller: {
+        id: product.seller_profiles.id,
+        storeName: product.seller_profiles.store_name,
+        storeSlug: product.seller_profiles.store_slug,
+      },
+    }
+  }) || []
+
+  return { products: transformedProducts, count: count || 0 }
+}
+
+export async function getPublicProductBySlug(slug: string): Promise<{ product: ProductDetail | null; error?: string }> {
+  const supabase = await createClient()
+
+  const { data: product, error } = await supabase
+    .from('products')
+    .select(`
+      id,
+      name,
+      slug,
+      description,
+      base_price,
+      compare_at_price,
+      rating_average,
+      rating_count,
+      seller_profiles!inner (
+        id,
+        store_name,
+        store_slug,
+        rating_average,
+        status
+      ),
+      product_images (
+        url,
+        position
+      ),
+      product_variants (
+        id,
+        sku,
+        price,
+        compare_at_price,
+        option_values,
+        is_default,
+        inventory (
+          quantity
+        )
+      ),
+      categories (
+        id,
+        name,
+        slug
+      )
+    `)
+    .eq('slug', slug)
+    .eq('status', 'active')
+    .eq('seller_profiles.status', 'approved')
+    .single()
+
+  if (error) {
+    if (error.code === 'PGRST116') {
+      return { product: null }
+    }
+    return { product: null, error: error.message }
+  }
+
+  if (!product) {
+    return { product: null }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const p = product as any
+
+  // Get total stock from all variants
+  const totalStock = p.product_variants?.reduce((sum: number, v: { inventory?: { quantity: number }[] }) => {
+    const qty = v.inventory?.[0]?.quantity || 0
+    return sum + qty
+  }, 0) || 0
+
+  // Sort images by position
+  const sortedImages = [...(p.product_images || [])].sort((a: { position: number }, b: { position: number }) => a.position - b.position)
+
+  // Transform variants
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const variants = p.product_variants?.map((v: any) => ({
+    id: v.id,
+    name: v.sku || 'Default',
+    price: v.price,
+    compareAtPrice: v.compare_at_price,
+    stock: v.inventory?.[0]?.quantity || 0,
+    options: v.option_values || {},
+  })) || []
+
+  // Extract unique option names and values from variants
+  const optionsMap = new Map<string, Set<string>>()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  variants.forEach((v: any) => {
+    Object.entries(v.options).forEach(([key, value]) => {
+      if (!optionsMap.has(key)) {
+        optionsMap.set(key, new Set())
+      }
+      optionsMap.get(key)?.add(value as string)
+    })
+  })
+
+  const options = Array.from(optionsMap.entries()).map(([name, values]) => ({
+    name,
+    values: Array.from(values),
+  }))
+
+  const transformedProduct: ProductDetail = {
+    id: p.id,
+    name: p.name,
+    slug: p.slug,
+    description: p.description || '',
+    price: p.base_price,
+    compareAtPrice: p.compare_at_price,
+    rating: p.rating_average || 0,
+    reviewCount: p.rating_count || 0,
+    stock: totalStock,
+    images: sortedImages.map((img: { url: string }) => img.url),
+    seller: {
+      id: p.seller_profiles.id,
+      storeName: p.seller_profiles.store_name,
+      storeSlug: p.seller_profiles.store_slug,
+      rating: p.seller_profiles.rating_average || 0,
+    },
+    variants,
+    options,
+    category: p.categories ? {
+      id: p.categories.id,
+      name: p.categories.name,
+      slug: p.categories.slug,
+    } : null,
+  }
+
+  return { product: transformedProduct }
+}
+
+export async function getFeaturedProducts(limit = 6): Promise<{ products: PublicProduct[] }> {
+  const supabase = await createClient()
+
+  const { data: products } = await supabase
+    .from('products')
+    .select(`
+      id,
+      name,
+      slug,
+      base_price,
+      compare_at_price,
+      rating_average,
+      rating_count,
+      seller_profiles!inner (
+        id,
+        store_name,
+        store_slug,
+        status
+      ),
+      product_images (
+        url,
+        is_primary
+      )
+    `)
+    .eq('status', 'active')
+    .eq('seller_profiles.status', 'approved')
+    .eq('is_featured', true)
+    .order('created_at', { ascending: false })
+    .limit(limit)
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const transformedProducts: PublicProduct[] = (products as any[])?.map((product) => {
+    const primaryImage = product.product_images?.find((img: { is_primary: boolean }) => img.is_primary)?.url
+    const firstImage = product.product_images?.[0]?.url
+
+    return {
+      id: product.id,
+      name: product.name,
+      slug: product.slug,
+      price: product.base_price,
+      compareAtPrice: product.compare_at_price,
+      image: primaryImage || firstImage || null,
+      rating: product.rating_average || 0,
+      reviewCount: product.rating_count || 0,
+      seller: {
+        id: product.seller_profiles.id,
+        storeName: product.seller_profiles.store_name,
+        storeSlug: product.seller_profiles.store_slug,
+      },
+    }
+  }) || []
+
+  return { products: transformedProducts }
+}
+
+export async function getBestSellers(limit = 6): Promise<{ products: PublicProduct[] }> {
+  const supabase = await createClient()
+
+  const { data: products } = await supabase
+    .from('products')
+    .select(`
+      id,
+      name,
+      slug,
+      base_price,
+      compare_at_price,
+      rating_average,
+      rating_count,
+      sales_count,
+      seller_profiles!inner (
+        id,
+        store_name,
+        store_slug,
+        status
+      ),
+      product_images (
+        url,
+        is_primary
+      )
+    `)
+    .eq('status', 'active')
+    .eq('seller_profiles.status', 'approved')
+    .order('sales_count', { ascending: false, nullsFirst: false })
+    .limit(limit)
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const transformedProducts: PublicProduct[] = (products as any[])?.map((product) => {
+    const primaryImage = product.product_images?.find((img: { is_primary: boolean }) => img.is_primary)?.url
+    const firstImage = product.product_images?.[0]?.url
+
+    return {
+      id: product.id,
+      name: product.name,
+      slug: product.slug,
+      price: product.base_price,
+      compareAtPrice: product.compare_at_price,
+      image: primaryImage || firstImage || null,
+      rating: product.rating_average || 0,
+      reviewCount: product.rating_count || 0,
+      seller: {
+        id: product.seller_profiles.id,
+        storeName: product.seller_profiles.store_name,
+        storeSlug: product.seller_profiles.store_slug,
+      },
+    }
+  }) || []
+
+  return { products: transformedProducts }
+}
+
+export async function getNewArrivals(limit = 6): Promise<{ products: PublicProduct[] }> {
+  const supabase = await createClient()
+
+  const { data: products } = await supabase
+    .from('products')
+    .select(`
+      id,
+      name,
+      slug,
+      base_price,
+      compare_at_price,
+      rating_average,
+      rating_count,
+      seller_profiles!inner (
+        id,
+        store_name,
+        store_slug,
+        status
+      ),
+      product_images (
+        url,
+        is_primary
+      )
+    `)
+    .eq('status', 'active')
+    .eq('seller_profiles.status', 'approved')
+    .order('created_at', { ascending: false })
+    .limit(limit)
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const transformedProducts: PublicProduct[] = (products as any[])?.map((product) => {
+    const primaryImage = product.product_images?.find((img: { is_primary: boolean }) => img.is_primary)?.url
+    const firstImage = product.product_images?.[0]?.url
+
+    return {
+      id: product.id,
+      name: product.name,
+      slug: product.slug,
+      price: product.base_price,
+      compareAtPrice: product.compare_at_price,
+      image: primaryImage || firstImage || null,
+      rating: product.rating_average || 0,
+      reviewCount: product.rating_count || 0,
+      seller: {
+        id: product.seller_profiles.id,
+        storeName: product.seller_profiles.store_name,
+        storeSlug: product.seller_profiles.store_slug,
+      },
+    }
+  }) || []
+
+  return { products: transformedProducts }
+}
+
+export async function getRelatedProducts(productId: string, categoryId?: string, limit = 6): Promise<{ products: PublicProduct[] }> {
+  const supabase = await createClient()
+
+  let query = supabase
+    .from('products')
+    .select(`
+      id,
+      name,
+      slug,
+      base_price,
+      compare_at_price,
+      rating_average,
+      rating_count,
+      seller_profiles!inner (
+        id,
+        store_name,
+        store_slug,
+        status
+      ),
+      product_images (
+        url,
+        is_primary
+      )
+    `)
+    .eq('status', 'active')
+    .eq('seller_profiles.status', 'approved')
+    .neq('id', productId)
+    .limit(limit)
+
+  if (categoryId) {
+    query = query.eq('category_id', categoryId)
+  }
+
+  query = query.order('rating_average', { ascending: false, nullsFirst: false })
+
+  const { data: products } = await query
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const transformedProducts: PublicProduct[] = (products as any[])?.map((product) => {
+    const primaryImage = product.product_images?.find((img: { is_primary: boolean }) => img.is_primary)?.url
+    const firstImage = product.product_images?.[0]?.url
+
+    return {
+      id: product.id,
+      name: product.name,
+      slug: product.slug,
+      price: product.base_price,
+      compareAtPrice: product.compare_at_price,
+      image: primaryImage || firstImage || null,
+      rating: product.rating_average || 0,
+      reviewCount: product.rating_count || 0,
+      seller: {
+        id: product.seller_profiles.id,
+        storeName: product.seller_profiles.store_name,
+        storeSlug: product.seller_profiles.store_slug,
+      },
+    }
+  }) || []
+
+  return { products: transformedProducts }
+}
+
+// ============================================
 // PRODUCT CRUD ACTIONS
 // ============================================
 

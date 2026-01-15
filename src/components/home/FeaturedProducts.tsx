@@ -75,10 +75,22 @@ const placeholderProducts = [
   },
 ]
 
+interface Product {
+  id: string
+  name: string
+  slug: string
+  price: number
+  compareAtPrice?: number | null
+  image?: string | null
+  rating: number
+  reviewCount: number
+  seller: { storeName: string }
+}
+
 interface FeaturedProductsProps {
   title: string
   viewAllHref?: string
-  products?: typeof placeholderProducts
+  products?: Product[]
 }
 
 export function FeaturedProducts({

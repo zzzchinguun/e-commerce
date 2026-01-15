@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Heart, ShoppingCart, Star, Package } from 'lucide-react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { useCartStore } from '@/stores/cart-store'
 import { useWishlistStore } from '@/stores/wishlist-store'
@@ -52,6 +53,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
         storeSlug: '',
       },
     })
+    toast.success('Added to cart')
   }
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
@@ -59,6 +61,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
     e.stopPropagation()
     if (isInWishlist) {
       removeFromWishlist(product.id)
+      toast.success('Removed from wishlist')
     } else {
       addToWishlist({
         id: product.id,
@@ -72,6 +75,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
           storeSlug: '',
         },
       })
+      toast.success('Added to wishlist')
     }
   }
 
