@@ -672,7 +672,7 @@ export async function getSellerProducts(options?: {
     return { error: 'Seller profile not found' }
   }
 
-  // Build query
+  // Build query - fetch products with variants
   let query = supabase
     .from('products')
     .select(`
@@ -688,14 +688,10 @@ export async function getSellerProducts(options?: {
         is_primary,
         position
       ),
-      product_variants (
+      product_variants!inner (
         id,
         sku,
-        price,
-        inventory (
-          quantity,
-          reserved_quantity
-        )
+        price
       )
     `)
     .eq('seller_id', profile.id)
@@ -728,20 +724,36 @@ export async function getSellerProducts(options?: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const items = products as any[] | null
 
-  // Transform data to include stock info
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const transformedProducts = items?.map((product: any) => {
-    const defaultVariant = product.product_variants?.[0]
-    const inventory = defaultVariant?.inventory?.[0]
+  // Transform data to include stock info - fetch inventory for each product
+  const transformedProducts = await Promise.all(
+    (items || []).map(async (product: any) => {
+      const defaultVariant = product.product_variants?.[0]
+      let stock = 0
+      let reservedStock = 0
 
-    return {
-      ...product,
-      stock: inventory?.quantity ?? 0,
-      reservedStock: inventory?.reserved_quantity ?? 0,
-      mainImage: product.product_images?.find((img: { is_primary: boolean }) => img.is_primary)?.url ||
-        product.product_images?.[0]?.url || null,
-    }
-  })
+      if (defaultVariant?.id) {
+        // Fetch inventory separately
+        const { data: inventoryData } = await supabase
+          .from('inventory')
+          .select('quantity, reserved_quantity')
+          .eq('variant_id', defaultVariant.id)
+          .single()
+
+        if (inventoryData) {
+          stock = (inventoryData as any).quantity ?? 0
+          reservedStock = (inventoryData as any).reserved_quantity ?? 0
+        }
+      }
+
+      return {
+        ...product,
+        stock,
+        reservedStock,
+        mainImage: product.product_images?.find((img: { is_primary: boolean }) => img.is_primary)?.url ||
+          product.product_images?.[0]?.url || null,
+      }
+    })
+  )
 
   return { products: transformedProducts, count }
 }
