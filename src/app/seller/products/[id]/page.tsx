@@ -94,14 +94,14 @@ export default function EditProductPage() {
 
       // Load product
       const productResult = await getProduct(productId)
-      if (productResult.error) {
+      if ('error' in productResult) {
         toast.error(productResult.error)
         router.push('/seller/products')
         return
       }
 
-      if (productResult.product) {
-        const product = productResult.product as any
+      const product = productResult.product as any
+      if (product) {
         const defaultVariant = product.product_variants?.[0]
         const inventory = defaultVariant?.inventory?.[0]
 
