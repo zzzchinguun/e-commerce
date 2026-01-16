@@ -123,12 +123,12 @@ function FilterContent({
   return (
     <div className="space-y-6">
       {/* Apply/Clear Buttons - Sticky Top */}
-      <div className="sticky top-0 -mx-3 bg-white px-3 py-2 shadow-2xs">
+      <div className="sticky top-0 z-10 -mx-1 bg-white px-1 py-2 shadow-sm">
         <div className="flex gap-2">
-          <Button variant="outline" className="h-8 flex-1 px-3 text-xs" onClick={handleClearFilters}>
+          <Button variant="outline" className="h-9 flex-1 px-2 text-xs" onClick={handleClearFilters}>
             Бүгдийг арилгах
           </Button>
-          <Button className="h-8 flex-1 bg-orange-500 px-3 text-xs hover:bg-orange-600" onClick={handleApplyFilters}>
+          <Button className="h-9 flex-1 bg-orange-500 px-2 text-xs hover:bg-orange-600" onClick={handleApplyFilters}>
             Шүүлтүүр хэрэглэх
           </Button>
         </div>
@@ -298,7 +298,7 @@ export function ProductFilters({ className, categories = [] }: ProductFiltersPro
       {/* Desktop Filters */}
       <div
         className={cn(
-          "hidden max-h-[calc(100vh-16rem)] overflow-y-auto overflow-x-hidden px-3 lg:block",
+          "hidden max-h-[calc(100vh-16rem)] overflow-y-auto px-1 lg:block",
           className
         )}
       >
