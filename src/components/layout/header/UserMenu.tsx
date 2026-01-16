@@ -40,7 +40,7 @@ export function UserMenu() {
         <Button
           variant="ghost"
           size="sm"
-          className="flex h-auto flex-col items-center py-1 text-white hover:bg-slate-800"
+          className="flex h-auto w-[70px] cursor-pointer flex-col items-center gap-0.5 rounded-md px-3 py-2.5 text-white transition-all duration-200 hover:scale-105 hover:bg-slate-800 hover:text-white"
         >
           <User className="h-5 w-5" />
           <span className="text-[10px] leading-tight">Нэвтрэх</span>
@@ -55,10 +55,10 @@ export function UserMenu() {
         <Button
           variant="ghost"
           size="sm"
-          className="flex h-auto flex-col items-center py-1 text-white hover:bg-slate-800"
+          className="flex h-auto w-[70px] cursor-pointer flex-col items-center gap-0.5 rounded-md px-3 py-2.5 text-white transition-all duration-200 hover:scale-105 hover:bg-slate-800 hover:text-white"
         >
           <User className="h-5 w-5" />
-          <span className="max-w-[70px] truncate text-[10px] leading-tight">
+          <span className="max-w-[60px] truncate text-[10px] leading-tight">
             {user?.full_name?.split(' ')[0] || 'Бүртгэл'}
           </span>
         </Button>

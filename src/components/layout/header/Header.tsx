@@ -60,7 +60,7 @@ export function Header() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="flex h-auto flex-col items-center py-1 text-white hover:bg-slate-800"
+                  className="flex h-auto w-[70px] cursor-pointer flex-col items-center gap-0.5 rounded-md px-3 py-2.5 text-white transition-all duration-200 hover:scale-105 hover:bg-slate-800 hover:text-white"
                 >
                   <Heart className="h-5 w-5" />
                   <span className="text-[10px] leading-tight">Хадгалсан</span>
@@ -71,7 +71,7 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="relative flex h-auto flex-col items-center py-1 text-white hover:bg-slate-800"
+                className="relative flex h-auto w-[70px] cursor-pointer flex-col items-center gap-0.5 rounded-md px-3 py-2.5 text-white transition-all duration-200 hover:scale-105 hover:bg-slate-800 hover:text-white"
                 onClick={openCart}
               >
                 <div className="relative">
