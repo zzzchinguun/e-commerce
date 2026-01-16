@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -13,7 +13,6 @@ import {
   Menu,
   X,
   ChevronDown,
-  Bell,
   LogOut,
   User,
   DollarSign,
@@ -28,6 +27,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { NotificationBell } from '@/components/admin/NotificationBell'
+import { getSellerPendingOrderCount } from '@/actions/seller'
 
 const sidebarLinks = [
   {
@@ -40,13 +41,12 @@ const sidebarLinks = [
     name: 'Бүтээгдэхүүн',
     href: '/seller/products',
     icon: Package,
-    badge: null,
   },
   {
     name: 'Захиалгууд',
     href: '/seller/orders',
     icon: ShoppingCart,
-    badge: '3',
+    badgeKey: 'pendingOrders',
   },
   {
     name: 'Статистик',
@@ -72,6 +72,20 @@ export default function SellerLayout({
 }) {
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [pendingOrders, setPendingOrders] = useState(0)
+
+  useEffect(() => {
+    getSellerPendingOrderCount().then((result) => {
+      setPendingOrders(result.count)
+    })
+  }, [pathname])
+
+  const getBadge = (badgeKey?: string) => {
+    if (badgeKey === 'pendingOrders' && pendingOrders > 0) {
+      return pendingOrders.toString()
+    }
+    return null
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -112,6 +126,7 @@ export default function SellerLayout({
             const isActive = link.exact
               ? pathname === link.href
               : pathname.startsWith(link.href)
+            const badge = getBadge(link.badgeKey)
 
             return (
               <Link
@@ -127,9 +142,9 @@ export default function SellerLayout({
               >
                 <link.icon className="h-5 w-5" />
                 <span className="flex-1">{link.name}</span>
-                {link.badge && (
+                {badge && (
                   <span className="rounded-full bg-orange-500 px-2 py-0.5 text-xs font-bold text-white">
-                    {link.badge}
+                    {badge}
                   </span>
                 )}
               </Link>
@@ -178,10 +193,7 @@ export default function SellerLayout({
           {/* Right Actions */}
           <div className="flex items-center gap-2">
             {/* Notifications */}
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="h-5 w-5" />
-              <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
-            </Button>
+            <NotificationBell />
 
             {/* User Menu */}
             <DropdownMenu>

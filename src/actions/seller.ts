@@ -141,6 +141,40 @@ export async function updateSellerProfile(formData: {
 // SELLER DASHBOARD STATS
 // ============================================
 
+export async function getSellerPendingOrderCount() {
+  const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { count: 0 }
+  }
+
+  // Get seller profile
+  const { data: profileData } = await supabase
+    .from('seller_profiles')
+    .select('id')
+    .eq('user_id', user.id)
+    .single()
+
+  const profile = profileData as { id: string } | null
+
+  if (!profile) {
+    return { count: 0 }
+  }
+
+  // Get pending orders count
+  const { count } = await supabase
+    .from('order_items')
+    .select('*', { count: 'exact', head: true })
+    .eq('seller_id', profile.id)
+    .eq('status', 'pending')
+
+  return { count: count || 0 }
+}
+
 export async function getSellerDashboardStats() {
   const supabase = await createClient()
 
