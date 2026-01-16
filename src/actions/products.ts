@@ -256,10 +256,7 @@ export async function getPublicProductBySlug(slug: string): Promise<{ product: P
         price,
         compare_at_price,
         option_values,
-        is_default,
-        inventory (
-          quantity
-        )
+        is_default
       ),
       categories (
         id,
@@ -286,23 +283,38 @@ export async function getPublicProductBySlug(slug: string): Promise<{ product: P
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const p = product as any
 
+  // Fetch inventory for all variants separately
+  const variantIds = p.product_variants?.map((v: { id: string }) => v.id) || []
+  const { data: inventoryData } = await supabase
+    .from('inventory')
+    .select('variant_id, quantity')
+    .in('variant_id', variantIds)
+
+  // Create a map of variant_id to quantity
+  const inventoryMap = new Map<string, number>()
+  if (inventoryData) {
+    inventoryData.forEach((inv: { variant_id: string; quantity: number }) => {
+      inventoryMap.set(inv.variant_id, inv.quantity)
+    })
+  }
+
   // Get total stock from all variants
-  const totalStock = p.product_variants?.reduce((sum: number, v: { inventory?: { quantity: number }[] }) => {
-    const qty = v.inventory?.[0]?.quantity || 0
-    return sum + qty
-  }, 0) || 0
+  let totalStock = 0
+  p.product_variants?.forEach((v: { id: string }) => {
+    totalStock += inventoryMap.get(v.id) || 0
+  })
 
   // Sort images by position
   const sortedImages = [...(p.product_images || [])].sort((a: { position: number }, b: { position: number }) => a.position - b.position)
 
-  // Transform variants
+  // Transform variants with inventory from map
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const variants = p.product_variants?.map((v: any) => ({
     id: v.id,
     name: v.sku || 'Default',
     price: v.price,
     compareAtPrice: v.compare_at_price,
-    stock: v.inventory?.[0]?.quantity || 0,
+    stock: inventoryMap.get(v.id) || 0,
     options: v.option_values || {},
   })) || []
 
@@ -804,13 +816,7 @@ export async function getProduct(productId: string) {
         barcode,
         price,
         compare_at_price,
-        option_values,
-        inventory (
-          quantity,
-          reserved_quantity,
-          low_stock_threshold,
-          track_inventory
-        )
+        option_values
       )
     `)
     .eq('id', productId)
@@ -821,7 +827,31 @@ export async function getProduct(productId: string) {
     return { error: error.message }
   }
 
-  return { product }
+  // Fetch inventory separately for each variant (nested query doesn't work)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const p = product as any
+  const variantIds = p.product_variants?.map((v: { id: string }) => v.id) || []
+
+  if (variantIds.length > 0) {
+    const { data: inventoryData } = await supabase
+      .from('inventory')
+      .select('variant_id, quantity, reserved_quantity, low_stock_threshold, track_inventory')
+      .in('variant_id', variantIds)
+
+    // Attach inventory to each variant
+    if (inventoryData) {
+      const inventoryMap = new Map(
+        inventoryData.map((inv: { variant_id: string; quantity: number; reserved_quantity: number; low_stock_threshold: number; track_inventory: boolean }) => [inv.variant_id, inv])
+      )
+
+      p.product_variants = p.product_variants.map((v: { id: string }) => ({
+        ...v,
+        inventory: inventoryMap.has(v.id) ? [inventoryMap.get(v.id)] : []
+      }))
+    }
+  }
+
+  return { product: p }
 }
 
 export async function createProduct(input: ProductInput, images?: string[]) {
