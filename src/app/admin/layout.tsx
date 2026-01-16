@@ -14,11 +14,12 @@ import {
   Menu,
   X,
   ChevronDown,
-  Bell,
   LogOut,
   User,
   Shield,
   Home,
+  Bell,
+  Image,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -31,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { ImpersonationBanner } from '@/components/admin/ImpersonationBanner'
+import { NotificationBell } from '@/components/admin/NotificationBell'
 import { getImpersonationStatus, getPendingSellerCount } from '@/actions/admin'
 
 const sidebarLinks = [
@@ -65,6 +67,16 @@ const sidebarLinks = [
     name: 'Статистик',
     href: '/admin/analytics',
     icon: BarChart3,
+  },
+  {
+    name: 'Мэдэгдэл',
+    href: '/admin/notifications',
+    icon: Bell,
+  },
+  {
+    name: 'Нүүр хуудас',
+    href: '/admin/homepage',
+    icon: Image,
   },
   {
     name: 'Тохиргоо',
@@ -223,12 +235,7 @@ export default function AdminLayout({
           {/* Right Actions */}
           <div className="flex items-center gap-2">
             {/* Notifications */}
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="h-5 w-5" />
-              {pendingSellers > 0 && (
-                <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
-              )}
-            </Button>
+            <NotificationBell />
 
             {/* User Menu */}
             <DropdownMenu>
