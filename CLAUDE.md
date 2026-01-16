@@ -34,6 +34,9 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 
 # Analytics (optional)
 NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+
+# Cron job secret (required for Vercel cron)
+CRON_SECRET=your-secure-random-string
 ```
 
 ### 3. Database Setup (Supabase)
@@ -280,8 +283,53 @@ For testing the checkout flow without real payments, a simulated QPay payment sy
 2. API creates order with `payment_method: 'qpay_test'` and `payment_status: 'pending'`
 3. Session ID stored in `stripe_session_id` field
 4. Customer clicks test payment button
-5. Server action updates: `payment_status: 'paid'`, decrements inventory, updates seller stats
+5. Server action updates: `payment_status: 'paid'`, decrements inventory, updates seller stats, increments product `sales_count`
 6. Customer redirected to success page
+
+---
+
+## Sales Count Tracking
+
+Product sales are tracked via the `products.sales_count` column, which is automatically updated when orders are paid.
+
+### Automatic Updates
+
+Sales count is incremented in two places:
+1. **QPay Test Payment** (`/src/actions/test-payment.ts`) - On `confirmTestPayment()`
+2. **Stripe Webhook** (`/src/app/api/webhooks/stripe/route.ts`) - On `checkout.session.completed`
+
+Both increment `sales_count` by the quantity purchased for each product in the order.
+
+### Data Reconciliation
+
+A nightly cron job reconciles `sales_count` to ensure data integrity:
+
+**Endpoint:** `/api/cron/nightly`
+**Schedule:** Daily at 2:00 AM Mongolia time (18:00 UTC)
+**Config:** `vercel.json`
+
+The reconciliation:
+1. Aggregates actual sales from `order_items` where `orders.payment_status` is 'paid' or 'succeeded'
+2. Updates each product's `sales_count` to match the aggregated total
+3. Resets products with no sales to 0
+4. Logs the action to `admin_audit_log`
+
+### Manual Reconciliation
+
+Admins can manually trigger reconciliation from:
+- **URL:** `/admin/maintenance`
+- **Action:** Click "Гараар ажиллуулах" (Run manually)
+
+### Files Involved
+
+- `/src/actions/admin.ts` - `reconcileProductSalesCounts()`, `reconcileProductSalesCountsInternal()`
+- `/src/app/admin/maintenance/page.tsx` - Admin maintenance UI
+- `/src/app/api/cron/nightly/route.ts` - Cron endpoint
+- `vercel.json` - Cron schedule configuration
+
+### Future: Order Cancellation
+
+When order cancellation/refund logic is implemented, `sales_count` should be decremented. A TODO comment with example code is in `/src/actions/orders.ts` at the `updateOrderStatus()` function.
 
 ---
 
@@ -371,10 +419,12 @@ src/
 │   │   ├── products/     # Product moderation
 │   │   ├── orders/       # Order management
 │   │   ├── analytics/    # Platform analytics
+│   │   ├── maintenance/  # System maintenance actions
 │   │   └── settings/     # Platform settings
 │   ├── seller/           # Seller dashboard (products, orders, analytics)
 │   └── api/              # API routes
 │       ├── checkout/     # Stripe checkout
+│       ├── cron/         # Scheduled jobs (nightly maintenance)
 │       ├── test-payment/ # QPay test payment
 │       └── webhooks/     # Stripe webhooks
 ├── actions/              # Server Actions
@@ -685,6 +735,7 @@ interface CartStore {
 - User management with impersonation
 - Order management with refund processing
 - Hero banners and featured categories management
+- System maintenance actions at `/admin/maintenance`
 
 ## Environment Variables
 
@@ -704,6 +755,9 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 
 # Analytics
 NEXT_PUBLIC_GA_ID=
+
+# Cron (required for Vercel cron jobs)
+CRON_SECRET=
 ```
 
 ## File Upload
@@ -748,6 +802,7 @@ const { data: { publicUrl } } = supabase.storage
 | `/admin/products` | Product moderation | Admin only |
 | `/admin/orders` | Order management | Admin only |
 | `/admin/analytics` | Platform analytics | Admin only |
+| `/admin/maintenance` | System maintenance | Admin only |
 | `/admin/settings` | Platform settings | Admin only |
 
 ## Commission Structure
@@ -831,6 +886,18 @@ All tables have RLS enabled. Key policies:
    - Default: 10% platform fee
    - `order_items.seller_amount = total - commission_amount`
    - Commission rate stored per seller and per order_item
+
+9. **Sales Count Tracking**:
+   - `products.sales_count` is incremented on payment confirmation
+   - Updated in both QPay test payment and Stripe webhook
+   - Nightly reconciliation ensures data integrity
+   - Manual reconciliation available at `/admin/maintenance`
+
+10. **Vercel Cron Jobs**:
+    - Configured in `vercel.json`
+    - `/api/cron/nightly` runs all nightly maintenance jobs
+    - Requires `CRON_SECRET` environment variable
+    - Schedule: 18:00 UTC (02:00 Mongolia time)
 
 ## Seed Data
 
