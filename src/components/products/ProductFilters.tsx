@@ -1,147 +1,149 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { ChevronDown, Filter } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Slider } from '@/components/ui/slider'
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
-import { Separator } from '@/components/ui/separator'
-import { cn } from '@/lib/utils'
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ChevronDown, Filter } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Slider } from "@/components/ui/slider";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 export type CategoryFilter = {
-  id: string
-  name: string
-  slug: string
-  productCount?: number
-  children?: CategoryFilter[]
-}
+  id: string;
+  name: string;
+  slug: string;
+  productCount?: number;
+  children?: CategoryFilter[];
+};
 
-const ratings = [4, 3, 2, 1]
+const ratings = [4, 3, 2, 1];
 
 interface ProductFiltersProps {
-  className?: string
-  categories?: CategoryFilter[]
+  className?: string;
+  categories?: CategoryFilter[];
 }
 
 function FilterContent({
   onClose,
   categories = [],
 }: {
-  onClose?: () => void
-  categories?: CategoryFilter[]
+  onClose?: () => void;
+  categories?: CategoryFilter[];
 }) {
-  const router = useRouter()
-  const searchParams = useSearchParams()
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [priceRange, setPriceRange] = useState([0, 1000])
-  const [minPriceInput, setMinPriceInput] = useState('0')
-  const [maxPriceInput, setMaxPriceInput] = useState('1000')
+  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [minPriceInput, setMinPriceInput] = useState("0");
+  const [maxPriceInput, setMaxPriceInput] = useState("1000");
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    searchParams.get('category')?.split(',').filter(Boolean) || []
-  )
+    searchParams.get("category")?.split(",").filter(Boolean) || []
+  );
   const [selectedRating, setSelectedRating] = useState<number | null>(
-    searchParams.get('rating') ? parseInt(searchParams.get('rating')!) : null
-  )
+    searchParams.get("rating") ? parseInt(searchParams.get("rating")!) : null
+  );
 
   // Sync input fields when priceRange changes (e.g., from slider)
   const handleSliderChange = (values: number[]) => {
-    setPriceRange(values)
-    setMinPriceInput(values[0].toString())
-    setMaxPriceInput(values[1].toString())
-  }
+    setPriceRange(values);
+    setMinPriceInput(values[0].toString());
+    setMaxPriceInput(values[1].toString());
+  };
 
   // Update price range from min input on Enter or blur
   const handleMinPriceCommit = () => {
-    const value = minPriceInput === '' ? 0 : parseInt(minPriceInput) || 0
-    const clampedValue = Math.max(0, Math.min(value, priceRange[1]))
-    setPriceRange([clampedValue, priceRange[1]])
-    setMinPriceInput(clampedValue.toString())
-  }
+    const value = minPriceInput === "" ? 0 : parseInt(minPriceInput) || 0;
+    const clampedValue = Math.max(0, Math.min(value, priceRange[1]));
+    setPriceRange([clampedValue, priceRange[1]]);
+    setMinPriceInput(clampedValue.toString());
+  };
 
   // Update price range from max input on Enter or blur
   const handleMaxPriceCommit = () => {
-    const value = maxPriceInput === '' ? 1000 : parseInt(maxPriceInput) || 1000
-    const clampedValue = Math.max(priceRange[0], Math.min(value, 10000))
-    setPriceRange([priceRange[0], clampedValue])
-    setMaxPriceInput(clampedValue.toString())
-  }
+    const value = maxPriceInput === "" ? 1000 : parseInt(maxPriceInput) || 1000;
+    const clampedValue = Math.max(priceRange[0], Math.min(value, 10000));
+    setPriceRange([priceRange[0], clampedValue]);
+    setMaxPriceInput(clampedValue.toString());
+  };
 
   const handleCategoryChange = (categoryId: string, checked: boolean) => {
     if (checked) {
-      setSelectedCategories([...selectedCategories, categoryId])
+      setSelectedCategories([...selectedCategories, categoryId]);
     } else {
-      setSelectedCategories(selectedCategories.filter((id) => id !== categoryId))
+      setSelectedCategories(selectedCategories.filter((id) => id !== categoryId));
     }
-  }
+  };
 
   const handleApplyFilters = () => {
-    const params = new URLSearchParams(searchParams.toString())
+    const params = new URLSearchParams(searchParams.toString());
 
     if (selectedCategories.length > 0) {
-      params.set('category', selectedCategories.join(','))
+      params.set("category", selectedCategories.join(","));
     } else {
-      params.delete('category')
+      params.delete("category");
     }
 
     if (priceRange[0] > 0) {
-      params.set('minPrice', priceRange[0].toString())
+      params.set("minPrice", priceRange[0].toString());
     } else {
-      params.delete('minPrice')
+      params.delete("minPrice");
     }
 
     if (priceRange[1] < 1000) {
-      params.set('maxPrice', priceRange[1].toString())
+      params.set("maxPrice", priceRange[1].toString());
     } else {
-      params.delete('maxPrice')
+      params.delete("maxPrice");
     }
 
     if (selectedRating) {
-      params.set('rating', selectedRating.toString())
+      params.set("rating", selectedRating.toString());
     } else {
-      params.delete('rating')
+      params.delete("rating");
     }
 
-    router.push(`/products?${params.toString()}`)
-    onClose?.()
-  }
+    router.push(`/products?${params.toString()}`);
+    onClose?.();
+  };
 
   const handleClearFilters = () => {
-    setSelectedCategories([])
-    setPriceRange([0, 1000])
-    setMinPriceInput('0')
-    setMaxPriceInput('1000')
-    setSelectedRating(null)
-    router.push('/products')
-    onClose?.()
-  }
+    setSelectedCategories([]);
+    setPriceRange([0, 1000]);
+    setMinPriceInput("0");
+    setMaxPriceInput("1000");
+    setSelectedRating(null);
+    router.push("/products");
+    onClose?.();
+  };
 
   return (
     <div className="space-y-6">
+      {/* Apply/Clear Buttons - Sticky Top */}
+      <div className="sticky top-0 -mx-3 bg-white px-3 py-2 shadow-2xs">
+        <div className="flex gap-2">
+          <Button variant="outline" className="flex-1" onClick={handleClearFilters}>
+            Бүгдийг арилгах
+          </Button>
+          <Button className="flex-1 bg-orange-500 hover:bg-orange-600" onClick={handleApplyFilters}>
+            Шүүлтүүр хэрэглэх
+          </Button>
+        </div>
+      </div>
+
       {/* Categories */}
       <Collapsible defaultOpen>
         <CollapsibleTrigger className="flex w-full items-center justify-between py-2">
-          <h3 className="font-semibold text-gray-900">Categories</h3>
+          <h3 className="font-semibold text-gray-900">Ангилал</h3>
           <ChevronDown className="h-4 w-4 text-gray-500" />
         </CollapsibleTrigger>
         <CollapsibleContent className="pt-2">
           <div className="space-y-2">
             {categories.length === 0 ? (
-              <p className="text-sm text-gray-500">No categories available</p>
+              <p className="text-sm text-gray-500">Ангилал байхгүй байна</p>
             ) : (
               categories.map((category) => (
                 <div key={category.id}>
@@ -200,7 +202,7 @@ function FilterContent({
       {/* Price Range */}
       <Collapsible defaultOpen>
         <CollapsibleTrigger className="flex w-full items-center justify-between py-2">
-          <h3 className="font-semibold text-gray-900">Price Range</h3>
+          <h3 className="font-semibold text-gray-900">Үнийн хязгаар</h3>
           <ChevronDown className="h-4 w-4 text-gray-500" />
         </CollapsibleTrigger>
         <CollapsibleContent className="pt-4">
@@ -214,27 +216,27 @@ function FilterContent({
             />
             <div className="flex items-center gap-2">
               <div className="flex-1">
-                <Label className="text-xs text-gray-500">Min</Label>
+                <Label className="text-xs text-gray-500">Доод</Label>
                 <Input
                   type="text"
                   inputMode="numeric"
                   value={minPriceInput}
                   onChange={(e) => setMinPriceInput(e.target.value)}
                   onBlur={handleMinPriceCommit}
-                  onKeyDown={(e) => e.key === 'Enter' && handleMinPriceCommit()}
+                  onKeyDown={(e) => e.key === "Enter" && handleMinPriceCommit()}
                   className="h-9"
                 />
               </div>
               <span className="mt-5 text-gray-400">-</span>
               <div className="flex-1">
-                <Label className="text-xs text-gray-500">Max</Label>
+                <Label className="text-xs text-gray-500">Дээд</Label>
                 <Input
                   type="text"
                   inputMode="numeric"
                   value={maxPriceInput}
                   onChange={(e) => setMaxPriceInput(e.target.value)}
                   onBlur={handleMaxPriceCommit}
-                  onKeyDown={(e) => e.key === 'Enter' && handleMaxPriceCommit()}
+                  onKeyDown={(e) => e.key === "Enter" && handleMaxPriceCommit()}
                   className="h-9"
                 />
               </div>
@@ -248,7 +250,7 @@ function FilterContent({
       {/* Customer Rating */}
       <Collapsible defaultOpen>
         <CollapsibleTrigger className="flex w-full items-center justify-between py-2">
-          <h3 className="font-semibold text-gray-900">Customer Rating</h3>
+          <h3 className="font-semibold text-gray-900">Үнэлгээ</h3>
           <ChevronDown className="h-4 w-4 text-gray-500" />
         </CollapsibleTrigger>
         <CollapsibleContent className="pt-2">
@@ -258,10 +260,8 @@ function FilterContent({
                 key={rating}
                 onClick={() => setSelectedRating(rating)}
                 className={cn(
-                  'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors',
-                  selectedRating === rating
-                    ? 'bg-orange-50 text-orange-600'
-                    : 'hover:bg-gray-50'
+                  "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
+                  selectedRating === rating ? "bg-orange-50 text-orange-600" : "hover:bg-gray-50"
                 )}
               >
                 <div className="flex items-center">
@@ -269,8 +269,10 @@ function FilterContent({
                     <svg
                       key={i}
                       className={cn(
-                        'h-4 w-4',
-                        i < rating ? 'fill-yellow-400 text-yellow-400' : 'fill-gray-200 text-gray-200'
+                        "h-4 w-4",
+                        i < rating
+                          ? "fill-yellow-400 text-yellow-400"
+                          : "fill-gray-200 text-gray-200"
                       )}
                       viewBox="0 0 20 20"
                     >
@@ -278,42 +280,28 @@ function FilterContent({
                     </svg>
                   ))}
                 </div>
-                <span>& Up</span>
+                <span>ба дээш</span>
               </button>
             ))}
           </div>
         </CollapsibleContent>
       </Collapsible>
-
-      <Separator />
-
-      {/* Apply/Clear Buttons */}
-      <div className="flex gap-2">
-        <Button
-          variant="outline"
-          className="flex-1"
-          onClick={handleClearFilters}
-        >
-          Clear All
-        </Button>
-        <Button
-          className="flex-1 bg-orange-500 hover:bg-orange-600"
-          onClick={handleApplyFilters}
-        >
-          Apply Filters
-        </Button>
-      </div>
     </div>
-  )
+  );
 }
 
 export function ProductFilters({ className, categories = [] }: ProductFiltersProps) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
       {/* Desktop Filters */}
-      <div className={cn('hidden lg:block', className)}>
+      <div
+        className={cn(
+          "hidden max-h-[calc(100vh-8rem)] overflow-y-auto overflow-x-hidden px-3 lg:block",
+          className
+        )}
+      >
         <FilterContent categories={categories} />
       </div>
 
@@ -323,12 +311,12 @@ export function ProductFilters({ className, categories = [] }: ProductFiltersPro
           <SheetTrigger asChild>
             <Button variant="outline" className="gap-2">
               <Filter className="h-4 w-4" />
-              Filters
+              Шүүлтүүр
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-full overflow-y-auto sm:max-w-md">
             <SheetHeader>
-              <SheetTitle>Filters</SheetTitle>
+              <SheetTitle>Шүүлтүүр</SheetTitle>
             </SheetHeader>
             <div className="mt-6">
               <FilterContent onClose={() => setIsOpen(false)} categories={categories} />
@@ -337,5 +325,5 @@ export function ProductFilters({ className, categories = [] }: ProductFiltersPro
         </Sheet>
       </div>
     </>
-  )
+  );
 }
