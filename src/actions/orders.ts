@@ -439,6 +439,46 @@ export async function updateOrderStatus(
     return { error: updateError.message }
   }
 
+  // TODO: When implementing full order cancellation/refund logic:
+  // If status is 'cancelled' or 'refunded':
+  // 1. Fetch order item details (product_id, variant_id, quantity, seller_id, seller_amount)
+  // 2. Decrement products.sales_count by item.quantity
+  // 3. Restore inventory (increment inventory.quantity or product_variants.stock)
+  // 4. Decrement seller_profiles.total_sales and total_revenue
+  // 5. Process payment refund via Stripe API (stripe.refunds.create)
+  // 6. Update order.payment_status to 'refunded'
+  //
+  // Example implementation:
+  // if (status === 'cancelled') {
+  //   const { data: itemDetails } = await supabase.from('order_items')
+  //     .select('product_id, variant_id, quantity, seller_id, seller_amount')
+  //     .eq('id', orderItemId).single()
+  //
+  //   // Decrement product sales_count
+  //   const { data: product } = await supabase.from('products')
+  //     .select('sales_count').eq('id', itemDetails.product_id).single()
+  //   await supabase.from('products')
+  //     .update({ sales_count: Math.max(0, (product.sales_count || 0) - itemDetails.quantity) })
+  //     .eq('id', itemDetails.product_id)
+  //
+  //   // Restore inventory
+  //   const { data: inv } = await supabase.from('inventory')
+  //     .select('quantity').eq('variant_id', itemDetails.variant_id).single()
+  //   await supabase.from('inventory')
+  //     .update({ quantity: (inv.quantity || 0) + itemDetails.quantity })
+  //     .eq('variant_id', itemDetails.variant_id)
+  //
+  //   // Decrement seller stats
+  //   const { data: seller } = await supabase.from('seller_profiles')
+  //     .select('total_sales, total_revenue').eq('id', itemDetails.seller_id).single()
+  //   await supabase.from('seller_profiles')
+  //     .update({
+  //       total_sales: Math.max(0, (seller.total_sales || 0) - 1),
+  //       total_revenue: Math.max(0, (seller.total_revenue || 0) - itemDetails.seller_amount)
+  //     })
+  //     .eq('id', itemDetails.seller_id)
+  // }
+
   // If shipped, update tracking number on main order
   if (status === 'shipped' && trackingNumber) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

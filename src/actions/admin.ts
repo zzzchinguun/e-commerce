@@ -1152,3 +1152,155 @@ export async function deleteCategory(categoryId: string) {
     return { error: error instanceof Error ? error.message : 'Failed to delete category' }
   }
 }
+
+// ============================================
+// MAINTENANCE ACTIONS
+// ============================================
+
+export async function reconcileProductSalesCounts() {
+  try {
+    const { supabase } = await verifyAdmin()
+
+    // Get all order items from paid orders
+    const { data: salesData, error: fetchError } = await (supabase as any)
+      .from('order_items')
+      .select(`
+        product_id,
+        quantity,
+        orders!inner(payment_status)
+      `)
+      .in('orders.payment_status', ['paid', 'succeeded'])
+
+    if (fetchError) {
+      console.error('Fetch error:', fetchError)
+      return { error: fetchError.message }
+    }
+
+    // Aggregate sales per product
+    const salesByProduct: Record<string, number> = {}
+    for (const item of salesData || []) {
+      salesByProduct[item.product_id] =
+        (salesByProduct[item.product_id] || 0) + item.quantity
+    }
+
+    // Update each product's sales_count
+    let updated = 0
+    let errors = 0
+
+    for (const [productId, count] of Object.entries(salesByProduct)) {
+      const { error } = await (supabase as any)
+        .from('products')
+        .update({ sales_count: count })
+        .eq('id', productId)
+
+      if (error) errors++
+      else updated++
+    }
+
+    // Reset products with no sales to 0
+    const productIdsWithSales = Object.keys(salesByProduct)
+    if (productIdsWithSales.length > 0) {
+      await (supabase as any)
+        .from('products')
+        .update({ sales_count: 0 })
+        .not('id', 'in', `(${productIdsWithSales.join(',')})`)
+    } else {
+      // No sales at all - reset everything
+      await (supabase as any)
+        .from('products')
+        .update({ sales_count: 0 })
+    }
+
+    // Log the action
+    await (supabase as any).rpc('log_admin_action', {
+      p_action: 'reconcile_sales_counts',
+      p_metadata: { updated, errors, total_products: productIdsWithSales.length }
+    })
+
+    revalidatePath('/admin/maintenance')
+
+    return {
+      success: true,
+      updated,
+      errors,
+      message: `${updated} бүтээгдэхүүн шинэчлэгдлээ`
+    }
+  } catch (error) {
+    console.error('Error reconciling sales counts:', error)
+    return { error: error instanceof Error ? error.message : 'Алдаа гарлаа' }
+  }
+}
+
+// Internal function for cron job (no admin verification required)
+export async function reconcileProductSalesCountsInternal(supabase: any) {
+  // Get all order items from paid orders
+  const { data: salesData, error: fetchError } = await supabase
+    .from('order_items')
+    .select(`
+      product_id,
+      quantity,
+      orders!inner(payment_status)
+    `)
+    .in('orders.payment_status', ['paid', 'succeeded'])
+
+  if (fetchError) {
+    console.error('Fetch error:', fetchError)
+    return { error: fetchError.message, updated: 0, errors: 0 }
+  }
+
+  // Aggregate sales per product
+  const salesByProduct: Record<string, number> = {}
+  for (const item of salesData || []) {
+    salesByProduct[item.product_id] =
+      (salesByProduct[item.product_id] || 0) + item.quantity
+  }
+
+  // Update each product's sales_count
+  let updated = 0
+  let errors = 0
+
+  for (const [productId, count] of Object.entries(salesByProduct)) {
+    const { error } = await supabase
+      .from('products')
+      .update({ sales_count: count })
+      .eq('id', productId)
+
+    if (error) errors++
+    else updated++
+  }
+
+  // Reset products with no sales to 0
+  const productIdsWithSales = Object.keys(salesByProduct)
+  if (productIdsWithSales.length > 0) {
+    await supabase
+      .from('products')
+      .update({ sales_count: 0 })
+      .not('id', 'in', `(${productIdsWithSales.join(',')})`)
+  } else {
+    await supabase
+      .from('products')
+      .update({ sales_count: 0 })
+  }
+
+  return { success: true, updated, errors }
+}
+
+export async function getLastMaintenanceRun(actionId: string) {
+  try {
+    const { supabase } = await verifyAdmin()
+
+    const actionName = actionId === 'reconcile-sales' ? 'reconcile_sales_counts' : actionId
+
+    const { data } = await (supabase as any)
+      .from('admin_audit_log')
+      .select('created_at, metadata')
+      .eq('action', actionName)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single()
+
+    return data
+  } catch {
+    return null
+  }
+}

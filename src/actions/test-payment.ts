@@ -124,6 +124,24 @@ export async function confirmTestPayment(sessionId: string) {
             .eq('id', item.seller_id)
         }
       }
+
+      // Update product sales_count
+      const { data: productData } = await supabase
+        .from('products')
+        .select('sales_count')
+        .eq('id', item.product_id)
+        .single()
+
+      const product = productData as { sales_count: number } | null
+
+      if (product) {
+        await (supabase as any)
+          .from('products')
+          .update({
+            sales_count: (product.sales_count || 0) + item.quantity,
+          })
+          .eq('id', item.product_id)
+      }
     }
   }
 

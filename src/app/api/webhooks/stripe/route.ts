@@ -289,6 +289,43 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
         .update({ stock: newStock })
         .eq('id', item.variantId)
     }
+
+    // Update product sales_count
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: productSalesData } = await (supabase as any)
+      .from('products')
+      .select('sales_count')
+      .eq('id', item.productId)
+      .single()
+
+    if (productSalesData) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (supabase as any)
+        .from('products')
+        .update({
+          sales_count: (productSalesData.sales_count || 0) + item.quantity,
+        })
+        .eq('id', item.productId)
+    }
+
+    // Update seller stats
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: sellerData } = await (supabase as any)
+      .from('seller_profiles')
+      .select('total_sales, total_revenue')
+      .eq('id', item.sellerId)
+      .single()
+
+    if (sellerData) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (supabase as any)
+        .from('seller_profiles')
+        .update({
+          total_sales: (sellerData.total_sales || 0) + 1,
+          total_revenue: (sellerData.total_revenue || 0) + sellerAmount,
+        })
+        .eq('id', item.sellerId)
+    }
   }
 
   console.log(`Order ${orderNumber} created successfully for user ${userData.id}`)
