@@ -103,6 +103,11 @@ export async function updateSellerProfile(formData: {
   businessPhone?: string
   storeLogoUrl?: string
   storeBannerUrl?: string
+  businessAddress?: {
+    address: string
+    city: string
+    country: string
+  }
 }) {
   const supabase = await createClient()
 
@@ -114,17 +119,20 @@ export async function updateSellerProfile(formData: {
     return { error: 'Not authenticated' }
   }
 
+  // Build update object with only defined fields
+  const updateData: Record<string, unknown> = {}
+  if (formData.storeName !== undefined) updateData.store_name = formData.storeName
+  if (formData.storeDescription !== undefined) updateData.store_description = formData.storeDescription
+  if (formData.businessEmail !== undefined) updateData.business_email = formData.businessEmail
+  if (formData.businessPhone !== undefined) updateData.business_phone = formData.businessPhone
+  if (formData.storeLogoUrl !== undefined) updateData.store_logo_url = formData.storeLogoUrl
+  if (formData.storeBannerUrl !== undefined) updateData.store_banner_url = formData.storeBannerUrl
+  if (formData.businessAddress !== undefined) updateData.business_address = formData.businessAddress
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: profile, error } = await (supabase as any)
     .from('seller_profiles')
-    .update({
-      store_name: formData.storeName,
-      store_description: formData.storeDescription,
-      business_email: formData.businessEmail,
-      business_phone: formData.businessPhone,
-      store_logo_url: formData.storeLogoUrl,
-      store_banner_url: formData.storeBannerUrl,
-    })
+    .update(updateData)
     .eq('user_id', user.id)
     .select()
     .single()

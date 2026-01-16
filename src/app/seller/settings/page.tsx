@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import Link from 'next/link'
 import {
   Store,
   User,
@@ -16,6 +17,7 @@ import {
   Loader2,
   Upload,
   ExternalLink,
+  Plus,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -26,6 +28,7 @@ import { Switch } from '@/components/ui/switch'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
+import { getSellerProfile, updateSellerProfile } from '@/actions/seller'
 
 const storeSchema = z.object({
   storeName: z.string().min(1, 'Дэлгүүрийн нэр шаардлагатай'),
@@ -39,8 +42,27 @@ const storeSchema = z.object({
 
 type StoreInput = z.infer<typeof storeSchema>
 
+type SellerProfile = {
+  id: string
+  store_name: string
+  store_slug: string
+  store_description: string | null
+  business_email: string
+  business_phone: string | null
+  business_address: {
+    address?: string
+    city?: string
+    country?: string
+  } | null
+  store_logo_url: string | null
+  status: string
+  stripe_onboarding_complete: boolean | null
+}
+
 export default function SettingsPage() {
+  const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [profile, setProfile] = useState<SellerProfile | null>(null)
   const [notifications, setNotifications] = useState({
     newOrder: true,
     orderUpdate: true,
@@ -52,32 +74,102 @@ export default function SettingsPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    reset,
+    formState: { errors, isDirty },
   } = useForm<StoreInput>({
     resolver: zodResolver(storeSchema),
-    defaultValues: {
-      storeName: 'My Store',
-      description: 'Quality products at great prices',
-      email: 'seller@example.com',
-      phone: '+1 234 567 8900',
-      address: '123 Main Street',
-      city: 'New York, NY 10001',
-      country: 'United States',
-    },
   })
+
+  useEffect(() => {
+    async function loadProfile() {
+      setIsLoading(true)
+      try {
+        const result = await getSellerProfile()
+        if (result.profile) {
+          const p = result.profile as SellerProfile
+          setProfile(p)
+          // Set form values from profile
+          reset({
+            storeName: p.store_name || '',
+            description: p.store_description || '',
+            email: p.business_email || '',
+            phone: p.business_phone || '',
+            address: p.business_address?.address || '',
+            city: p.business_address?.city || '',
+            country: p.business_address?.country || '',
+          })
+        }
+      } catch (error) {
+        console.error('Failed to load profile:', error)
+        toast.error('Дэлгүүрийн мэдээлэл ачаалж чадсангүй')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadProfile()
+  }, [reset])
 
   const onSubmit = async (data: StoreInput) => {
     setIsSubmitting(true)
     try {
-      // TODO: Save to Supabase
-      console.log('Store settings:', data)
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      toast.success('Тохиргоо амжилттай хадгалагдлаа!')
+      const result = await updateSellerProfile({
+        storeName: data.storeName,
+        storeDescription: data.description,
+        businessEmail: data.email,
+        businessPhone: data.phone,
+        businessAddress: {
+          address: data.address || '',
+          city: data.city || '',
+          country: data.country || '',
+        },
+      })
+
+      if (result.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Тохиргоо амжилттай хадгалагдлаа!')
+        // Update local state with new profile
+        if (result.profile) {
+          setProfile(result.profile as SellerProfile)
+        }
+      }
     } catch (error) {
       toast.error('Тохиргоо хадгалж чадсангүй')
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-orange-500" />
+      </div>
+    )
+  }
+
+  // No seller profile - show create store button
+  if (!profile) {
+    return (
+      <div className="flex min-h-[400px] flex-col items-center justify-center">
+        <div className="rounded-full bg-gray-100 p-4">
+          <Store className="h-12 w-12 text-gray-400" />
+        </div>
+        <h2 className="mt-4 text-xl font-semibold text-gray-900">
+          Танд дэлгүүр байхгүй байна
+        </h2>
+        <p className="mt-2 text-center text-gray-500">
+          Бүтээгдэхүүн зарж эхлэхийн тулд дэлгүүрээ үүсгэнэ үү
+        </p>
+        <Button asChild className="mt-6 bg-orange-500 hover:bg-orange-600">
+          <Link href="/seller/register">
+            <Plus className="mr-2 h-4 w-4" />
+            Дэлгүүр үүсгэх
+          </Link>
+        </Button>
+      </div>
+    )
   }
 
   return (
@@ -104,9 +196,17 @@ export default function SettingsPage() {
             <div className="flex items-center gap-6">
               <div className="relative">
                 <div className="h-24 w-24 overflow-hidden rounded-full bg-gray-100">
-                  <div className="flex h-full w-full items-center justify-center text-gray-400">
-                    <Store className="h-10 w-10" />
-                  </div>
+                  {profile.store_logo_url ? (
+                    <img
+                      src={profile.store_logo_url}
+                      alt={profile.store_name}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-gray-400">
+                      <Store className="h-10 w-10" />
+                    </div>
+                  )}
                 </div>
                 <button
                   type="button"
@@ -210,7 +310,7 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <Label htmlFor="city">Хот, Дүүрэг, Зип код</Label>
+                <Label htmlFor="city">Хот, Дүүрэг</Label>
                 <Input
                   id="city"
                   {...register('city')}
@@ -250,7 +350,11 @@ export default function SettingsPage() {
                 <div>
                   <div className="flex items-center gap-2">
                     <p className="font-medium text-gray-900">Stripe Connect</p>
-                    <Badge className="bg-green-100 text-green-700">Холбогдсон</Badge>
+                    {profile.stripe_onboarding_complete ? (
+                      <Badge className="bg-green-100 text-green-700">Холбогдсон</Badge>
+                    ) : (
+                      <Badge className="bg-yellow-100 text-yellow-700">Холбогдоогүй</Badge>
+                    )}
                   </div>
                   <p className="text-sm text-gray-500">
                     Төлбөрийг шууд банкны данс руу хүлээн авах
@@ -259,7 +363,7 @@ export default function SettingsPage() {
               </div>
               <Button variant="outline" size="sm">
                 <ExternalLink className="mr-2 h-4 w-4" />
-                Удирдах
+                {profile.stripe_onboarding_complete ? 'Удирдах' : 'Холбох'}
               </Button>
             </div>
           </CardContent>
@@ -362,7 +466,12 @@ export default function SettingsPage() {
 
         {/* Save Button */}
         <div className="flex justify-end gap-4">
-          <Button type="button" variant="outline">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => reset()}
+            disabled={!isDirty || isSubmitting}
+          >
             Цуцлах
           </Button>
           <Button
