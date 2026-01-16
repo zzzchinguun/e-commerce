@@ -125,10 +125,10 @@ function FilterContent({
       {/* Apply/Clear Buttons - Sticky Top */}
       <div className="sticky top-0 -mx-3 bg-white px-3 py-2 shadow-2xs">
         <div className="flex gap-2">
-          <Button variant="outline" className="flex-1" onClick={handleClearFilters}>
+          <Button variant="outline" className="h-8 flex-1 px-3 text-xs" onClick={handleClearFilters}>
             Бүгдийг арилгах
           </Button>
-          <Button className="flex-1 bg-orange-500 hover:bg-orange-600" onClick={handleApplyFilters}>
+          <Button className="h-8 flex-1 bg-orange-500 px-3 text-xs hover:bg-orange-600" onClick={handleApplyFilters}>
             Шүүлтүүр хэрэглэх
           </Button>
         </div>
