@@ -119,7 +119,7 @@ export default async function SellerDashboard() {
           <Button
             asChild
             variant="outline"
-            className="border-white/30 text-white hover:bg-white/10"
+            className="border-white bg-transparent text-white hover:bg-white/10"
           >
             <Link href="/seller/orders">Захиалгууд харах</Link>
           </Button>

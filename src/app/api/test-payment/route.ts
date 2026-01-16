@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     const supabase = await createClient()
     const body = await request.json()
 
-    const { items, shippingAddress, email }: {
+    const { items, shippingAddress }: {
       items: CheckoutItem[]
       shippingAddress: ShippingAddress
       email: string
@@ -39,21 +39,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get user by email
-    const { data: userResult } = await supabase
-      .from('users')
-      .select('id')
-      .eq('email', email)
-      .single()
+    // Get authenticated user from session (bypasses RLS issues)
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
 
-    const userData = userResult as { id: string } | null
-
-    if (!userData) {
+    if (authError || !user) {
       return NextResponse.json(
-        { error: 'User not found. Please login first.' },
-        { status: 400 }
+        { error: 'Not authenticated. Please login first.' },
+        { status: 401 }
       )
     }
+
+    const userId = user.id
 
     // Calculate totals
     const subtotal = items.reduce(
@@ -75,7 +71,7 @@ export async function POST(request: NextRequest) {
       .from('orders')
       .insert({
         order_number: orderNumber,
-        user_id: userData.id,
+        user_id: userId,
         status: 'pending',
         payment_status: 'pending',
         payment_method: 'qpay_test',

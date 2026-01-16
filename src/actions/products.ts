@@ -909,17 +909,23 @@ export async function createProduct(input: ProductInput, images?: string[]) {
 
   // Create inventory for variant
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error: inventoryError } = await (supabase as any)
+  const { data: inventoryData, error: inventoryError } = await (supabase as any)
     .from('inventory')
     .insert({
       variant_id: variant.id,
-      quantity: input.stock || 0,
+      quantity: input.stock ?? 0,
       track_inventory: input.trackInventory ?? true,
       low_stock_threshold: 5,
     })
+    .select()
+    .single()
 
   if (inventoryError) {
     console.error('Failed to create inventory:', inventoryError)
+    console.error('Variant ID:', variant.id, 'Stock:', input.stock)
+    // Don't fail the whole product creation, but log the error
+  } else {
+    console.log('Inventory created successfully:', inventoryData)
   }
 
   // Add product images
