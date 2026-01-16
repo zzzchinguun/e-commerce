@@ -33,7 +33,7 @@ export function Providers({ children }: ProvidersProps) {
       >
         <AuthProvider>
           {children}
-          <Toaster position="top-right" />
+          <Toaster position="bottom-right" />
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>

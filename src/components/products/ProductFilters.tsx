@@ -298,7 +298,7 @@ export function ProductFilters({ className, categories = [] }: ProductFiltersPro
       {/* Desktop Filters */}
       <div
         className={cn(
-          "hidden max-h-[calc(100vh-8rem)] overflow-y-auto overflow-x-hidden px-3 lg:block",
+          "hidden max-h-[calc(100vh-16rem)] overflow-y-auto overflow-x-hidden px-3 lg:block",
           className
         )}
       >

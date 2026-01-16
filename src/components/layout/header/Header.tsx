@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Menu, Search, ShoppingCart, User, Heart, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useCartStore } from '@/stores/cart-store'
+import { useWishlistStore } from '@/stores/wishlist-store'
 import { useAuthStore } from '@/stores/auth-store'
 import { useUIStore } from '@/stores/ui-store'
 import { SearchBar } from './SearchBar'
@@ -17,6 +18,7 @@ export function Header() {
   const [mounted, setMounted] = useState(false)
   const itemCount = useCartStore((state) => state.getItemCount())
   const openCart = useCartStore((state) => state.openCart)
+  const wishlistCount = useWishlistStore((state) => state.getItemCount())
   const { user, isAuthenticated } = useAuthStore()
   const { toggleMobileMenu } = useUIStore()
 
@@ -60,9 +62,16 @@ export function Header() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="flex h-auto w-[70px] cursor-pointer flex-col items-center gap-0.5 rounded-md px-3 py-2.5 text-white transition-all duration-200 hover:scale-105 hover:bg-slate-800 hover:text-white"
+                  className="relative flex h-auto w-[70px] cursor-pointer flex-col items-center gap-0.5 rounded-md px-3 py-2.5 text-white transition-all duration-200 hover:scale-105 hover:bg-slate-800 hover:text-white"
                 >
-                  <Heart className="h-5 w-5" />
+                  <div className="relative">
+                    <Heart className="h-5 w-5" />
+                    {mounted && wishlistCount > 0 && (
+                      <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-xs font-bold">
+                        {wishlistCount > 99 ? '99+' : wishlistCount}
+                      </span>
+                    )}
+                  </div>
                   <span className="text-[10px] leading-tight">Хадгалсан</span>
                 </Button>
               </Link>

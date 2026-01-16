@@ -141,7 +141,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       <div className="flex gap-8">
         {/* Sidebar Filters - Desktop */}
         <aside className="hidden w-72 shrink-0 lg:block">
-          <div className="sticky top-24">
+          <div className="sticky top-32">
             <Suspense fallback={<FiltersSkeleton />}>
               <ProductFilters categories={filterCategories} />
             </Suspense>

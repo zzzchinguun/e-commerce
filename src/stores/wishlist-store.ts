@@ -21,6 +21,7 @@ interface WishlistState {
   addItem: (product: WishlistProduct) => void
   removeItem: (productId: string) => void
   isInWishlist: (productId: string) => boolean
+  getItemCount: () => number
   clearWishlist: () => void
 }
 
@@ -45,6 +46,8 @@ export const useWishlistStore = create<WishlistState>()(
 
       isInWishlist: (productId) =>
         get().items.some((item) => item.id === productId),
+
+      getItemCount: () => get().items.length,
 
       clearWishlist: () => set({ items: [] }),
     }),
