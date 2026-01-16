@@ -33,7 +33,7 @@ import { getSellerProfile, updateSellerProfile } from '@/actions/seller'
 const storeSchema = z.object({
   storeName: z.string().min(1, 'Дэлгүүрийн нэр шаардлагатай'),
   description: z.string().optional(),
-  email: z.string().email('И-мэйл хаяг буруу байна'),
+  email: z.email('И-мэйл хаяг буруу байна'),
   phone: z.string().optional(),
   address: z.string().optional(),
   city: z.string().optional(),
