@@ -5,13 +5,14 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Loader2, CreditCard, Lock } from 'lucide-react'
+import { Loader2, CreditCard, Lock, QrCode } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {
   Select,
   SelectContent,
@@ -31,7 +32,7 @@ const checkoutSchema = z.object({
   city: z.string().min(1, 'Хот шаардлагатай'),
   state: z.string().min(1, 'Муж/Аймаг шаардлагатай'),
   zipCode: z.string().min(5, 'Шуудангийн код шаардлагатай'),
-  phone: z.string().min(10, 'Утасны дугаар шаардлагатай'),
+  phone: z.string().min(8, 'Утасны дугаар шаардлагатай'),
 })
 
 type CheckoutInput = z.infer<typeof checkoutSchema>
@@ -51,6 +52,7 @@ const MONGOLIAN_PROVINCES = [
 export function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const [paymentMethod, setPaymentMethod] = useState<'qpay' | 'stripe'>('qpay')
   const clearCart = useCartStore((state) => state.clearCart)
 
   const shipping = subtotal > 50 ? 0 : 4.99
@@ -70,46 +72,76 @@ export function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
     setIsLoading(true)
 
     try {
-      // Create checkout session
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          items: items.map((item) => ({
-            productId: item.product.id,
-            variantId: item.variantId,
-            quantity: item.quantity,
-            price: item.product.price,
-            name: item.product.name,
-          })),
-          shippingAddress: {
-            firstName: data.firstName,
-            lastName: data.lastName,
-            address: data.address,
-            apartment: data.apartment,
-            city: data.city,
-            state: data.state,
-            zipCode: data.zipCode,
-            phone: data.phone,
-          },
-          email: data.email,
-        }),
-      })
+      const itemsData = items.map((item) => ({
+        productId: item.product.id,
+        variantId: item.variantId,
+        quantity: item.quantity,
+        price: item.product.price,
+        name: item.product.name,
+      }))
 
-      const result = await response.json()
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to create checkout session')
+      const shippingAddress = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        address: data.address,
+        apartment: data.apartment,
+        city: data.city,
+        state: data.state,
+        zipCode: data.zipCode,
+        phone: data.phone,
       }
 
-      // Redirect to Stripe checkout
-      if (result.url) {
-        window.location.href = result.url
+      if (paymentMethod === 'qpay') {
+        // Use test QPay payment
+        const response = await fetch('/api/test-payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            items: itemsData,
+            shippingAddress,
+            email: data.email,
+          }),
+        })
+
+        const result = await response.json()
+
+        if (!response.ok) {
+          throw new Error(result.error || 'Failed to create payment session')
+        }
+
+        // Redirect to QPay payment page
+        if (result.paymentUrl) {
+          router.push(result.paymentUrl)
+        }
+      } else {
+        // Use Stripe payment
+        const response = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            items: itemsData,
+            shippingAddress,
+            email: data.email,
+          }),
+        })
+
+        const result = await response.json()
+
+        if (!response.ok) {
+          throw new Error(result.error || 'Failed to create checkout session')
+        }
+
+        // Redirect to Stripe checkout
+        if (result.url) {
+          window.location.href = result.url
+        }
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Something went wrong')
+      toast.error(error instanceof Error ? error.message : 'Алдаа гарлаа')
     } finally {
       setIsLoading(false)
     }
@@ -251,6 +283,69 @@ export function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
 
       <Separator />
 
+      {/* Payment Method Selection */}
+      <div>
+        <h2 className="text-lg font-semibold text-gray-900">Төлбөрийн хэлбэр</h2>
+        <RadioGroup
+          value={paymentMethod}
+          onValueChange={(value) => setPaymentMethod(value as 'qpay' | 'stripe')}
+          className="mt-4 space-y-3"
+        >
+          <div
+            className={`flex cursor-pointer items-center gap-4 rounded-lg border-2 p-4 transition-colors ${
+              paymentMethod === 'qpay'
+                ? 'border-blue-500 bg-blue-50'
+                : 'border-gray-200 hover:border-gray-300'
+            }`}
+            onClick={() => setPaymentMethod('qpay')}
+          >
+            <RadioGroupItem value="qpay" id="qpay" />
+            <div className="flex flex-1 items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
+                <QrCode className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <Label htmlFor="qpay" className="cursor-pointer font-medium">
+                  QPay (QR код)
+                </Label>
+                <p className="text-sm text-gray-500">
+                  Банкны аппликейшнээр QR код уншуулж төлөх
+                </p>
+              </div>
+            </div>
+            <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">
+              Тест
+            </span>
+          </div>
+
+          <div
+            className={`flex cursor-pointer items-center gap-4 rounded-lg border-2 p-4 transition-colors ${
+              paymentMethod === 'stripe'
+                ? 'border-purple-500 bg-purple-50'
+                : 'border-gray-200 hover:border-gray-300'
+            }`}
+            onClick={() => setPaymentMethod('stripe')}
+          >
+            <RadioGroupItem value="stripe" id="stripe" />
+            <div className="flex flex-1 items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
+                <CreditCard className="h-5 w-5 text-purple-600" />
+              </div>
+              <div>
+                <Label htmlFor="stripe" className="cursor-pointer font-medium">
+                  Карт (Stripe)
+                </Label>
+                <p className="text-sm text-gray-500">
+                  Visa, Mastercard, болон бусад картаар төлөх
+                </p>
+              </div>
+            </div>
+          </div>
+        </RadioGroup>
+      </div>
+
+      <Separator />
+
       {/* Order Summary */}
       <div className="rounded-lg bg-gray-50 p-4">
         <h2 className="text-lg font-semibold text-gray-900">Захиалгын хураангуй</h2>
@@ -277,19 +372,15 @@ export function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
         </div>
       </div>
 
-      {/* Payment Notice */}
-      <div className="rounded-lg border border-gray-200 bg-white p-4">
-        <div className="flex items-center gap-2 text-sm text-gray-600">
-          <CreditCard className="h-5 w-5" />
-          <span>Та аюулгүй төлбөр хийхийн тулд Stripe руу шилжих болно</span>
-        </div>
-      </div>
-
       {/* Submit Button */}
       <Button
         type="submit"
         size="lg"
-        className="w-full bg-orange-500 hover:bg-orange-600"
+        className={`w-full ${
+          paymentMethod === 'qpay'
+            ? 'bg-blue-600 hover:bg-blue-700'
+            : 'bg-orange-500 hover:bg-orange-600'
+        }`}
         disabled={isLoading}
       >
         {isLoading ? (
@@ -297,10 +388,15 @@ export function CheckoutForm({ items, subtotal }: CheckoutFormProps) {
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
             Боловсруулж байна...
           </>
+        ) : paymentMethod === 'qpay' ? (
+          <>
+            <QrCode className="mr-2 h-5 w-5" />
+            QPay-ээр төлөх {formatPrice(total)}
+          </>
         ) : (
           <>
             <Lock className="mr-2 h-5 w-5" />
-            Төлөх {formatPrice(total)}
+            Картаар төлөх {formatPrice(total)}
           </>
         )}
       </Button>

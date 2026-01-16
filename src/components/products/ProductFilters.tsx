@@ -123,13 +123,13 @@ function FilterContent({
   return (
     <div className="space-y-6">
       {/* Apply/Clear Buttons - Sticky Top */}
-      <div className="sticky top-0 z-10 -mx-1 bg-white px-1 py-2 shadow-sm">
-        <div className="flex gap-2">
-          <Button variant="outline" className="h-9 flex-1 px-2 text-xs" onClick={handleClearFilters}>
-            Бүгдийг арилгах
-          </Button>
-          <Button className="h-9 flex-1 bg-orange-500 px-2 text-xs hover:bg-orange-600" onClick={handleApplyFilters}>
+      <div className="sticky top-0 z-10 bg-white pb-4">
+        <div className="flex flex-col gap-2">
+          <Button className="h-9 w-full bg-orange-500 text-sm hover:bg-orange-600" onClick={handleApplyFilters}>
             Шүүлтүүр хэрэглэх
+          </Button>
+          <Button variant="outline" className="h-9 w-full text-sm" onClick={handleClearFilters}>
+            Бүгдийг арилгах
           </Button>
         </div>
       </div>

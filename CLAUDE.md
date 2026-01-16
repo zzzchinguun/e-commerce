@@ -171,6 +171,17 @@ LEFT JOIN order_items oi ON oi.seller_id = sp.id AND oi.status = 'pending'
 GROUP BY sp.id;
 ```
 
+### Test Flow 4: Test Payment (No Real Money)
+
+1. **Add Products to Cart** → Browse products and add to cart
+2. **Go to Checkout** → `/checkout`
+3. **Fill in Details** → Enter shipping info
+4. **Select QPay** → QPay (QR код) is selected by default
+5. **Submit** → Click "QPay-ээр төлөх"
+6. **Simulate Payment** → On QPay page, click "Төлбөр төлөгдсөн (Тест)"
+7. **View Success** → Redirected to success page
+8. **Check Order** → View in `/account/orders` or verify in Supabase
+
 ---
 
 ## Common Issues & Fixes
@@ -240,6 +251,37 @@ In Supabase Dashboard > Authentication > URL Configuration:
   http://localhost:3000/**
   https://your-domain.com/**
   ```
+
+---
+
+## Test Payment (QPay Simulation)
+
+For testing the checkout flow without real payments, a simulated QPay payment system is available.
+
+### How It Works
+
+1. **Checkout**: Select "QPay (QR код)" payment method (default)
+2. **Payment Page**: Redirects to `/checkout/qpay?session=<uuid>`
+3. **Simulated QR**: Shows a fake QR code with bank logos
+4. **Test Button**: Click "Төлбөр төлөгдсөн (Тест)" to simulate payment
+5. **Order Completion**: Updates order status, inventory, and seller stats
+
+### Files Involved
+
+- `/src/app/api/test-payment/route.ts` - Creates pending order, generates session
+- `/src/app/(main)/checkout/qpay/page.tsx` - QPay payment page with Suspense
+- `/src/app/(main)/checkout/qpay/QPayPaymentContent.tsx` - QR display and test button
+- `/src/actions/test-payment.ts` - Server actions for payment details and confirmation
+- `/src/components/checkout/CheckoutForm.tsx` - Payment method selection (QPay vs Stripe)
+
+### Order Flow
+
+1. Customer submits checkout form with QPay selected
+2. API creates order with `payment_method: 'qpay_test'` and `payment_status: 'pending'`
+3. Session ID stored in `stripe_session_id` field
+4. Customer clicks test payment button
+5. Server action updates: `payment_status: 'paid'`, decrements inventory, updates seller stats
+6. Customer redirected to success page
 
 ---
 
@@ -314,23 +356,45 @@ src/
 ├── app/
 │   ├── (auth)/           # Login, signup, forgot-password, reset-password
 │   ├── (main)/           # Public pages (home, products, cart, checkout)
+│   │   └── checkout/
+│   │       ├── page.tsx          # Checkout form
+│   │       ├── qpay/             # QPay test payment
+│   │       │   ├── page.tsx      # Suspense wrapper
+│   │       │   └── QPayPaymentContent.tsx
+│   │       └── success/          # Order success
 │   ├── (protected)/      # User account pages (orders, addresses, settings)
+│   ├── (admin)/          # Super admin dashboard
+│   │   ├── layout.tsx    # Admin sidebar layout
+│   │   ├── page.tsx      # Dashboard home
+│   │   ├── users/        # User management
+│   │   ├── sellers/      # Seller management
+│   │   ├── products/     # Product moderation
+│   │   ├── orders/       # Order management
+│   │   ├── analytics/    # Platform analytics
+│   │   └── settings/     # Platform settings
 │   ├── seller/           # Seller dashboard (products, orders, analytics)
-│   └── api/              # API routes (checkout, webhooks)
+│   └── api/              # API routes
+│       ├── checkout/     # Stripe checkout
+│       ├── test-payment/ # QPay test payment
+│       └── webhooks/     # Stripe webhooks
 ├── actions/              # Server Actions
 │   ├── seller.ts         # Seller profile CRUD
 │   ├── products.ts       # Product CRUD for sellers
 │   ├── orders.ts         # Order management for sellers
-│   └── categories.ts     # Category fetching
+│   ├── categories.ts     # Category fetching
+│   ├── test-payment.ts   # QPay test payment confirmation
+│   └── admin.ts          # Admin dashboard actions
 ├── components/
 │   ├── ui/               # shadcn/ui components
 │   ├── layout/           # Header, Footer, navigation
 │   ├── products/         # ProductCard, ProductGrid
 │   ├── cart/             # CartDrawer, CartItem
-│   └── checkout/         # CheckoutForm, StripeProvider
+│   ├── checkout/         # CheckoutForm, StripeProvider
+│   └── admin/            # Admin components (ImpersonationBanner, etc.)
 ├── lib/
 │   ├── supabase/         # client.ts, server.ts
 │   ├── stripe/           # Stripe configuration
+│   ├── admin/            # Admin utilities (impersonation)
 │   └── utils/            # Utility functions (format.ts)
 ├── stores/               # Zustand stores
 │   ├── cart-store.ts     # Shopping cart with localStorage
@@ -479,6 +543,39 @@ CREATE TYPE product_status AS ENUM ('draft', 'active', 'inactive', 'out_of_stock
     - `user_id`, `type`, `title`, `message`
     - `data` (JSONB), `is_read`, `read_at`
 
+### Homepage & Marketing Tables
+
+20. **hero_banners** - Homepage hero section banners
+    - `id`, `title`, `subtitle`, `button_text`, `button_link`
+    - `image_url`, `background_color` (default '#f97316')
+    - `position` (default 0), `is_active` (default true)
+    - `start_date`, `end_date` (for scheduled banners)
+    - `click_count` (default 0)
+    - `created_at`, `updated_at`
+
+21. **featured_categories** - Homepage featured category cards
+    - `id`, `category_id` (references categories)
+    - `custom_title` (optional), `custom_description`, `custom_image_url`
+    - `position` (default 0), `is_active` (default true)
+    - `created_at`, `updated_at`
+
+### Admin Tables
+
+22. **admin_audit_log** - Tracks admin actions for audit trail
+    - `id`, `admin_id` (references users)
+    - `action` (TEXT, e.g., 'approve_seller', 'suspend_user')
+    - `target_user_id` (optional, references users)
+    - `target_entity_type` (TEXT, e.g., 'product', 'order')
+    - `target_entity_id` (UUID)
+    - `metadata` (JSONB for additional context)
+    - `created_at`
+
+23. **platform_settings** - Platform-wide configuration
+    - `id`, `key` (unique TEXT)
+    - `value` (JSONB)
+    - `updated_by` (references users)
+    - `updated_at`
+
 ## Key Architecture Patterns
 
 ### 1. Server Actions Pattern
@@ -580,11 +677,14 @@ interface CartStore {
 - Order fulfillment (processing → shipped → delivered)
 - View analytics (placeholder)
 
-### Admin (Future)
+### Admin
+- Super Admin Dashboard at `/admin`
 - Approve/suspend sellers
 - Manage categories
 - Platform-wide analytics
-- User management
+- User management with impersonation
+- Order management with refund processing
+- Hero banners and featured categories management
 
 ## Environment Variables
 
@@ -634,12 +734,21 @@ const { data: { publicUrl } } = supabase.storage
 | `/products/[slug]` | Product detail | Public |
 | `/cart` | Shopping cart | Public |
 | `/checkout` | Checkout flow | Protected |
+| `/checkout/qpay` | QPay test payment | Protected |
+| `/checkout/success` | Order success page | Protected |
 | `/login`, `/signup` | Auth pages | Guest only |
 | `/account/*` | User dashboard | Protected |
 | `/seller` | Seller dashboard | Seller only |
 | `/seller/products` | Product management | Seller only |
 | `/seller/orders` | Order management | Seller only |
 | `/seller/register` | Seller registration | Protected |
+| `/admin` | Admin dashboard | Admin only |
+| `/admin/users` | User management | Admin only |
+| `/admin/sellers` | Seller management | Admin only |
+| `/admin/products` | Product moderation | Admin only |
+| `/admin/orders` | Order management | Admin only |
+| `/admin/analytics` | Platform analytics | Admin only |
+| `/admin/settings` | Platform settings | Admin only |
 
 ## Commission Structure
 
@@ -675,11 +784,12 @@ Categories are seeded via SQL in Supabase:
 ### Helper Functions
 
 ```sql
-public.get_user_role()      -- Returns current user's role
-public.is_admin()           -- Returns true if current user is admin
-public.is_seller()          -- Returns true if current user is approved seller
-public.get_seller_profile_id() -- Returns current user's seller profile ID
+public.get_user_role()           -- Returns current user's role
+public.is_admin()                -- Returns true if current user is admin
+public.is_seller()               -- Returns true if current user is approved seller
+public.get_seller_profile_id()   -- Returns current user's seller profile ID
 public.increment_product_views(product_id) -- Increment view count
+public.increment_banner_clicks(banner_id)  -- Increment banner click count
 ```
 
 ## Row Level Security (RLS)
@@ -691,6 +801,11 @@ All tables have RLS enabled. Key policies:
 - **Products**: Public can only view `status = 'active'`
 - **Orders**: Users see own orders; Sellers see order_items for their products
 - **Categories**: Public can view `is_active = TRUE`; Admins can manage
+- **Hero Banners**: Public can view `is_active = TRUE`; Admins can manage all
+- **Featured Categories**: Public can view `is_active = TRUE`; Admins can manage all
+- **Admin Audit Log**: Only admins can view/insert
+- **Platform Settings**: Public can view; Only admins can update
+- **Notifications**: Users can only view/manage own notifications
 
 ## Important Notes
 
