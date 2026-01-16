@@ -92,8 +92,9 @@ export async function getPublicProducts(options?: {
       .select('id, parent_id')
       .in('slug', categorySlugs)
 
-    if (categories && categories.length > 0) {
-      const parentIds = categories.map(c => c.id)
+    const categoriesArr = categories as { id: string; parent_id: string | null }[] | null
+    if (categoriesArr && categoriesArr.length > 0) {
+      const parentIds = categoriesArr.map(c => c.id)
 
       // Also get subcategories if a parent category is selected
       const { data: subcategories } = await supabase
@@ -101,9 +102,10 @@ export async function getPublicProducts(options?: {
         .select('id')
         .in('parent_id', parentIds)
 
+      const subcategoriesArr = subcategories as { id: string }[] | null
       categoryIds = [
         ...parentIds,
-        ...(subcategories?.map(c => c.id) || [])
+        ...(subcategoriesArr?.map(c => c.id) || [])
       ]
     }
   }
