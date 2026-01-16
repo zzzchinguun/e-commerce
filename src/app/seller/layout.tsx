@@ -16,6 +16,7 @@ import {
   LogOut,
   User,
   DollarSign,
+  Plus,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -26,9 +27,18 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu'
 import { NotificationBell } from '@/components/admin/NotificationBell'
-import { getSellerPendingOrderCount } from '@/actions/seller'
+import { getSellerPendingOrderCount, getSellerProfile } from '@/actions/seller'
+
+type SellerProfile = {
+  id: string
+  store_name: string
+  store_slug: string
+  store_logo_url: string | null
+  status: string
+}
 
 const sidebarLinks = [
   {
@@ -73,6 +83,18 @@ export default function SellerLayout({
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [pendingOrders, setPendingOrders] = useState(0)
+  const [sellerProfile, setSellerProfile] = useState<SellerProfile | null>(null)
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true)
+
+  useEffect(() => {
+    // Load seller profile
+    getSellerProfile().then((result) => {
+      if (result.profile) {
+        setSellerProfile(result.profile as SellerProfile)
+      }
+      setIsLoadingProfile(false)
+    })
+  }, [])
 
   useEffect(() => {
     getSellerPendingOrderCount().then((result) => {
@@ -85,6 +107,16 @@ export default function SellerLayout({
       return pendingOrders.toString()
     }
     return null
+  }
+
+  // Get initials from store name
+  const getStoreInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map((word) => word[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2)
   }
 
   return (
@@ -199,33 +231,100 @@ export default function SellerLayout({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center gap-2">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback>S</AvatarFallback>
-                  </Avatar>
+                  {isLoadingProfile ? (
+                    <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200" />
+                  ) : sellerProfile ? (
+                    <Avatar className="h-8 w-8">
+                      {sellerProfile.store_logo_url ? (
+                        <AvatarImage
+                          src={sellerProfile.store_logo_url}
+                          alt={sellerProfile.store_name}
+                        />
+                      ) : null}
+                      <AvatarFallback className="bg-orange-100 text-orange-600 text-xs">
+                        {getStoreInitials(sellerProfile.store_name)}
+                      </AvatarFallback>
+                    </Avatar>
+                  ) : (
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="bg-gray-100 text-gray-400">
+                        <Store className="h-4 w-4" />
+                      </AvatarFallback>
+                    </Avatar>
+                  )}
                   <span className="hidden text-sm font-medium lg:block">
-                    Миний дэлгүүр
+                    {isLoadingProfile
+                      ? '...'
+                      : sellerProfile
+                        ? sellerProfile.store_name
+                        : 'Дэлгүүргүй'}
                   </span>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem asChild>
-                  <Link href="/seller/settings">
-                    <User className="mr-2 h-4 w-4" />
-                    Дэлгүүрийн профайл
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/account">
-                    <Settings className="mr-2 h-4 w-4" />
-                    Бүртгэлийн тохиргоо
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-red-600">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Гарах
-                </DropdownMenuItem>
+              <DropdownMenuContent align="end" className="w-56">
+                {sellerProfile ? (
+                  <>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">
+                          {sellerProfile.store_name}
+                        </p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                          /{sellerProfile.store_slug}
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link href="/seller/settings">
+                        <Settings className="mr-2 h-4 w-4" />
+                        Дэлгүүрийн тохиргоо
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/account">
+                        <User className="mr-2 h-4 w-4" />
+                        Бүртгэлийн тохиргоо
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-red-600">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Гарах
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <div className="px-2 py-3 text-center">
+                      <Store className="mx-auto h-8 w-8 text-gray-300" />
+                      <p className="mt-2 text-sm text-gray-500">
+                        Танд дэлгүүр байхгүй байна
+                      </p>
+                    </div>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="/seller/register"
+                        className="flex items-center justify-center text-orange-600"
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Дэлгүүр үүсгэх
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link href="/account">
+                        <User className="mr-2 h-4 w-4" />
+                        Бүртгэлийн тохиргоо
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-red-600">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Гарах
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
