@@ -1038,14 +1038,43 @@ export async function updateProduct(productId: string, input: Partial<ProductInp
     const variant = variantData as any
 
     if (variant) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (supabase as any)
+      // Check if inventory exists
+      const { data: existingInventory } = await supabase
         .from('inventory')
-        .update({
-          quantity: input.stock,
-          track_inventory: input.trackInventory,
-        })
+        .select('id')
         .eq('variant_id', variant.id)
+        .single()
+
+      if (existingInventory) {
+        // Update existing inventory
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { error: inventoryError } = await (supabase as any)
+          .from('inventory')
+          .update({
+            quantity: input.stock,
+            track_inventory: input.trackInventory,
+          })
+          .eq('variant_id', variant.id)
+
+        if (inventoryError) {
+          console.error('Failed to update inventory:', inventoryError)
+        }
+      } else {
+        // Create inventory if it doesn't exist
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { error: insertError } = await (supabase as any)
+          .from('inventory')
+          .insert({
+            variant_id: variant.id,
+            quantity: input.stock ?? 0,
+            track_inventory: input.trackInventory ?? true,
+            low_stock_threshold: 5,
+          })
+
+        if (insertError) {
+          console.error('Failed to create inventory:', insertError)
+        }
+      }
     }
   }
 
