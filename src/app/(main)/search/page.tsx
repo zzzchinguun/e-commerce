@@ -8,6 +8,7 @@ import { ProductGrid } from '@/components/products/ProductGrid'
 import { ActiveFilters } from '@/components/products/ActiveFilters'
 import { Skeleton } from '@/components/ui/skeleton'
 import { getPublicProducts } from '@/actions/products'
+import { Container } from '@/components/layout/Container'
 
 interface SearchPageProps {
   searchParams: Promise<{
@@ -101,7 +102,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const totalPages = Math.ceil(count / limit)
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <Container className="py-8">
       {/* Page Header */}
       <div className="mb-6">
         {searchQuery ? (
@@ -227,6 +228,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           )}
         </div>
       </div>
-    </div>
+    </Container>
   )
 }

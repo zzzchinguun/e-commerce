@@ -10,6 +10,7 @@ import { useCartStore } from '@/stores/cart-store'
 import { formatPrice } from '@/lib/utils/format'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Container } from '@/components/layout/Container'
 
 export default function WishlistPage() {
   const [mounted, setMounted] = useState(false)
@@ -46,7 +47,7 @@ export default function WishlistPage() {
 
   if (!mounted) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <Container className="py-8">
         <Skeleton className="h-8 w-48 mb-8" />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
@@ -57,13 +58,13 @@ export default function WishlistPage() {
             </div>
           ))}
         </div>
-      </div>
+      </Container>
     )
   }
 
   if (items.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-16">
+      <Container className="py-16">
         <div className="flex flex-col items-center justify-center text-center">
           <div className="rounded-full bg-gray-100 p-8">
             <Heart className="h-16 w-16 text-gray-400" />
@@ -76,12 +77,12 @@ export default function WishlistPage() {
             <Link href="/products">Бүтээгдэхүүн үзэх</Link>
           </Button>
         </div>
-      </div>
+      </Container>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <Container className="py-8">
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
@@ -174,6 +175,6 @@ export default function WishlistPage() {
           </div>
         ))}
       </div>
-    </div>
+    </Container>
   )
 }

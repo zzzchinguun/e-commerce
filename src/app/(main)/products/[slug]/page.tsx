@@ -8,6 +8,7 @@ import { FeaturedProducts } from '@/components/home/FeaturedProducts'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { getPublicProductBySlug, getRelatedProducts } from '@/actions/products'
+import { Container } from '@/components/layout/Container'
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>
@@ -86,7 +87,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <Container className="py-8">
       {/* Breadcrumb */}
       <nav className="mb-6 text-sm text-gray-500">
         <ol className="flex items-center gap-2">
@@ -197,6 +198,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
           />
         </>
       )}
-    </div>
+    </Container>
   )
 }

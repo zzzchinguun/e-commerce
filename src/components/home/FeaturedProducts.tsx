@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
 import { ProductCard } from '@/components/products/ProductCard'
 import { Button } from '@/components/ui/button'
+import { Container } from '@/components/layout/Container'
 
 // Placeholder products for now - will be replaced with real data from Supabase
 const placeholderProducts = [
@@ -105,7 +106,7 @@ export function FeaturedProducts({
 }: FeaturedProductsProps) {
   return (
     <section className="py-10">
-      <div className="container mx-auto px-4">
+      <Container>
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
           <Button variant="ghost" asChild className="text-orange-600 hover:text-orange-700">
@@ -120,7 +121,7 @@ export function FeaturedProducts({
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

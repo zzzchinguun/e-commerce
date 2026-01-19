@@ -11,6 +11,7 @@ import {
   Gamepad2,
   Package,
 } from 'lucide-react'
+import { Container } from '@/components/layout/Container'
 
 export const metadata: Metadata = {
   title: 'Бүх ангилалууд',
@@ -53,7 +54,7 @@ export default async function CategoriesPage() {
   const categories = await getCategories()
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <Container className="py-12">
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold text-gray-900">Ангилалаар хайх</h1>
         <p className="mt-2 text-gray-600">
@@ -115,6 +116,6 @@ export default async function CategoriesPage() {
           </Link>
         </div>
       </div>
-    </div>
+    </Container>
   )
 }

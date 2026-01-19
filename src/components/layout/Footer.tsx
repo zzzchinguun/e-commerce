@@ -5,6 +5,7 @@ import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from 'luci
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { Container } from '@/components/layout/Container'
 
 const footerLinks = {
   shop: [
@@ -52,7 +53,7 @@ export function Footer() {
       </button>
 
       {/* Main Footer Content */}
-      <div className="container mx-auto px-4 py-10">
+      <Container className="py-10">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
           {/* Shop Links */}
           <div>
@@ -154,12 +155,12 @@ export function Footer() {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
 
       <Separator className="bg-slate-800" />
 
       {/* Bottom Bar */}
-      <div className="container mx-auto px-4 py-6">
+      <Container className="py-6">
         <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
             <Link href="/terms" className="hover:text-orange-400 transition-colors">
@@ -177,7 +178,7 @@ export function Footer() {
             &copy; {new Date().getFullYear()} MSTORE. Бүх эрх хуулиар хамгаалагдсан.
           </p>
         </div>
-      </div>
+      </Container>
     </footer>
   )
 }

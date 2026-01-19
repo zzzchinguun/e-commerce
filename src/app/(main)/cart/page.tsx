@@ -8,6 +8,7 @@ import { formatPrice } from '@/lib/utils/format'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
+import { Container } from '@/components/layout/Container'
 
 export default function CartPage() {
   const { items, updateQuantity, removeItem, getSubtotal, clearCart } = useCartStore()
@@ -19,7 +20,7 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-16">
+      <Container className="py-16">
         <div className="flex flex-col items-center justify-center text-center">
           <div className="rounded-full bg-gray-100 p-8">
             <ShoppingBag className="h-16 w-16 text-gray-400" />
@@ -32,12 +33,12 @@ export default function CartPage() {
             <Link href="/products">Худалдаа үргэлжлүүлэх</Link>
           </Button>
         </div>
-      </div>
+      </Container>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <Container className="py-8">
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">
@@ -233,6 +234,6 @@ export default function CartPage() {
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   )
 }

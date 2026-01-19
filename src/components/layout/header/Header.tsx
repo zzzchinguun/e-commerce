@@ -13,6 +13,7 @@ import { UserMenu } from './UserMenu'
 import { CategoryNav } from './CategoryNav'
 import { MobileNav } from './MobileNav'
 import { CartDrawer } from '@/components/cart/CartDrawer'
+import { Container } from '@/components/layout/Container'
 
 export function Header() {
   const [mounted, setMounted] = useState(false)
@@ -31,7 +32,7 @@ export function Header() {
       <header className="sticky top-0 z-50 w-full">
         {/* Top bar - Dark header like Amazon */}
         <div className="bg-slate-900 text-white">
-          <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4">
+          <Container className="flex h-16 items-center justify-between gap-4">
             {/* Mobile menu button */}
             <Button
               variant="ghost"
@@ -94,14 +95,14 @@ export function Header() {
                 <span className="text-[10px] leading-tight">Сагс</span>
               </Button>
             </div>
-          </div>
+          </Container>
         </div>
 
         {/* Category Navigation - Desktop */}
         <div className="hidden border-b bg-slate-800 md:block">
-          <div className="container mx-auto px-4">
+          <Container>
             <CategoryNav />
-          </div>
+          </Container>
         </div>
 
         {/* Mobile Search */}

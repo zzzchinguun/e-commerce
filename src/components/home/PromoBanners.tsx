@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { Truck, Shield, RotateCcw, Headphones } from 'lucide-react'
+import { Container } from '@/components/layout/Container'
 
 const features = [
   {
@@ -50,7 +51,7 @@ const promoBanners = [
 export function FeatureBanner() {
   return (
     <section className="border-y bg-gray-50 py-6">
-      <div className="container mx-auto px-4">
+      <Container>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {features.map((feature) => (
             <div key={feature.title} className="flex items-center gap-3">
@@ -64,7 +65,7 @@ export function FeatureBanner() {
             </div>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   )
 }
@@ -72,7 +73,7 @@ export function FeatureBanner() {
 export function PromoBanners() {
   return (
     <section className="py-10">
-      <div className="container mx-auto px-4">
+      <Container>
         <div className="grid gap-4 md:grid-cols-2">
           {promoBanners.map((banner) => (
             <Link
@@ -90,7 +91,7 @@ export function PromoBanners() {
             </Link>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

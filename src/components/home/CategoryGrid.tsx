@@ -13,6 +13,7 @@ import {
   LucideIcon
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Container } from '@/components/layout/Container'
 
 interface Category {
   name: string
@@ -84,7 +85,7 @@ const categories: Category[] = [
 export function CategoryGrid() {
   return (
     <section className="py-10">
-      <div className="container mx-auto px-4">
+      <Container>
         <h2 className="mb-6 text-2xl font-bold text-gray-900">Ангилалаар үзэх</h2>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-8">
           {categories.map((category) => (
@@ -105,7 +106,7 @@ export function CategoryGrid() {
             </Link>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

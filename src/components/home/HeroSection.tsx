@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { Container } from '@/components/layout/Container'
 
 const heroSlides = [
   {
@@ -80,7 +81,7 @@ export function HeroSection() {
             )}
           >
             <div className={cn('h-full bg-gradient-to-r', slide.bgColor)}>
-              <div className="container mx-auto flex h-full items-center px-4">
+              <Container className="flex h-full items-center">
                 <div className="max-w-lg text-white">
                   <h1 className="mb-4 text-3xl font-bold md:text-4xl lg:text-5xl">
                     {slide.title}
@@ -96,7 +97,7 @@ export function HeroSection() {
                     <Link href={slide.href}>{slide.cta}</Link>
                   </Button>
                 </div>
-              </div>
+              </Container>
             </div>
           </div>
         ))}

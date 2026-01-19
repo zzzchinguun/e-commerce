@@ -6,6 +6,7 @@ import { ProductGrid } from '@/components/products/ProductGrid'
 import { ProductSort } from '@/components/products/ProductSort'
 import { Skeleton } from '@/components/ui/skeleton'
 import { createClient } from '@/lib/supabase/server'
+import { Container } from '@/components/layout/Container'
 
 export const metadata: Metadata = {
   title: "Өнөөдрийн хямдрал - Хэмнээрэй",
@@ -130,7 +131,7 @@ export default async function DealsPage({ searchParams }: DealsPageProps) {
   const totalPages = Math.ceil(count / limit)
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <Container className="py-8">
       {/* Hero Banner */}
       <div className="mb-8 rounded-xl bg-gradient-to-r from-red-500 to-orange-500 p-8 text-white">
         <div className="flex items-center gap-3 mb-4">
@@ -253,6 +254,6 @@ export default async function DealsPage({ searchParams }: DealsPageProps) {
           </button>
         </div>
       </div>
-    </div>
+    </Container>
   )
 }

@@ -10,6 +10,7 @@ import { ActiveFilters } from '@/components/products/ActiveFilters'
 import { Skeleton } from '@/components/ui/skeleton'
 import { getPublicProducts } from '@/actions/products'
 import { createClient } from '@/lib/supabase/server'
+import { Container } from '@/components/layout/Container'
 
 interface CategoryPageProps {
   params: Promise<{ slug: string }>
@@ -125,7 +126,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   const totalPages = Math.ceil(count / limit)
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <Container className="py-8">
       {/* Breadcrumb */}
       <nav className="mb-6 text-sm text-gray-500">
         <ol className="flex items-center gap-2">
@@ -228,6 +229,6 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
           )}
         </div>
       </div>
-    </div>
+    </Container>
   )
 }

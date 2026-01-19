@@ -7,6 +7,7 @@ import { ActiveFilters } from '@/components/products/ActiveFilters'
 import { Skeleton } from '@/components/ui/skeleton'
 import { getPublicProducts } from '@/actions/products'
 import { getCategories } from '@/actions/categories'
+import { Container } from '@/components/layout/Container'
 
 export const metadata: Metadata = {
   title: 'Бүтээгдэхүүн',
@@ -109,7 +110,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const totalPages = Math.ceil(count / limit)
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <Container className="py-8">
       {/* Page Header */}
       <div className="mb-6">
         {searchQuery ? (
@@ -213,6 +214,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           )}
         </div>
       </div>
-    </div>
+    </Container>
   )
 }

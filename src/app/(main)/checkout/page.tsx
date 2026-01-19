@@ -8,6 +8,7 @@ import { formatPrice } from '@/lib/utils/format'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { CheckoutForm } from '@/components/checkout/CheckoutForm'
+import { Container } from '@/components/layout/Container'
 
 export default function CheckoutPage() {
   const { items, getSubtotal } = useCartStore()
@@ -15,7 +16,7 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-16">
+      <Container className="py-16">
         <div className="flex flex-col items-center justify-center text-center">
           <div className="rounded-full bg-gray-100 p-8">
             <ShoppingBag className="h-16 w-16 text-gray-400" />
@@ -28,12 +29,12 @@ export default function CheckoutPage() {
             <Link href="/products">Худалдаа үргэлжлүүлэх</Link>
           </Button>
         </div>
-      </div>
+      </Container>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <Container className="py-8">
       {/* Header */}
       <div className="mb-8">
         <Link
@@ -114,6 +115,6 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   )
 }
