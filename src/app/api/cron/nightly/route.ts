@@ -20,9 +20,15 @@ export async function GET(request: Request) {
     // ============================================
     console.log('[Nightly Cron] Starting: reconcile_sales_counts')
     const salesResult = await reconcileProductSalesCountsInternal(supabase)
-    results['reconcile_sales_counts'] = salesResult
+    // Normalize the result to always have success field
+    results['reconcile_sales_counts'] = {
+      success: salesResult.success ?? !salesResult.error,
+      updated: salesResult.updated,
+      errors: salesResult.errors,
+      error: salesResult.error,
+    }
 
-    if (salesResult.success) {
+    if (results['reconcile_sales_counts'].success) {
       // Log to audit
       await (supabase as any)
         .from('admin_audit_log')

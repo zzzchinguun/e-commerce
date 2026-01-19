@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import crypto from 'crypto'
+import {
+  calculateOrderTotals,
+  calculateOrderItemTotals,
+  isValidQuantity,
+  DEFAULT_COMMISSION_RATE,
+} from '@/lib/pricing'
 
 interface CheckoutItem {
   productId: string
@@ -21,6 +27,18 @@ interface ShippingAddress {
   phone: string
 }
 
+interface ValidatedItem {
+  productId: string
+  variantId: string
+  quantity: number
+  price: number
+  name: string
+  sellerId: string
+  commissionRate: number
+  variantOptions: Record<string, string> | null
+  sku: string | null
+}
+
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient()
@@ -39,6 +57,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Validate quantities
+    for (const item of items) {
+      if (!isValidQuantity(item.quantity)) {
+        return NextResponse.json(
+          { error: `Invalid quantity for product: ${item.name}` },
+          { status: 400 }
+        )
+      }
+    }
+
     // Get authenticated user from session (bypasses RLS issues)
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
@@ -51,14 +79,142 @@ export async function POST(request: NextRequest) {
 
     const userId = user.id
 
-    // Calculate totals
-    const subtotal = items.reduce(
+    // Validate prices from database - don't trust client-provided prices
+    const validatedItems: ValidatedItem[] = []
+
+    for (const item of items) {
+      // Get product with seller info
+      const { data: product } = await supabase
+        .from('products')
+        .select('id, name, seller_id, status')
+        .eq('id', item.productId)
+        .single()
+
+      if (!product) {
+        return NextResponse.json(
+          { error: `Product not found: ${item.name}` },
+          { status: 400 }
+        )
+      }
+
+      if ((product as { status: string }).status !== 'active') {
+        return NextResponse.json(
+          { error: `Product is not available: ${item.name}` },
+          { status: 400 }
+        )
+      }
+
+      const sellerId = (product as { seller_id: string }).seller_id
+
+      // Get seller commission rate
+      const { data: seller } = await supabase
+        .from('seller_profiles')
+        .select('commission_rate')
+        .eq('id', sellerId)
+        .single()
+
+      const commissionRate = (seller as { commission_rate: number } | null)?.commission_rate || DEFAULT_COMMISSION_RATE
+
+      // Get variant info and price from database
+      let variantId = item.variantId
+      let dbPrice: number
+      let variantOptions: Record<string, string> | null = null
+      let sku: string | null = null
+
+      if (variantId) {
+        const { data: variant } = await supabase
+          .from('product_variants')
+          .select('id, price, sku, option_values')
+          .eq('id', variantId)
+          .eq('product_id', item.productId)
+          .single()
+
+        if (!variant) {
+          return NextResponse.json(
+            { error: `Variant not found for product: ${item.name}` },
+            { status: 400 }
+          )
+        }
+
+        const v = variant as { id: string; price: number; sku: string | null; option_values: Record<string, string> | null }
+        dbPrice = v.price
+        variantOptions = v.option_values
+        sku = v.sku
+      } else {
+        // Get default variant
+        const { data: defaultVariant } = await supabase
+          .from('product_variants')
+          .select('id, price, sku, option_values')
+          .eq('product_id', item.productId)
+          .eq('is_default', true)
+          .single()
+
+        if (!defaultVariant) {
+          // Fallback to any variant
+          const { data: anyVariant } = await supabase
+            .from('product_variants')
+            .select('id, price, sku, option_values')
+            .eq('product_id', item.productId)
+            .limit(1)
+            .single()
+
+          if (!anyVariant) {
+            return NextResponse.json(
+              { error: `No variant available for product: ${item.name}` },
+              { status: 400 }
+            )
+          }
+
+          const v = anyVariant as { id: string; price: number; sku: string | null; option_values: Record<string, string> | null }
+          variantId = v.id
+          dbPrice = v.price
+          variantOptions = v.option_values
+          sku = v.sku
+        } else {
+          const v = defaultVariant as { id: string; price: number; sku: string | null; option_values: Record<string, string> | null }
+          variantId = v.id
+          dbPrice = v.price
+          variantOptions = v.option_values
+          sku = v.sku
+        }
+      }
+
+      // Check inventory availability
+      const { data: inventory } = await supabase
+        .from('inventory')
+        .select('quantity, allow_backorder')
+        .eq('variant_id', variantId)
+        .single()
+
+      if (inventory) {
+        const inv = inventory as { quantity: number; allow_backorder: boolean }
+        if (inv.quantity < item.quantity && !inv.allow_backorder) {
+          return NextResponse.json(
+            { error: `Insufficient stock for: ${item.name}. Only ${inv.quantity} available.` },
+            { status: 400 }
+          )
+        }
+      }
+
+      validatedItems.push({
+        productId: item.productId,
+        variantId: variantId!,
+        quantity: item.quantity,
+        price: dbPrice, // Use database price, not client price
+        name: (product as { name: string }).name,
+        sellerId,
+        commissionRate,
+        variantOptions,
+        sku,
+      })
+    }
+
+    // Calculate totals using validated prices
+    const subtotal = validatedItems.reduce(
       (total, item) => total + item.price * item.quantity,
       0
     )
-    const shipping = subtotal > 50 ? 0 : 4.99
-    const tax = subtotal * 0.1
-    const grandTotal = subtotal + shipping + tax
+    const { shipping, tax, grandTotal } = calculateOrderTotals(subtotal)
 
     // Generate order number
     const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
@@ -94,105 +250,33 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get product details and create order items
-    for (const item of items) {
-      // Get product with seller info
-      const { data: productData } = await supabase
-        .from('products')
-        .select('id, name, seller_id')
-        .eq('id', item.productId)
-        .single()
-
-      const product = productData as { id: string; name: string; seller_id: string } | null
-
-      if (!product) continue
-
-      // Get seller commission rate
-      const { data: seller } = await supabase
-        .from('seller_profiles')
-        .select('id, commission_rate')
-        .eq('id', product.seller_id)
-        .single()
-
-      const commissionRate = (seller as any)?.commission_rate || 10
-      const itemTotal = item.price * item.quantity
-      const itemTax = itemTotal * 0.1
-      const totalWithTax = itemTotal + itemTax
-      const commissionAmount = totalWithTax * (commissionRate / 100)
-      const sellerAmount = totalWithTax - commissionAmount
-
-      // Get variant info - use provided variantId or fetch default variant
-      let variantId = item.variantId
-      let variantOptions = null
-      let sku = null
-
-      if (variantId) {
-        // Use provided variant
-        const { data: variant } = await supabase
-          .from('product_variants')
-          .select('sku, option_values')
-          .eq('id', variantId)
-          .single()
-
-        if (variant) {
-          variantOptions = (variant as any).option_values
-          sku = (variant as any).sku
-        }
-      } else {
-        // Fetch default variant for this product (variant_id is NOT NULL in schema)
-        const { data: defaultVariant } = await supabase
-          .from('product_variants')
-          .select('id, sku, option_values')
-          .eq('product_id', item.productId)
-          .eq('is_default', true)
-          .single()
-
-        if (defaultVariant) {
-          variantId = (defaultVariant as any).id
-          variantOptions = (defaultVariant as any).option_values
-          sku = (defaultVariant as any).sku
-        } else {
-          // Fallback: get any variant for this product
-          const { data: anyVariant } = await supabase
-            .from('product_variants')
-            .select('id, sku, option_values')
-            .eq('product_id', item.productId)
-            .limit(1)
-            .single()
-
-          if (anyVariant) {
-            variantId = (anyVariant as any).id
-            variantOptions = (anyVariant as any).option_values
-            sku = (anyVariant as any).sku
-          }
-        }
-      }
-
-      // Skip if no variant found (shouldn't happen with proper product setup)
-      if (!variantId) {
-        console.error('No variant found for product:', item.productId)
-        continue
-      }
+    // Create order items using validated data
+    for (const item of validatedItems) {
+      const itemTotals = calculateOrderItemTotals(
+        item.price,
+        item.quantity,
+        item.commissionRate
+      )
 
       // Create order item
       await (supabase as any)
         .from('order_items')
         .insert({
           order_id: order.id,
-          seller_id: product.seller_id,
+          seller_id: item.sellerId,
           product_id: item.productId,
-          variant_id: variantId,
+          variant_id: item.variantId,
           product_name: item.name,
-          variant_options: variantOptions,
-          sku: sku,
+          variant_options: item.variantOptions,
+          sku: item.sku,
           unit_price: item.price,
           quantity: item.quantity,
-          subtotal: itemTotal,
-          tax_amount: itemTax,
-          total: totalWithTax,
-          commission_rate: commissionRate,
-          commission_amount: commissionAmount,
-          seller_amount: sellerAmount,
+          subtotal: itemTotals.subtotal,
+          tax_amount: itemTotals.taxAmount,
+          total: itemTotals.total,
+          commission_rate: itemTotals.commissionRate,
+          commission_amount: itemTotals.commissionAmount,
+          seller_amount: itemTotals.sellerAmount,
           status: 'pending',
         })
     }

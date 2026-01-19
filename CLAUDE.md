@@ -445,6 +445,7 @@ src/
 │   ├── supabase/         # client.ts, server.ts
 │   ├── stripe/           # Stripe configuration
 │   ├── admin/            # Admin utilities (impersonation)
+│   ├── pricing.ts        # Centralized pricing calculations (tax, shipping, commission)
 │   └── utils/            # Utility functions (format.ts)
 ├── stores/               # Zustand stores
 │   ├── cart-store.ts     # Shopping cart with localStorage
@@ -809,7 +810,57 @@ const { data: { publicUrl } } = supabase.storage
 
 - Platform fee: 10% default (configurable per seller)
 - Seller receives: total - platform_fee
-- Stored in `order_items.seller_amount` and `order_items.platform_fee`
+- Stored in `order_items.seller_amount` and `order_items.commission_amount`
+
+---
+
+## Pricing Utilities
+
+Centralized pricing calculations are in `/src/lib/pricing.ts` to ensure consistency across checkout APIs, webhooks, and payment processing.
+
+### Constants
+
+```typescript
+TAX_RATE = 0.10                    // 10% tax
+FREE_SHIPPING_THRESHOLD = 50       // Free shipping for orders over $50
+DEFAULT_SHIPPING_COST = 4.99       // Default shipping cost
+DEFAULT_COMMISSION_RATE = 10       // 10% platform commission
+```
+
+### Functions
+
+```typescript
+// Calculate tax amount
+calculateTax(subtotal: number): number
+
+// Calculate shipping (free over threshold)
+calculateShipping(subtotal: number): number
+
+// Calculate commission for seller
+calculateCommission(total: number, commissionRate: number): number
+
+// Calculate seller amount after commission
+calculateSellerAmount(total: number, commissionRate: number): number
+
+// Calculate all order totals
+calculateOrderTotals(subtotal: number): { subtotal, shipping, tax, grandTotal }
+
+// Calculate order item totals with commission
+calculateOrderItemTotals(unitPrice: number, quantity: number, commissionRate?: number): {
+  subtotal, taxAmount, total, commissionRate, commissionAmount, sellerAmount
+}
+
+// Validation helpers
+isValidPrice(price: unknown): boolean
+isValidQuantity(quantity: unknown): boolean
+```
+
+### Usage
+
+All checkout APIs and webhooks use these utilities:
+- `/src/app/api/checkout/route.ts` - Stripe checkout
+- `/src/app/api/test-payment/route.ts` - QPay test payment
+- `/src/app/api/webhooks/stripe/route.ts` - Stripe webhook
 
 ## Development Commands
 
@@ -861,6 +912,28 @@ All tables have RLS enabled. Key policies:
 - **Admin Audit Log**: Only admins can view/insert
 - **Platform Settings**: Public can view; Only admins can update
 - **Notifications**: Users can only view/manage own notifications
+
+## Security Measures
+
+### Price Validation
+All checkout APIs validate product prices from the database rather than trusting client-provided prices. This prevents price manipulation attacks.
+
+**Implementation**:
+- Checkout APIs fetch actual prices from `product_variants` table
+- Client-provided prices are ignored
+- Inventory availability is checked before order creation
+- Invalid quantities (negative, zero, non-integer) are rejected
+
+### Inventory Validation
+Before processing orders, the system checks:
+1. Product exists and is `active` status
+2. Variant exists for the product
+3. Sufficient inventory quantity (unless `allow_backorder` is true)
+
+### JSON Parsing
+Stripe webhook metadata is parsed with error handling using `safeJsonParse()` to prevent crashes from malformed data.
+
+---
 
 ## Important Notes
 

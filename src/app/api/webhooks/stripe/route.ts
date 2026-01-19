@@ -3,6 +3,11 @@ import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { stripe } from '@/lib/stripe/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import {
+  calculateOrderTotals,
+  calculateOrderItemTotals,
+  DEFAULT_COMMISSION_RATE,
+} from '@/lib/pricing'
 
 // Disable body parsing, we need raw body for webhook signature verification
 export const runtime = 'nodejs'
@@ -11,12 +16,38 @@ interface OrderItemData {
   productId: string
   variantId?: string
   quantity: number
+  price?: number
+  sellerId?: string
+}
+
+interface ShippingAddress {
+  firstName: string
+  lastName: string
+  address: string
+  apartment?: string
+  city: string
+  state: string
+  zipCode: string
+  country?: string
 }
 
 function generateOrderNumber(): string {
   const timestamp = Date.now().toString(36).toUpperCase()
   const random = Math.random().toString(36).substring(2, 6).toUpperCase()
   return `ORD-${timestamp}-${random}`
+}
+
+/**
+ * Safely parse JSON with error handling
+ */
+function safeJsonParse<T>(json: string | undefined, defaultValue: T): T {
+  if (!json) return defaultValue
+  try {
+    return JSON.parse(json) as T
+  } catch (error) {
+    console.error('Failed to parse JSON:', error)
+    return defaultValue
+  }
 }
 
 export async function POST(request: Request) {
@@ -86,13 +117,15 @@ export async function POST(request: Request) {
 async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
   const supabase = createAdminClient()
 
-  // Parse metadata
-  const shippingAddress = session.metadata?.shippingAddress
-    ? JSON.parse(session.metadata.shippingAddress)
-    : null
-  const items: OrderItemData[] = session.metadata?.items
-    ? JSON.parse(session.metadata.items)
-    : []
+  // Parse metadata with error handling
+  const shippingAddress = safeJsonParse<ShippingAddress | null>(
+    session.metadata?.shippingAddress,
+    null
+  )
+  const items = safeJsonParse<OrderItemData[]>(
+    session.metadata?.items,
+    []
+  )
 
   if (!items.length) {
     throw new Error('No items in checkout session')
@@ -131,13 +164,29 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
         id,
         sku,
         price,
-        options
+        option_values
       )
     `)
     .in('id', productIds)
 
   if (productsError || !products) {
     throw new Error('Failed to fetch products')
+  }
+
+  // Get all unique seller IDs to fetch their commission rates
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sellerIds = [...new Set(products.map((p: any) => p.seller_id))]
+  const { data: sellers } = await supabase
+    .from('seller_profiles')
+    .select('id, commission_rate')
+    .in('id', sellerIds)
+
+  // Create a map of seller ID to commission rate
+  const sellerCommissionRates: Record<string, number> = {}
+  if (sellers) {
+    for (const seller of sellers as { id: string; commission_rate: number }[]) {
+      sellerCommissionRates[seller.id] = seller.commission_rate || DEFAULT_COMMISSION_RATE
+    }
   }
 
   // Calculate totals
@@ -151,6 +200,7 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
     sku: string | null
     unitPrice: number
     quantity: number
+    commissionRate: number
   }[] = []
 
   for (const item of items) {
@@ -171,24 +221,27 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
       continue
     }
 
-    const unitPrice = variant.price
+    // Use pre-validated price from metadata if available, otherwise use variant price
+    const unitPrice = item.price || variant.price
     subtotal += unitPrice * item.quantity
+
+    // Get seller's commission rate (not hardcoded!)
+    const commissionRate = sellerCommissionRates[product.seller_id] || DEFAULT_COMMISSION_RATE
 
     orderItemsData.push({
       productId: product.id,
       variantId: variant.id,
-      sellerId: product.seller_id,
+      sellerId: item.sellerId || product.seller_id,
       productName: product.name,
-      variantOptions: variant.options,
+      variantOptions: variant.option_values,
       sku: variant.sku,
       unitPrice,
       quantity: item.quantity,
+      commissionRate,
     })
   }
 
-  const shippingTotal = subtotal > 50 ? 0 : 4.99
-  const taxTotal = subtotal * 0.1
-  const grandTotal = subtotal + shippingTotal + taxTotal
+  const { shipping: shippingTotal, tax: taxTotal, grandTotal } = calculateOrderTotals(subtotal)
 
   // Create order
   const orderNumber = generateOrderNumber()
@@ -237,15 +290,13 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
     throw new Error('Failed to create order')
   }
 
-  // Create order items
-  const commissionRate = 0.10 // 10% platform commission
-
+  // Create order items with proper commission rates
   for (const item of orderItemsData) {
-    const itemSubtotal = item.unitPrice * item.quantity
-    const taxAmount = itemSubtotal * 0.1
-    const itemTotal = itemSubtotal + taxAmount
-    const commissionAmount = itemTotal * commissionRate
-    const sellerAmount = itemTotal - commissionAmount
+    const itemTotals = calculateOrderItemTotals(
+      item.unitPrice,
+      item.quantity,
+      item.commissionRate
+    )
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error: itemError } = await (supabase as any)
@@ -260,34 +311,35 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
         sku: item.sku,
         unit_price: item.unitPrice,
         quantity: item.quantity,
-        subtotal: itemSubtotal,
-        tax_amount: taxAmount,
-        total: itemTotal,
-        commission_rate: commissionRate * 100, // Store as percentage
-        commission_amount: commissionAmount,
-        seller_amount: sellerAmount,
+        subtotal: itemTotals.subtotal,
+        tax_amount: itemTotals.taxAmount,
+        total: itemTotals.total,
+        commission_rate: itemTotals.commissionRate, // Store as percentage
+        commission_amount: itemTotals.commissionAmount,
+        seller_amount: itemTotals.sellerAmount,
         status: 'pending',
       })
 
     if (itemError) {
       console.error('Failed to create order item:', itemError)
+      // Continue processing other items
     }
 
-    // Update inventory
+    // Update inventory - use the correct inventory table, not product_variants.stock
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: variantData } = await (supabase as any)
-      .from('product_variants')
-      .select('stock')
-      .eq('id', item.variantId)
+    const { data: inventoryData } = await (supabase as any)
+      .from('inventory')
+      .select('id, quantity')
+      .eq('variant_id', item.variantId)
       .single()
 
-    if (variantData) {
-      const newStock = Math.max(0, variantData.stock - item.quantity)
+    if (inventoryData) {
+      const newQuantity = Math.max(0, inventoryData.quantity - item.quantity)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await (supabase as any)
-        .from('product_variants')
-        .update({ stock: newStock })
-        .eq('id', item.variantId)
+        .from('inventory')
+        .update({ quantity: newQuantity })
+        .eq('id', inventoryData.id)
     }
 
     // Update product sales_count
@@ -322,7 +374,7 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
         .from('seller_profiles')
         .update({
           total_sales: (sellerData.total_sales || 0) + 1,
-          total_revenue: (sellerData.total_revenue || 0) + sellerAmount,
+          total_revenue: (sellerData.total_revenue || 0) + itemTotals.sellerAmount,
         })
         .eq('id', item.sellerId)
     }
