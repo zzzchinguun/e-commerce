@@ -439,45 +439,14 @@ export async function updateOrderStatus(
     return { error: updateError.message }
   }
 
-  // TODO: When implementing full order cancellation/refund logic:
-  // If status is 'cancelled' or 'refunded':
-  // 1. Fetch order item details (product_id, variant_id, quantity, seller_id, seller_amount)
-  // 2. Decrement products.sales_count by item.quantity
-  // 3. Restore inventory (increment inventory.quantity or product_variants.stock)
-  // 4. Decrement seller_profiles.total_sales and total_revenue
-  // 5. Process payment refund via Stripe API (stripe.refunds.create)
-  // 6. Update order.payment_status to 'refunded'
-  //
-  // Example implementation:
-  // if (status === 'cancelled') {
-  //   const { data: itemDetails } = await supabase.from('order_items')
-  //     .select('product_id, variant_id, quantity, seller_id, seller_amount')
-  //     .eq('id', orderItemId).single()
-  //
-  //   // Decrement product sales_count
-  //   const { data: product } = await supabase.from('products')
-  //     .select('sales_count').eq('id', itemDetails.product_id).single()
-  //   await supabase.from('products')
-  //     .update({ sales_count: Math.max(0, (product.sales_count || 0) - itemDetails.quantity) })
-  //     .eq('id', itemDetails.product_id)
-  //
-  //   // Restore inventory
-  //   const { data: inv } = await supabase.from('inventory')
-  //     .select('quantity').eq('variant_id', itemDetails.variant_id).single()
-  //   await supabase.from('inventory')
-  //     .update({ quantity: (inv.quantity || 0) + itemDetails.quantity })
-  //     .eq('variant_id', itemDetails.variant_id)
-  //
-  //   // Decrement seller stats
-  //   const { data: seller } = await supabase.from('seller_profiles')
-  //     .select('total_sales, total_revenue').eq('id', itemDetails.seller_id).single()
-  //   await supabase.from('seller_profiles')
-  //     .update({
-  //       total_sales: Math.max(0, (seller.total_sales || 0) - 1),
-  //       total_revenue: Math.max(0, (seller.total_revenue || 0) - itemDetails.seller_amount)
-  //     })
-  //     .eq('id', itemDetails.seller_id)
-  // }
+  // Handle cancellation: restore inventory, decrement stats
+  if (status === 'cancelled') {
+    const cancellationResult = await handleOrderItemCancellation(supabase, orderItemId)
+    if (cancellationResult.error) {
+      console.error('Cancellation side effects failed:', cancellationResult.error)
+      // Don't fail the whole operation - status is already updated
+    }
+  }
 
   // If shipped, update tracking number on main order
   if (status === 'shipped' && trackingNumber) {
@@ -534,19 +503,122 @@ export async function getOrderStatusCounts() {
     return { error: 'Seller profile not found' }
   }
 
-  // Get counts for each status
+  // Get all order items for this seller and aggregate counts by status in one query
+  const { data: orderItems } = await supabase
+    .from('order_items')
+    .select('status')
+    .eq('seller_id', profile.id)
+
+  // Aggregate counts by status
   const statuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
   const counts: Record<string, number> = {}
 
+  // Initialize all statuses to 0
   for (const status of statuses) {
-    const { count } = await supabase
-      .from('order_items')
-      .select('*', { count: 'exact', head: true })
-      .eq('seller_id', profile.id)
-      .eq('status', status)
+    counts[status] = 0
+  }
 
-    counts[status] = count || 0
+  // Count items by status
+  const items = (orderItems || []) as { status: string }[]
+  for (const item of items) {
+    if (item.status && counts.hasOwnProperty(item.status)) {
+      counts[item.status]++
+    }
   }
 
   return { counts }
+}
+
+// ============================================
+// ORDER CANCELLATION HELPER
+// ============================================
+
+/**
+ * Handle side effects of order item cancellation:
+ * - Restore inventory
+ * - Decrement product sales_count
+ * - Decrement seller stats
+ */
+async function handleOrderItemCancellation(
+  supabase: ReturnType<typeof createClient> extends Promise<infer T> ? T : never,
+  orderItemId: string
+): Promise<{ success?: boolean; error?: string }> {
+  try {
+    // Fetch order item details
+    const { data: itemData, error: itemError } = await supabase
+      .from('order_items')
+      .select('product_id, variant_id, quantity, seller_id, seller_amount')
+      .eq('id', orderItemId)
+      .single()
+
+    if (itemError || !itemData) {
+      return { error: 'Failed to fetch order item details' }
+    }
+
+    const item = itemData as {
+      product_id: string
+      variant_id: string
+      quantity: number
+      seller_id: string
+      seller_amount: number
+    }
+
+    // 1. Restore inventory
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: invData } = await (supabase as any)
+      .from('inventory')
+      .select('id, quantity')
+      .eq('variant_id', item.variant_id)
+      .single()
+
+    if (invData) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (supabase as any)
+        .from('inventory')
+        .update({ quantity: (invData.quantity || 0) + item.quantity })
+        .eq('id', invData.id)
+    }
+
+    // 2. Decrement product sales_count
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: productData } = await (supabase as any)
+      .from('products')
+      .select('sales_count')
+      .eq('id', item.product_id)
+      .single()
+
+    if (productData) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (supabase as any)
+        .from('products')
+        .update({
+          sales_count: Math.max(0, (productData.sales_count || 0) - item.quantity),
+        })
+        .eq('id', item.product_id)
+    }
+
+    // 3. Decrement seller stats
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: sellerData } = await (supabase as any)
+      .from('seller_profiles')
+      .select('total_sales, total_revenue')
+      .eq('id', item.seller_id)
+      .single()
+
+    if (sellerData) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (supabase as any)
+        .from('seller_profiles')
+        .update({
+          total_sales: Math.max(0, (sellerData.total_sales || 0) - 1),
+          total_revenue: Math.max(0, (sellerData.total_revenue || 0) - item.seller_amount),
+        })
+        .eq('id', item.seller_id)
+    }
+
+    return { success: true }
+  } catch (error) {
+    console.error('Order item cancellation error:', error)
+    return { error: error instanceof Error ? error.message : 'Unknown error' }
+  }
 }

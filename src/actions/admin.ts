@@ -852,16 +852,25 @@ export async function getOrderStatusCounts() {
   try {
     const { supabase } = await verifyAdmin()
 
+    // Fetch all orders and aggregate counts in one query
+    const { data: orders } = await (supabase as any)
+      .from('orders')
+      .select('status')
+
     const statuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded']
     const counts: Record<string, number> = {}
 
+    // Initialize all statuses to 0
     for (const status of statuses) {
-      const { count } = await (supabase as any)
-        .from('orders')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', status)
+      counts[status] = 0
+    }
 
-      counts[status] = count || 0
+    // Count orders by status
+    const ordersList = (orders || []) as { status: string }[]
+    for (const order of ordersList) {
+      if (order.status && counts.hasOwnProperty(order.status)) {
+        counts[order.status]++
+      }
     }
 
     return { counts }

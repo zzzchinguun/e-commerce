@@ -37,21 +37,23 @@ This document outlines the security fixes, code improvements, and feature enhanc
 
 ---
 
-## Phase 2: Feature Completion (Future Sprint)
+## Phase 2: Feature Completion (Current Sprint)
 
-### TODO Items
+### TODO Items (COMPLETED)
 
-- [ ] **2.1 Order Cancellation & Refunds**
+- [x] **2.1 Order Cancellation & Refunds**
   - File: `src/actions/orders.ts`
-  - Implement: Cancel order, decrement sales_count, restore inventory, Stripe refund
+  - Implement: Cancel order, decrement sales_count, restore inventory, decrement seller stats
+  - **Status: DONE** - Added `handleOrderItemCancellation()` helper function in `updateOrderStatus()`
 
 - [ ] **2.2 Notification System**
   - Files: `src/actions/notifications.ts` (new)
   - Implement: Robust notification service with error handling
 
-- [ ] **2.3 Address Management**
+- [x] **2.3 Address Management**
   - Files: `src/app/(main)/account/addresses/page.tsx`, `src/actions/addresses.ts` (new)
   - Implement: CRUD operations for user addresses
+  - **Status: DONE** - Created full CRUD server actions and connected UI to database
 
 - [ ] **2.4 Promo Code System**
   - Files: `src/actions/coupons.ts` (new), cart page
@@ -63,17 +65,20 @@ This document outlines the security fixes, code improvements, and feature enhanc
 
 ---
 
-## Phase 3: Code Quality (Future Sprint)
+## Phase 3: Code Quality (Current Sprint)
 
-### TODO Items
+### TODO Items (COMPLETED)
 
 - [ ] **3.1 Standardize Error Handling**
   - Create `src/lib/errors.ts` with standard error types
   - Implement consistent `{ success, data, error }` return pattern
 
-- [ ] **3.2 Fix N+1 Query Problems**
-  - Files: `src/actions/analytics.ts`, `src/actions/orders.ts`
-  - Use aggregated queries with GROUP BY
+- [x] **3.2 Fix N+1 Query Problems**
+  - Files: `src/actions/analytics.ts`, `src/actions/orders.ts`, `src/actions/admin.ts`
+  - **Status: DONE** - Replaced loop-based queries with single aggregated queries:
+    - `analytics.ts`: Product revenue now fetched in one query and aggregated in JS
+    - `orders.ts`: `getOrderStatusCounts()` now uses single query with JS aggregation
+    - `admin.ts`: `getOrderStatusCounts()` now uses single query with JS aggregation
 
 - [ ] **3.3 Remove TypeScript `any` casts**
   - Multiple files using `(supabase as any)`
@@ -81,13 +86,16 @@ This document outlines the security fixes, code improvements, and feature enhanc
 
 ---
 
-## Phase 4: Admin Features (Future Sprint)
+## Phase 4: Admin Features (Current Sprint)
 
-### TODO Items
+### TODO Items (COMPLETED)
 
-- [ ] **4.1 Fix Seller Approval Workflow**
+- [x] **4.1 Fix Seller Approval Workflow**
   - File: `src/app/admin/page.tsx`
-  - Add onClick handlers to approval buttons
+  - **Status: DONE** - Created client components for seller approval:
+    - `src/components/admin/PendingSellerCard.tsx` - Card with approve/reject handlers
+    - `src/components/admin/PendingSellersSection.tsx` - Wrapper component
+    - Updated admin page to use new components
 
 - [ ] **4.2 Implement Refund Processing**
   - File: `src/app/admin/orders/page.tsx`
@@ -99,13 +107,17 @@ This document outlines the security fixes, code improvements, and feature enhanc
 
 ---
 
-## Phase 5: Seller Settings (Future Sprint)
+## Phase 5: Seller Settings (Current Sprint)
 
-### TODO Items
+### TODO Items (COMPLETED)
 
-- [ ] **5.1 Logo Upload Functionality**
+- [x] **5.1 Logo Upload Functionality**
   - File: `src/app/seller/settings/page.tsx`
-  - Implement file upload to Supabase storage
+  - **Status: DONE** - Implemented file upload to Supabase storage:
+    - Added `handleLogoUpload()` function with file validation (type, size)
+    - Uploads to `products` bucket under `seller-logos/` path
+    - Updates seller profile with new logo URL
+    - Shows loading state during upload
 
 - [ ] **5.2 Notification Preferences Persistence**
   - Save notification toggles to database

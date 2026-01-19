@@ -204,26 +204,33 @@ export async function getSellerAnalytics(period: string = '7d'): Promise<{
     sales_count: number | null
   }[]
 
-  // Get revenue per product from order_items
-  const topProducts: TopProduct[] = []
+  // Get revenue per product from order_items using a single aggregated query
+  const topProductIds = topProductsData.map(p => p.id)
 
-  for (const product of topProductsData) {
-    const { data: productRevenueRaw } = await supabase
+  // Fetch all order items for top products in one query
+  let productRevenueMap: Record<string, number> = {}
+  if (topProductIds.length > 0) {
+    const { data: allProductRevenue } = await supabase
       .from('order_items')
-      .select('seller_amount')
-      .eq('product_id', product.id)
+      .select('product_id, seller_amount')
+      .in('product_id', topProductIds)
 
-    const productRevenue = (productRevenueRaw || []) as { seller_amount: number | null }[]
-    const revenue = productRevenue.reduce((sum, item) => sum + Number(item.seller_amount || 0), 0)
-
-    topProducts.push({
-      id: product.id,
-      name: product.name,
-      views: product.view_count || 0,
-      sales: product.sales_count || 0,
-      revenue,
-    })
+    // Aggregate revenue by product_id
+    const revenueData = (allProductRevenue || []) as { product_id: string; seller_amount: number | null }[]
+    productRevenueMap = revenueData.reduce((acc, item) => {
+      const productId = item.product_id
+      acc[productId] = (acc[productId] || 0) + Number(item.seller_amount || 0)
+      return acc
+    }, {} as Record<string, number>)
   }
+
+  const topProducts: TopProduct[] = topProductsData.map(product => ({
+    id: product.id,
+    name: product.name,
+    views: product.view_count || 0,
+    sales: product.sales_count || 0,
+    revenue: productRevenueMap[product.id] || 0,
+  }))
 
   // ============================================
   // RECENT ACTIVITY

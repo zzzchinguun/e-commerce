@@ -10,8 +10,6 @@ import {
   DollarSign,
   TrendingUp,
   Clock,
-  CheckCircle,
-  XCircle,
   ArrowRight,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -19,6 +17,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { getAdminDashboardStats, getRecentActivity } from '@/actions/admin'
 import { formatPrice } from '@/lib/utils'
+import { PendingSellersSection } from '@/components/admin/PendingSellersSection'
 
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString('mn-MN', {
@@ -247,41 +246,7 @@ export default async function AdminDashboardPage() {
             </Button>
           </CardHeader>
           <CardContent>
-            {activity?.recentSellers && activity.recentSellers.filter((s: any) => s.status === 'pending').length > 0 ? (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {activity.recentSellers
-                  .filter((seller: any) => seller.status === 'pending')
-                  .slice(0, 6)
-                  .map((seller: any) => (
-                    <div key={seller.id} className="rounded-lg border p-4">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <p className="font-medium text-gray-900">{seller.store_name}</p>
-                          <p className="text-sm text-gray-500">
-                            {seller.users?.full_name || seller.users?.email}
-                          </p>
-                          <p className="mt-1 text-xs text-gray-400">
-                            {formatDate(seller.created_at)}
-                          </p>
-                        </div>
-                        <Badge className="bg-yellow-100 text-yellow-800">Хүлээгдэж буй</Badge>
-                      </div>
-                      <div className="mt-4 flex gap-2">
-                        <Button size="sm" className="flex-1 bg-green-600 hover:bg-green-700">
-                          <CheckCircle className="mr-1 h-4 w-4" />
-                          Батлах
-                        </Button>
-                        <Button size="sm" variant="outline" className="flex-1 text-red-600 hover:bg-red-50">
-                          <XCircle className="mr-1 h-4 w-4" />
-                          Татгалзах
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            ) : (
-              <p className="text-center text-gray-500 py-8">Хүлээгдэж буй худалдагч байхгүй</p>
-            )}
+            <PendingSellersSection initialSellers={activity?.recentSellers || []} />
           </CardContent>
         </Card>
       </div>

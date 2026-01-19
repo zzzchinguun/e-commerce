@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -29,6 +29,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { getSellerProfile, updateSellerProfile } from '@/actions/seller'
+import { createClient } from '@/lib/supabase/client'
 
 const storeSchema = z.object({
   storeName: z.string().min(1, 'Дэлгүүрийн нэр шаардлагатай'),
@@ -62,6 +63,7 @@ type SellerProfile = {
 export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false)
   const [profile, setProfile] = useState<SellerProfile | null>(null)
   const [notifications, setNotifications] = useState({
     newOrder: true,
@@ -70,6 +72,7 @@ export default function SettingsPage() {
     reviews: false,
     marketing: false,
   })
+  const logoInputRef = useRef<HTMLInputElement>(null)
 
   const {
     register,
@@ -138,6 +141,68 @@ export default function SettingsPage() {
       toast.error('Тохиргоо хадгалж чадсангүй')
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Зөвхөн зураг оруулна уу')
+      return
+    }
+
+    // Validate file size (2MB max)
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('Зураг 2MB-ээс бага байх ёстой')
+      return
+    }
+
+    setIsUploadingLogo(true)
+    const supabase = createClient()
+
+    try {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `seller-logos/${profile?.id}-${Date.now()}.${fileExt}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('products')
+        .upload(fileName, file, { upsert: true })
+
+      if (uploadError) {
+        console.error('Upload error:', uploadError)
+        toast.error('Зураг байршуулахад алдаа гарлаа')
+        return
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('products')
+        .getPublicUrl(fileName)
+
+      // Update seller profile with new logo URL
+      const result = await updateSellerProfile({
+        storeLogoUrl: publicUrl,
+      })
+
+      if (result.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Лого амжилттай шинэчлэгдлээ!')
+        if (result.profile) {
+          setProfile(result.profile as SellerProfile)
+        }
+      }
+    } catch (error) {
+      console.error('Logo upload error:', error)
+      toast.error('Лого байршуулахад алдаа гарлаа')
+    } finally {
+      setIsUploadingLogo(false)
+      // Reset file input
+      if (logoInputRef.current) {
+        logoInputRef.current.value = ''
+      }
     }
   }
 
@@ -210,10 +275,23 @@ export default function SettingsPage() {
                 </div>
                 <button
                   type="button"
-                  className="absolute -bottom-1 -right-1 rounded-full bg-orange-500 p-2 text-white shadow-sm hover:bg-orange-600"
+                  onClick={() => logoInputRef.current?.click()}
+                  disabled={isUploadingLogo}
+                  className="absolute -bottom-1 -right-1 rounded-full bg-orange-500 p-2 text-white shadow-sm hover:bg-orange-600 disabled:opacity-50"
                 >
-                  <Upload className="h-4 w-4" />
+                  {isUploadingLogo ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Upload className="h-4 w-4" />
+                  )}
                 </button>
+                <input
+                  ref={logoInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogoUpload}
+                  className="hidden"
+                />
               </div>
               <div>
                 <p className="font-medium text-gray-900">Дэлгүүрийн лого</p>
