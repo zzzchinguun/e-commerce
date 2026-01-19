@@ -59,9 +59,13 @@ This document outlines the security fixes, code improvements, and feature enhanc
   - Files: `src/actions/coupons.ts` (new), cart page
   - Implement: Coupon validation and application
 
-- [ ] **2.5 Seller Store Pages**
-  - Files: `src/app/(main)/store/[slug]/page.tsx` (new)
-  - Implement: Public seller store pages
+- [x] **2.5 Seller Store Pages**
+  - Files: `src/app/(main)/sellers/[slug]/page.tsx`
+  - **Status: DONE** - Already fully implemented with:
+    - Store banner and logo display
+    - Store info (name, rating, sales count, join date)
+    - Product grid with pagination
+    - Sort options (newest, price ascending/descending)
 
 ---
 
@@ -69,9 +73,13 @@ This document outlines the security fixes, code improvements, and feature enhanc
 
 ### TODO Items (COMPLETED)
 
-- [ ] **3.1 Standardize Error Handling**
+- [x] **3.1 Standardize Error Handling**
   - Create `src/lib/errors.ts` with standard error types
-  - Implement consistent `{ success, data, error }` return pattern
+  - **Status: DONE** - Created comprehensive error handling utilities:
+    - Error codes enum with Mongolian messages
+    - `ActionResult<T>` type for consistent server action responses
+    - Helper functions: `success()`, `error()`, `authError()`, `validationError()`, etc.
+    - Legacy compatibility functions for gradual migration
 
 - [x] **3.2 Fix N+1 Query Problems**
   - Files: `src/actions/analytics.ts`, `src/actions/orders.ts`, `src/actions/admin.ts`
@@ -97,9 +105,16 @@ This document outlines the security fixes, code improvements, and feature enhanc
     - `src/components/admin/PendingSellersSection.tsx` - Wrapper component
     - Updated admin page to use new components
 
-- [ ] **4.2 Implement Refund Processing**
-  - File: `src/app/admin/orders/page.tsx`
-  - Integrate Stripe refund API
+- [x] **4.2 Implement Refund Processing**
+  - Files: `src/actions/admin.ts`, `src/app/admin/orders/page.tsx`
+  - **Status: DONE** - Implemented full refund processing:
+    - Added `processOrderRefund()` server action with Stripe integration
+    - Creates Stripe refund via payment_intent
+    - Updates order/payment status to 'refunded'
+    - Restores inventory for all order items
+    - Decrements product `sales_count` and seller stats
+    - Logs action to admin audit log
+    - Updated admin orders page to use new refund action
 
 - [ ] **4.3 Admin Audit Log UI**
   - New file: `src/app/admin/audit-log/page.tsx`

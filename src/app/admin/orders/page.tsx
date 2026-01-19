@@ -58,6 +58,7 @@ import {
   getAllOrders,
   getOrderStatusCounts,
   updateOrderStatusAsAdmin,
+  processOrderRefund,
 } from '@/actions/admin'
 
 function formatDate(dateString: string) {
@@ -220,11 +221,16 @@ export default function AdminOrdersPage() {
     if (!selectedOrder) return
 
     startTransition(async () => {
-      const result = await updateOrderStatusAsAdmin(selectedOrder.id, 'refunded')
-      if ('error' in result) {
+      const result = await processOrderRefund(selectedOrder.id, {
+        reason: 'requested_by_customer',
+      })
+      if ('error' in result && result.error) {
         toast.error(result.error)
       } else {
         toast.success('Буцаалт амжилттай боловсруулагдлаа')
+        if (result.refundId) {
+          toast.info(`Stripe буцаалтын ID: ${result.refundId}`)
+        }
         loadOrders()
         loadStatusCounts()
       }

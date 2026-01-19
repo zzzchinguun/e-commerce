@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { cookies } from 'next/headers'
+import { stripe } from '@/lib/stripe/server'
 
 // ============================================
 // TYPES
@@ -845,6 +846,200 @@ export async function updateOrderStatusAsAdmin(orderId: string, status: string) 
   } catch (error) {
     console.error('Error updating order status:', error)
     return { error: error instanceof Error ? error.message : 'Failed to update status' }
+  }
+}
+
+/**
+ * Process a refund for an order
+ * This will:
+ * 1. Create a Stripe refund if payment was made via Stripe
+ * 2. Update the order status to 'refunded'
+ * 3. Update the payment status to 'refunded'
+ * 4. Restore inventory (via order cancellation helper)
+ * 5. Update seller stats
+ */
+export async function processOrderRefund(
+  orderId: string,
+  options?: {
+    reason?: 'duplicate' | 'fraudulent' | 'requested_by_customer'
+    amount?: number // Partial refund amount in cents, if not provided full refund
+  }
+): Promise<{ success?: boolean; refundId?: string; error?: string }> {
+  try {
+    const { supabase } = await verifyAdmin()
+
+    // Get order details including payment info
+    const { data: order, error: orderError } = await (supabase as any)
+      .from('orders')
+      .select(`
+        *,
+        payments (
+          stripe_payment_intent_id,
+          amount,
+          status
+        ),
+        order_items (
+          id,
+          quantity,
+          seller_amount,
+          product_id,
+          variant_id,
+          seller_id
+        )
+      `)
+      .eq('id', orderId)
+      .single()
+
+    if (orderError || !order) {
+      return { error: 'Захиалга олдсонгүй' }
+    }
+
+    // Check if order can be refunded
+    if (order.status === 'refunded') {
+      return { error: 'Энэ захиалга аль хэдийн буцаагдсан байна' }
+    }
+
+    if (order.payment_status !== 'succeeded' && order.payment_status !== 'paid') {
+      return { error: 'Зөвхөн төлбөр төлөгдсөн захиалгыг буцаах боломжтой' }
+    }
+
+    let stripeRefundId: string | undefined
+
+    // Process Stripe refund if payment was made via Stripe
+    const payment = order.payments?.[0]
+    if (payment?.stripe_payment_intent_id) {
+      try {
+        const refundParams: {
+          payment_intent: string
+          reason?: 'duplicate' | 'fraudulent' | 'requested_by_customer'
+          amount?: number
+        } = {
+          payment_intent: payment.stripe_payment_intent_id,
+        }
+
+        if (options?.reason) {
+          refundParams.reason = options.reason
+        }
+
+        if (options?.amount) {
+          refundParams.amount = options.amount
+        }
+
+        const refund = await stripe.refunds.create(refundParams)
+        stripeRefundId = refund.id
+      } catch (stripeError) {
+        console.error('Stripe refund error:', stripeError)
+        return {
+          error: stripeError instanceof Error
+            ? `Stripe алдаа: ${stripeError.message}`
+            : 'Stripe буцаалт хийхэд алдаа гарлаа'
+        }
+      }
+    }
+
+    // Update order status
+    const { error: updateError } = await (supabase as any)
+      .from('orders')
+      .update({
+        status: 'refunded',
+        payment_status: 'refunded',
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', orderId)
+
+    if (updateError) {
+      console.error('Error updating order:', updateError)
+      return { error: 'Захиалгын төлөв шинэчлэхэд алдаа гарлаа' }
+    }
+
+    // Update payment record if exists
+    if (payment) {
+      await (supabase as any)
+        .from('payments')
+        .update({
+          status: 'refunded',
+          updated_at: new Date().toISOString(),
+        })
+        .eq('order_id', orderId)
+    }
+
+    // Restore inventory and update seller stats for each order item
+    for (const item of order.order_items || []) {
+      // Restore inventory
+      if (item.variant_id) {
+        const { data: inventory } = await (supabase as any)
+          .from('inventory')
+          .select('quantity')
+          .eq('variant_id', item.variant_id)
+          .single()
+
+        if (inventory) {
+          await (supabase as any)
+            .from('inventory')
+            .update({ quantity: inventory.quantity + item.quantity })
+            .eq('variant_id', item.variant_id)
+        }
+      }
+
+      // Decrement product sales_count
+      if (item.product_id) {
+        const { data: product } = await (supabase as any)
+          .from('products')
+          .select('sales_count')
+          .eq('id', item.product_id)
+          .single()
+
+        if (product) {
+          await (supabase as any)
+            .from('products')
+            .update({ sales_count: Math.max(0, (product.sales_count || 0) - item.quantity) })
+            .eq('id', item.product_id)
+        }
+      }
+
+      // Decrement seller stats
+      if (item.seller_id) {
+        const { data: seller } = await (supabase as any)
+          .from('seller_profiles')
+          .select('total_sales, total_revenue')
+          .eq('id', item.seller_id)
+          .single()
+
+        if (seller) {
+          await (supabase as any)
+            .from('seller_profiles')
+            .update({
+              total_sales: Math.max(0, (seller.total_sales || 0) - item.quantity),
+              total_revenue: Math.max(0, (seller.total_revenue || 0) - (item.seller_amount || 0)),
+            })
+            .eq('id', item.seller_id)
+        }
+      }
+
+      // Update order item status
+      await (supabase as any)
+        .from('order_items')
+        .update({ status: 'refunded' })
+        .eq('id', item.id)
+    }
+
+    // Log the admin action
+    await (supabase as any).rpc('log_admin_action', {
+      p_action: 'process_refund',
+      p_target_entity_type: 'order',
+      p_target_entity_id: orderId,
+      p_metadata: {
+        stripe_refund_id: stripeRefundId,
+        refund_amount: options?.amount || order.grand_total,
+        reason: options?.reason || 'requested_by_customer',
+      }
+    })
+
+    revalidatePath('/admin/orders')
+    return { success: true, refundId: stripeRefundId }
+  } catch (error) {
+    console.error('Error processing refund:', error)
+    return { error: error instanceof Error ? error.message : 'Буцаалт хийхэд алдаа гарлаа' }
   }
 }
 

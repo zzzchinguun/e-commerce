@@ -10,8 +10,9 @@ This document provides step-by-step instructions for manually testing the featur
 2. [Seller Approval Workflow](#2-seller-approval-workflow)
 3. [Seller Logo Upload](#3-seller-logo-upload)
 4. [Order Cancellation Side Effects](#4-order-cancellation-side-effects)
-5. [Performance Verification](#5-performance-verification-n1-query-fixes)
-6. [Quick Checklist](#quick-checklist)
+5. [Admin Refund Processing](#5-admin-refund-processing)
+6. [Performance Verification](#6-performance-verification-n1-query-fixes)
+7. [Quick Checklist](#quick-checklist)
 
 ---
 
@@ -192,11 +193,90 @@ SELECT id, store_name, total_sales, total_revenue FROM seller_profiles WHERE id 
 
 ---
 
-## 5. Performance Verification (N+1 Query Fixes)
+## 5. Admin Refund Processing
+
+**Path:** `/admin/orders`
+
+**Prerequisites:** Log in as admin, have an order with `payment_status = 'succeeded'` or `'paid'`
 
 ### Test Steps
 
-#### 5.1 Seller Analytics
+#### 5.1 Process a Refund
+
+1. Navigate to **Admin → Orders** (`/admin/orders`)
+2. Find an order with "Төлөгдсөн" (Paid) payment status
+3. Click the actions menu (three dots) on the order row
+4. Select "Буцаалт хийх" (Process Refund)
+5. Confirm the refund in the dialog
+
+**Expected Results:**
+- [ ] Loading spinner appears during processing
+- [ ] Toast shows "Буцаалт амжилттай боловсруулагдлаа"
+- [ ] If Stripe payment, toast shows Stripe refund ID
+- [ ] Order status changes to "Буцаагдсан" (Refunded)
+- [ ] Payment status changes to "Буцаагдсан" (Refunded)
+
+#### 5.2 Verify Side Effects
+
+Check in database:
+
+```sql
+-- Check order status
+SELECT id, order_number, status, payment_status FROM orders WHERE id = 'ORDER_ID';
+
+-- Check order items status
+SELECT id, status, product_id, quantity FROM order_items WHERE order_id = 'ORDER_ID';
+
+-- Check inventory was restored
+SELECT i.quantity, pv.id as variant_id
+FROM inventory i
+JOIN product_variants pv ON i.variant_id = pv.id
+JOIN order_items oi ON oi.variant_id = pv.id
+WHERE oi.order_id = 'ORDER_ID';
+
+-- Check product sales_count was decremented
+SELECT id, name, sales_count FROM products WHERE id IN (
+  SELECT product_id FROM order_items WHERE order_id = 'ORDER_ID'
+);
+
+-- Check seller stats were updated
+SELECT id, store_name, total_sales, total_revenue FROM seller_profiles WHERE id IN (
+  SELECT seller_id FROM order_items WHERE order_id = 'ORDER_ID'
+);
+
+-- Check admin audit log
+SELECT * FROM admin_audit_log WHERE target_entity_id = 'ORDER_ID' ORDER BY created_at DESC;
+```
+
+**Expected Results:**
+- [ ] Order status = 'refunded'
+- [ ] Order items status = 'refunded'
+- [ ] Inventory quantities restored
+- [ ] Product sales_count decremented
+- [ ] Seller total_sales and total_revenue decremented
+- [ ] Audit log entry with action = 'process_refund'
+
+#### 5.3 Test Validation - Already Refunded
+
+1. Try to refund an order that's already refunded
+
+**Expected Results:**
+- [ ] Error toast: "Энэ захиалга аль хэдийн буцаагдсан байна"
+
+#### 5.4 Test Validation - Unpaid Order
+
+1. Try to refund an order with `payment_status` = 'pending'
+
+**Expected Results:**
+- [ ] Error toast: "Зөвхөн төлбөр төлөгдсөн захиалгыг буцаах боломжтой"
+
+---
+
+## 6. Performance Verification (N+1 Query Fixes)
+
+### Test Steps
+
+#### 6.1 Seller Analytics
 
 1. Open browser DevTools → Network tab
 2. Navigate to `/seller/analytics`
@@ -206,7 +286,7 @@ SELECT id, store_name, total_sales, total_revenue FROM seller_profiles WHERE id 
 - [ ] No excessive/repeated database calls
 - [ ] Page loads quickly
 
-#### 5.2 Admin Orders
+#### 6.2 Admin Orders
 
 1. Navigate to `/admin/orders`
 2. Check the status filter tabs
@@ -215,7 +295,7 @@ SELECT id, store_name, total_sales, total_revenue FROM seller_profiles WHERE id 
 - [ ] Status counts load in a single request
 - [ ] Page loads without visible delay
 
-#### 5.3 Seller Orders
+#### 6.3 Seller Orders
 
 1. Navigate to `/seller/orders`
 2. Check the status filter tabs
@@ -240,6 +320,11 @@ SELECT id, store_name, total_sales, total_revenue FROM seller_profiles WHERE id 
 | Logo validation (type) | `/seller/settings` | ☐ |
 | Logo validation (size) | `/seller/settings` | ☐ |
 | Order cancellation restores inventory | `/seller/orders` | ☐ |
+| **Refund processing** | `/admin/orders` | ☐ |
+| **Refund restores inventory** | `/admin/orders` | ☐ |
+| **Refund updates seller stats** | `/admin/orders` | ☐ |
+| **Refund validation (already refunded)** | `/admin/orders` | ☐ |
+| **Refund validation (unpaid order)** | `/admin/orders` | ☐ |
 | Analytics page performance | `/seller/analytics` | ☐ |
 | Order status counts performance | `/admin/orders` | ☐ |
 
