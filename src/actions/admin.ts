@@ -535,6 +535,38 @@ export async function updateSellerStatus(sellerId: string, status: 'approved' | 
       p_target_user_id: seller?.user_id
     })
 
+    // Send notification to seller
+    if (seller?.user_id) {
+      const notificationData = {
+        approved: {
+          type: 'seller_approved',
+          title: 'Худалдагчаар бүртгэгдлээ!',
+          message: 'Таны худалдагчийн хүсэлт баталгаажлаа. Одоо бүтээгдэхүүн нэмэх боломжтой.',
+        },
+        rejected: {
+          type: 'seller_rejected',
+          title: 'Хүсэлт татгалзагдлаа',
+          message: 'Таны худалдагчийн хүсэлт татгалзагдлаа. Дэлгэрэнгүй мэдээлэл авахыг хүсвэл холбоо барина уу.',
+        },
+        suspended: {
+          type: 'seller_rejected',
+          title: 'Данс түдгэлзүүлэгдлээ',
+          message: 'Таны худалдагчийн данс түдгэлзүүлэгдлээ. Дэлгэрэнгүй мэдээлэл авахыг хүсвэл холбоо барина уу.',
+        },
+      }
+
+      const notif = notificationData[status]
+      await (supabase as any)
+        .from('notifications')
+        .insert({
+          user_id: seller.user_id,
+          type: notif.type,
+          title: notif.title,
+          message: notif.message,
+          data: { sellerId },
+        })
+    }
+
     revalidatePath('/admin/sellers')
     return { success: true }
   } catch (error) {

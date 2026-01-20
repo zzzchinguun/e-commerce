@@ -145,7 +145,7 @@ export async function confirmTestPayment(sessionId: string) {
     }
   }
 
-  // Send notification to user (if notifications table exists)
+  // Send notification to user
   try {
     const { data: orderWithUser } = await supabase
       .from('orders')
@@ -158,15 +158,15 @@ export async function confirmTestPayment(sessionId: string) {
         .from('notifications')
         .insert({
           user_id: (orderWithUser as any).user_id,
-          type: 'order',
+          type: 'order_placed',
           title: 'Захиалга баталгаажлаа',
           message: `Таны #${order.order_number} захиалга амжилттай төлөгдлөө.`,
           data: { orderId: order.id, orderNumber: order.order_number },
         })
     }
   } catch (e) {
-    // Notifications table might not exist, ignore error
-    console.log('Could not send notification:', e)
+    // Log but don't fail the payment confirmation
+    console.error('Failed to send notification:', e)
   }
 
   revalidatePath('/account/orders')

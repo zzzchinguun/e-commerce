@@ -13,7 +13,8 @@ This document provides step-by-step instructions for manually testing the featur
 5. [Admin Refund Processing](#5-admin-refund-processing)
 6. [Admin Audit Log](#6-admin-audit-log)
 7. [Performance Verification](#7-performance-verification-n1-query-fixes)
-8. [Quick Checklist](#quick-checklist)
+8. [Notification System](#8-notification-system)
+9. [Quick Checklist](#quick-checklist)
 
 ---
 
@@ -383,6 +384,84 @@ SELECT * FROM admin_audit_log WHERE target_entity_id = 'ORDER_ID' ORDER BY creat
 
 ---
 
+## 8. Notification System
+
+**Prerequisites:** Have accounts ready as customer, seller (pending), and admin
+
+### Test Steps
+
+#### 8.1 Order Payment Notification (Customer)
+
+1. Log in as a customer
+2. Add products to cart and complete checkout using QPay test payment
+3. Click the notification bell icon in the header
+
+**Expected Results:**
+- [ ] Notification bell shows unread count badge (red circle with "1")
+- [ ] Clicking bell shows notification: "Захиалга баталгаажлаа"
+- [ ] Notification shows the order number
+- [ ] Clicking mark as read updates the count
+
+#### 8.2 Order Status Change Notification (Customer)
+
+1. Log in as seller
+2. Navigate to `/seller/orders`
+3. Change an order item status to "Shipped"
+4. Log in as the customer who placed that order
+5. Click the notification bell
+
+**Expected Results:**
+- [ ] Notification: "Захиалга илгээгдлээ" with product name
+- [ ] Shows tracking number if provided
+- [ ] Unread count updates accordingly
+
+#### 8.3 Seller Approval Notification
+
+1. Log in as a new user
+2. Register as seller at `/seller/register`
+3. Log in as admin
+4. Navigate to `/admin` or `/admin/sellers`
+5. Approve the pending seller
+6. Log in as the newly approved seller
+7. Click the notification bell
+
+**Expected Results:**
+- [ ] Notification: "Худалдагчаар бүртгэгдлээ!"
+- [ ] Message indicates they can now add products
+
+#### 8.4 Seller Rejection Notification
+
+1. Create another pending seller account
+2. Log in as admin and reject the seller
+3. Log in as the rejected seller
+4. Check notifications
+
+**Expected Results:**
+- [ ] Notification: "Хүсэлт татгалзагдлаа"
+- [ ] Message indicates to contact support
+
+#### 8.5 Mark All as Read
+
+1. Ensure there are multiple unread notifications
+2. Click the notification bell
+3. Click "Бүгдийг уншсан" (Mark all as read)
+
+**Expected Results:**
+- [ ] All notifications marked as read
+- [ ] Unread count badge disappears
+- [ ] Notifications no longer highlighted
+
+#### 8.6 Auto-Refresh
+
+1. Open the app in two browser tabs
+2. In tab 1, trigger an action that creates a notification (e.g., approve seller)
+3. Wait 30 seconds in tab 2
+
+**Expected Results:**
+- [ ] Tab 2 updates unread count automatically (polling every 30 seconds)
+
+---
+
 ## Quick Checklist
 
 | Feature | Path | Pass/Fail |
@@ -405,6 +484,10 @@ SELECT * FROM admin_audit_log WHERE target_entity_id = 'ORDER_ID' ORDER BY creat
 | **Audit log stats display** | `/admin/audit-log` | ☐ |
 | **Audit log filtering** | `/admin/audit-log` | ☐ |
 | **Audit log pagination** | `/admin/audit-log` | ☐ |
+| **Order payment notification** | notification bell | ☐ |
+| **Order status notification** | notification bell | ☐ |
+| **Seller approval notification** | notification bell | ☐ |
+| **Mark all as read** | notification bell | ☐ |
 | Analytics page performance | `/seller/analytics` | ☐ |
 | Order status counts performance | `/admin/orders` | ☐ |
 

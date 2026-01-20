@@ -380,5 +380,21 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
     }
   }
 
+  // Send notification to user about successful order
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (supabase as any)
+      .from('notifications')
+      .insert({
+        user_id: userData.id,
+        type: 'order_placed',
+        title: 'Захиалга баталгаажлаа',
+        message: `Таны #${orderNumber} захиалга амжилттай төлөгдлөө.`,
+        data: { orderId: order.id, orderNumber },
+      })
+  } catch (e) {
+    console.error('Failed to send notification:', e)
+  }
+
   console.log(`Order ${orderNumber} created successfully for user ${userData.id}`)
 }

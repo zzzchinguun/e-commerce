@@ -415,14 +415,23 @@ export async function updateOrderStatus(
     return { error: 'Seller profile not found' }
   }
 
-  // Verify order item belongs to seller
+  // Verify order item belongs to seller and get order details for notification
   const { data: orderItemData } = await supabase
     .from('order_items')
-    .select('id, seller_id, order_id')
+    .select(`
+      id, seller_id, order_id, product_name,
+      orders!inner(user_id, order_number)
+    `)
     .eq('id', orderItemId)
     .single()
 
-  const orderItem = orderItemData as Pick<OrderItem, 'id' | 'seller_id' | 'order_id'> | null
+  const orderItem = orderItemData as {
+    id: string
+    seller_id: string
+    order_id: string
+    product_name: string
+    orders: { user_id: string; order_number: string }
+  } | null
 
   if (!orderItem || orderItem.seller_id !== profile.id) {
     return { error: 'Order not found' }
@@ -473,6 +482,53 @@ export async function updateOrderStatus(
       .from('orders')
       .update({ status })
       .eq('id', orderItem.order_id)
+  }
+
+  // Send notification to customer about status change
+  try {
+    const notificationMessages: Record<string, { type: string; title: string; message: string }> = {
+      processing: {
+        type: 'order_placed',
+        title: 'Захиалга боловсруулагдаж байна',
+        message: `Таны #${orderItem.orders.order_number} захиалгын "${orderItem.product_name}" бүтээгдэхүүн боловсруулагдаж байна.`,
+      },
+      shipped: {
+        type: 'order_shipped',
+        title: 'Захиалга илгээгдлээ',
+        message: `Таны #${orderItem.orders.order_number} захиалгын "${orderItem.product_name}" бүтээгдэхүүн илгээгдлээ.${trackingNumber ? ` Tracking: ${trackingNumber}` : ''}`,
+      },
+      delivered: {
+        type: 'order_delivered',
+        title: 'Захиалга хүргэгдлээ',
+        message: `Таны #${orderItem.orders.order_number} захиалгын "${orderItem.product_name}" бүтээгдэхүүн хүргэгдлээ.`,
+      },
+      cancelled: {
+        type: 'order_placed',
+        title: 'Захиалга цуцлагдлаа',
+        message: `Таны #${orderItem.orders.order_number} захиалгын "${orderItem.product_name}" бүтээгдэхүүн цуцлагдлаа.`,
+      },
+    }
+
+    const notif = notificationMessages[status]
+    if (notif && orderItem.orders.user_id) {
+      await (supabase as any)
+        .from('notifications')
+        .insert({
+          user_id: orderItem.orders.user_id,
+          type: notif.type,
+          title: notif.title,
+          message: notif.message,
+          data: {
+            orderId: orderItem.order_id,
+            orderNumber: orderItem.orders.order_number,
+            orderItemId,
+            status,
+          },
+        })
+    }
+  } catch (e) {
+    // Log but don't fail the status update
+    console.error('Failed to send order status notification:', e)
   }
 
   revalidatePath('/seller/orders')

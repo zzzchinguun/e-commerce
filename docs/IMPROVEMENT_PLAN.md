@@ -46,9 +46,13 @@ This document outlines the security fixes, code improvements, and feature enhanc
   - Implement: Cancel order, decrement sales_count, restore inventory, decrement seller stats
   - **Status: DONE** - Added `handleOrderItemCancellation()` helper function in `updateOrderStatus()`
 
-- [ ] **2.2 Notification System**
-  - Files: `src/actions/notifications.ts` (new)
-  - Implement: Robust notification service with error handling
+- [x] **2.2 Notification System**
+  - Files: `src/actions/notifications.ts`, `src/components/admin/NotificationBell.tsx`
+  - **Status: DONE** - Full notification system implemented:
+    - Server actions: `getMyNotifications()`, `getUnreadNotificationCount()`, `markNotificationAsRead()`, `markAllNotificationsAsRead()`, `createSystemNotification()`, admin broadcast functions
+    - Notification types: order_placed, order_shipped, order_delivered, seller_approved, seller_rejected, system, promotion, announcement
+    - NotificationBell component with real-time unread count polling
+    - Integrated triggers: order payment (QPay & Stripe), order status changes, seller approval/rejection
 
 - [x] **2.3 Address Management**
   - Files: `src/app/(main)/account/addresses/page.tsx`, `src/actions/addresses.ts` (new)
