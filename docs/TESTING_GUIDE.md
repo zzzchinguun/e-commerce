@@ -11,8 +11,9 @@ This document provides step-by-step instructions for manually testing the featur
 3. [Seller Logo Upload](#3-seller-logo-upload)
 4. [Order Cancellation Side Effects](#4-order-cancellation-side-effects)
 5. [Admin Refund Processing](#5-admin-refund-processing)
-6. [Performance Verification](#6-performance-verification-n1-query-fixes)
-7. [Quick Checklist](#quick-checklist)
+6. [Admin Audit Log](#6-admin-audit-log)
+7. [Performance Verification](#7-performance-verification-n1-query-fixes)
+8. [Quick Checklist](#quick-checklist)
 
 ---
 
@@ -272,11 +273,87 @@ SELECT * FROM admin_audit_log WHERE target_entity_id = 'ORDER_ID' ORDER BY creat
 
 ---
 
-## 6. Performance Verification (N+1 Query Fixes)
+## 6. Admin Audit Log
+
+**Path:** `/admin/audit-log`
+
+**Prerequisites:** Log in as an admin user
 
 ### Test Steps
 
-#### 6.1 Seller Analytics
+#### 6.1 View Audit Log Stats
+
+1. Navigate to **Admin → Үйлдлийн лог** (`/admin/audit-log`)
+2. Observe the stats cards at the top
+
+**Expected Results:**
+- [ ] "Нийт лог" card shows total audit log count
+- [ ] "Өнөөдрийн лог" card shows today's log count
+- [ ] "Админуудын тоо" card shows unique admin count
+- [ ] "Түгээмэл үйлдлүүд" card shows top 3 actions
+
+#### 6.2 Filter by Action Type
+
+1. Click the "Үйлдэл сонгох" dropdown
+2. Select "Худалдагч баталгаажуулсан" (approve_seller)
+
+**Expected Results:**
+- [ ] Table shows only seller approval logs
+- [ ] Page resets to 1
+
+#### 6.3 Filter by Entity Type
+
+1. Click the "Төрөл сонгох" dropdown
+2. Select "Захиалга" (order)
+
+**Expected Results:**
+- [ ] Table shows only order-related logs
+
+#### 6.4 Filter by Date Range
+
+1. Set "From" date to a week ago
+2. Set "To" date to today
+
+**Expected Results:**
+- [ ] Table shows only logs within the date range
+
+#### 6.5 Test Pagination
+
+1. Clear filters to show all logs
+2. If more than 20 logs exist, click "Дараах" (Next)
+
+**Expected Results:**
+- [ ] Page number updates
+- [ ] Table shows next set of logs
+- [ ] "Өмнөх" (Previous) button becomes active
+
+#### 6.6 Verify Log Entry Details
+
+1. Look at any log entry in the table
+
+**Expected Results:**
+- [ ] Shows relative time (e.g., "5 минутын өмнө")
+- [ ] Shows exact date/time below
+- [ ] Shows action badge with icon
+- [ ] Shows admin name and email
+- [ ] Shows target entity type and details
+- [ ] Shows metadata if available
+
+#### 6.7 Refresh Logs
+
+1. Click "Шинэчлэх" (Refresh) button
+
+**Expected Results:**
+- [ ] Toast shows "Лог шинэчлэгдлээ"
+- [ ] Stats and logs are refreshed
+
+---
+
+## 7. Performance Verification (N+1 Query Fixes)
+
+### Test Steps
+
+#### 7.1 Seller Analytics
 
 1. Open browser DevTools → Network tab
 2. Navigate to `/seller/analytics`
@@ -286,7 +363,7 @@ SELECT * FROM admin_audit_log WHERE target_entity_id = 'ORDER_ID' ORDER BY creat
 - [ ] No excessive/repeated database calls
 - [ ] Page loads quickly
 
-#### 6.2 Admin Orders
+#### 7.2 Admin Orders
 
 1. Navigate to `/admin/orders`
 2. Check the status filter tabs
@@ -295,7 +372,7 @@ SELECT * FROM admin_audit_log WHERE target_entity_id = 'ORDER_ID' ORDER BY creat
 - [ ] Status counts load in a single request
 - [ ] Page loads without visible delay
 
-#### 6.3 Seller Orders
+#### 7.3 Seller Orders
 
 1. Navigate to `/seller/orders`
 2. Check the status filter tabs
@@ -325,6 +402,9 @@ SELECT * FROM admin_audit_log WHERE target_entity_id = 'ORDER_ID' ORDER BY creat
 | **Refund updates seller stats** | `/admin/orders` | ☐ |
 | **Refund validation (already refunded)** | `/admin/orders` | ☐ |
 | **Refund validation (unpaid order)** | `/admin/orders` | ☐ |
+| **Audit log stats display** | `/admin/audit-log` | ☐ |
+| **Audit log filtering** | `/admin/audit-log` | ☐ |
+| **Audit log pagination** | `/admin/audit-log` | ☐ |
 | Analytics page performance | `/seller/analytics` | ☐ |
 | Order status counts performance | `/admin/orders` | ☐ |
 

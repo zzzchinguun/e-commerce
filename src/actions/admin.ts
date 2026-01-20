@@ -1508,3 +1508,163 @@ export async function getLastMaintenanceRun(actionId: string) {
     return null
   }
 }
+
+// ============================================
+// AUDIT LOG
+// ============================================
+
+export interface AuditLogEntry {
+  id: string
+  admin_id: string
+  action: string
+  target_user_id: string | null
+  target_entity_type: string | null
+  target_entity_id: string | null
+  metadata: Record<string, unknown> | null
+  created_at: string
+  admin?: {
+    email: string
+    full_name: string | null
+  }
+  target_user?: {
+    email: string
+    full_name: string | null
+  } | null
+}
+
+export interface AuditLogFilters {
+  action?: string
+  adminId?: string
+  targetEntityType?: string
+  dateFrom?: string
+  dateTo?: string
+  page?: number
+  limit?: number
+}
+
+export async function getAuditLogs(filters: AuditLogFilters = {}): Promise<{
+  logs?: AuditLogEntry[]
+  total?: number
+  error?: string
+}> {
+  try {
+    const { supabase } = await verifyAdmin()
+
+    const {
+      action,
+      adminId,
+      targetEntityType,
+      dateFrom,
+      dateTo,
+      page = 1,
+      limit = 20,
+    } = filters
+
+    // Build query
+    let query = (supabase as any)
+      .from('admin_audit_log')
+      .select(`
+        *,
+        admin:admin_id (email, full_name),
+        target_user:target_user_id (email, full_name)
+      `, { count: 'exact' })
+      .order('created_at', { ascending: false })
+
+    // Apply filters
+    if (action) {
+      query = query.eq('action', action)
+    }
+    if (adminId) {
+      query = query.eq('admin_id', adminId)
+    }
+    if (targetEntityType) {
+      query = query.eq('target_entity_type', targetEntityType)
+    }
+    if (dateFrom) {
+      query = query.gte('created_at', dateFrom)
+    }
+    if (dateTo) {
+      query = query.lte('created_at', dateTo)
+    }
+
+    // Pagination
+    const offset = (page - 1) * limit
+    query = query.range(offset, offset + limit - 1)
+
+    const { data, count, error } = await query
+
+    if (error) {
+      console.error('Error fetching audit logs:', error)
+      return { error: 'Лог татахад алдаа гарлаа' }
+    }
+
+    return {
+      logs: data as AuditLogEntry[],
+      total: count || 0,
+    }
+  } catch (error) {
+    console.error('Error in getAuditLogs:', error)
+    return { error: error instanceof Error ? error.message : 'Алдаа гарлаа' }
+  }
+}
+
+export async function getAuditLogStats(): Promise<{
+  stats?: {
+    totalLogs: number
+    todayLogs: number
+    uniqueAdmins: number
+    topActions: { action: string; count: number }[]
+  }
+  error?: string
+}> {
+  try {
+    const { supabase } = await verifyAdmin()
+
+    // Get total count
+    const { count: totalLogs } = await (supabase as any)
+      .from('admin_audit_log')
+      .select('*', { count: 'exact', head: true })
+
+    // Get today's count
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const { count: todayLogs } = await (supabase as any)
+      .from('admin_audit_log')
+      .select('*', { count: 'exact', head: true })
+      .gte('created_at', today.toISOString())
+
+    // Get unique admins
+    const { data: admins } = await (supabase as any)
+      .from('admin_audit_log')
+      .select('admin_id')
+
+    const uniqueAdmins = new Set((admins || []).map((a: { admin_id: string }) => a.admin_id)).size
+
+    // Get top actions (aggregate in JS since Supabase doesn't support GROUP BY easily)
+    const { data: allLogs } = await (supabase as any)
+      .from('admin_audit_log')
+      .select('action')
+
+    const actionCounts: Record<string, number> = {}
+    for (const log of allLogs || []) {
+      actionCounts[log.action] = (actionCounts[log.action] || 0) + 1
+    }
+
+    const topActions = Object.entries(actionCounts)
+      .map(([action, count]) => ({ action, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5)
+
+    return {
+      stats: {
+        totalLogs: totalLogs || 0,
+        todayLogs: todayLogs || 0,
+        uniqueAdmins,
+        topActions,
+      },
+    }
+  } catch (error) {
+    console.error('Error in getAuditLogStats:', error)
+    return { error: error instanceof Error ? error.message : 'Алдаа гарлаа' }
+  }
+}

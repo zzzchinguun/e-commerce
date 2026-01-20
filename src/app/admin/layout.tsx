@@ -21,6 +21,7 @@ import {
   Bell,
   Image,
   Wrench,
+  FileText,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -88,6 +89,11 @@ const sidebarLinks = [
     name: 'Засвар үйлчилгээ',
     href: '/admin/maintenance',
     icon: Wrench,
+  },
+  {
+    name: 'Үйлдлийн лог',
+    href: '/admin/audit-log',
+    icon: FileText,
   },
 ]
 
