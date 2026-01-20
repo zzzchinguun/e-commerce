@@ -146,8 +146,13 @@ This document outlines the security fixes, code improvements, and feature enhanc
 - [ ] **5.2 Notification Preferences Persistence**
   - Save notification toggles to database
 
-- [ ] **5.3 Security Features**
-  - Implement password change and 2FA setup
+- [x] **5.3 Security Features**
+  - **Status: DONE** (Password Change) - Implemented password change functionality:
+    - Created `ChangePasswordDialog` reusable component
+    - Validates current password before allowing change
+    - Enforces password requirements (8+ chars, uppercase, lowercase, number)
+    - Integrated into both `/account/settings` and `/seller/settings` pages
+  - *2FA setup: Not implemented (requires additional infrastructure)*
 
 ---
 

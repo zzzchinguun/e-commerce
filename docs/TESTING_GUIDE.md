@@ -14,7 +14,8 @@ This document provides step-by-step instructions for manually testing the featur
 6. [Admin Audit Log](#6-admin-audit-log)
 7. [Performance Verification](#7-performance-verification-n1-query-fixes)
 8. [Notification System](#8-notification-system)
-9. [Quick Checklist](#quick-checklist)
+9. [Password Change](#9-password-change)
+10. [Quick Checklist](#quick-checklist)
 
 ---
 
@@ -462,6 +463,81 @@ SELECT * FROM admin_audit_log WHERE target_entity_id = 'ORDER_ID' ORDER BY creat
 
 ---
 
+## 9. Password Change
+
+**Paths:** `/account/settings`, `/seller/settings`
+
+**Prerequisites:** Log in with an email/password account (not Google OAuth)
+
+### Test Steps
+
+#### 9.1 Open Password Change Dialog (Customer)
+
+1. Log in as a customer
+2. Navigate to **Account → Settings** (`/account/settings`)
+3. In the "Аюулгүй байдал" (Security) section, click "Нууц үг солих"
+
+**Expected Results:**
+- [ ] Dialog opens with title "Нууц үг солих"
+- [ ] Three password fields: current, new, confirm
+- [ ] Eye icons to toggle password visibility
+
+#### 9.2 Validation - Wrong Current Password
+
+1. Enter an incorrect current password
+2. Enter valid new password and confirmation
+3. Click "Нууц үг солих"
+
+**Expected Results:**
+- [ ] Error toast: "Одоогийн нууц үг буруу байна"
+- [ ] Dialog stays open
+
+#### 9.3 Validation - Weak New Password
+
+1. Enter correct current password
+2. Enter a weak new password (e.g., "12345")
+3. Click "Нууц үг солих"
+
+**Expected Results:**
+- [ ] Validation error: "Нууц үг хамгийн багадаа 8 тэмдэгт байх ёстой"
+- [ ] Additional requirements shown (uppercase, lowercase, number)
+
+#### 9.4 Validation - Password Mismatch
+
+1. Enter correct current password
+2. Enter valid new password
+3. Enter different confirmation password
+4. Click "Нууц үг солих"
+
+**Expected Results:**
+- [ ] Validation error: "Нууц үг таарахгүй байна"
+
+#### 9.5 Successful Password Change
+
+1. Enter correct current password
+2. Enter valid new password (e.g., "NewPass123")
+3. Enter matching confirmation
+4. Click "Нууц үг солих"
+
+**Expected Results:**
+- [ ] Loading spinner on button
+- [ ] Success toast: "Нууц үг амжилттай солигдлоо!"
+- [ ] Dialog closes
+- [ ] Can log in with new password
+
+#### 9.6 Password Change for Seller
+
+1. Log in as a seller
+2. Navigate to **Seller → Settings** (`/seller/settings`)
+3. Scroll to "Аюулгүй байдал" section
+4. Click "Шинэчлэх" button next to password
+
+**Expected Results:**
+- [ ] Same password dialog opens
+- [ ] Same validation and functionality as customer
+
+---
+
 ## Quick Checklist
 
 | Feature | Path | Pass/Fail |
@@ -488,6 +564,10 @@ SELECT * FROM admin_audit_log WHERE target_entity_id = 'ORDER_ID' ORDER BY creat
 | **Order status notification** | notification bell | ☐ |
 | **Seller approval notification** | notification bell | ☐ |
 | **Mark all as read** | notification bell | ☐ |
+| **Password change dialog opens** | `/account/settings` | ☐ |
+| **Password validation (wrong current)** | `/account/settings` | ☐ |
+| **Password validation (weak)** | `/account/settings` | ☐ |
+| **Password change success** | `/account/settings` | ☐ |
 | Analytics page performance | `/seller/analytics` | ☐ |
 | Order status counts performance | `/admin/orders` | ☐ |
 

@@ -25,6 +25,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
+import { ChangePasswordDialog } from '@/components/auth/ChangePasswordDialog'
 import type { User } from '@supabase/supabase-js'
 
 const profileSchema = z.object({
@@ -247,7 +248,7 @@ export default function SettingsPage() {
                 Бүртгэлийн нууц үгээ солих
               </p>
             </div>
-            <Button variant="outline">Нууц үг солих</Button>
+            <ChangePasswordDialog />
           </div>
           <Separator />
           <div className="flex items-center justify-between">

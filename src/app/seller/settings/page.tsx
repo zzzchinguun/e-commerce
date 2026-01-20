@@ -30,6 +30,7 @@ import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { getSellerProfile, updateSellerProfile } from '@/actions/seller'
 import { createClient } from '@/lib/supabase/client'
+import { ChangePasswordDialog } from '@/components/auth/ChangePasswordDialog'
 
 const storeSchema = z.object({
   storeName: z.string().min(1, 'Дэлгүүрийн нэр шаардлагатай'),
@@ -535,9 +536,13 @@ export default function SettingsPage() {
                   Аюулгүй байдлыг сайжруулахын тулд нууц үгээ тогтмол шинэчлэх
                 </p>
               </div>
-              <Button variant="outline" size="sm">
-                Шинэчлэх
-              </Button>
+              <ChangePasswordDialog
+                trigger={
+                  <Button variant="outline" size="sm">
+                    Шинэчлэх
+                  </Button>
+                }
+              />
             </div>
           </CardContent>
         </Card>
