@@ -409,9 +409,19 @@ export type Database = {
           shipping_address: Json
           billing_address: Json
           shipping_method: string | null
+          shipping_carrier: string | null
           tracking_number: string | null
+          estimated_delivery_date: string | null
           payment_status: 'pending' | 'processing' | 'succeeded' | 'failed' | 'refunded' | 'partially_refunded'
+          payment_method: string | null
+          stripe_session_id: string | null
+          stripe_payment_intent_id: string | null
           notes: string | null
+          internal_notes: string | null
+          confirmed_at: string | null
+          shipped_at: string | null
+          delivered_at: string | null
+          cancelled_at: string | null
           created_at: string
           updated_at: string
         }
@@ -429,9 +439,19 @@ export type Database = {
           shipping_address: Json
           billing_address: Json
           shipping_method?: string | null
+          shipping_carrier?: string | null
           tracking_number?: string | null
+          estimated_delivery_date?: string | null
           payment_status?: 'pending' | 'processing' | 'succeeded' | 'failed' | 'refunded' | 'partially_refunded'
+          payment_method?: string | null
+          stripe_session_id?: string | null
+          stripe_payment_intent_id?: string | null
           notes?: string | null
+          internal_notes?: string | null
+          confirmed_at?: string | null
+          shipped_at?: string | null
+          delivered_at?: string | null
+          cancelled_at?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -449,9 +469,19 @@ export type Database = {
           shipping_address?: Json
           billing_address?: Json
           shipping_method?: string | null
+          shipping_carrier?: string | null
           tracking_number?: string | null
+          estimated_delivery_date?: string | null
           payment_status?: 'pending' | 'processing' | 'succeeded' | 'failed' | 'refunded' | 'partially_refunded'
+          payment_method?: string | null
+          stripe_session_id?: string | null
+          stripe_payment_intent_id?: string | null
           notes?: string | null
+          internal_notes?: string | null
+          confirmed_at?: string | null
+          shipped_at?: string | null
+          delivered_at?: string | null
+          cancelled_at?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -636,6 +666,339 @@ export type Database = {
           notes?: string | null
           priority?: number
           created_at?: string
+        }
+      }
+      notifications: {
+        Row: {
+          id: string
+          user_id: string
+          type: string
+          title: string
+          message: string
+          data: Json | null
+          is_read: boolean
+          read_at: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          type: string
+          title: string
+          message: string
+          data?: Json | null
+          is_read?: boolean
+          read_at?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          type?: string
+          title?: string
+          message?: string
+          data?: Json | null
+          is_read?: boolean
+          read_at?: string | null
+          created_at?: string
+        }
+      }
+      hero_banners: {
+        Row: {
+          id: string
+          title: string
+          subtitle: string | null
+          button_text: string | null
+          button_link: string | null
+          image_url: string
+          background_color: string
+          position: number
+          is_active: boolean
+          start_date: string | null
+          end_date: string | null
+          click_count: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          subtitle?: string | null
+          button_text?: string | null
+          button_link?: string | null
+          image_url: string
+          background_color?: string
+          position?: number
+          is_active?: boolean
+          start_date?: string | null
+          end_date?: string | null
+          click_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          subtitle?: string | null
+          button_text?: string | null
+          button_link?: string | null
+          image_url?: string
+          background_color?: string
+          position?: number
+          is_active?: boolean
+          start_date?: string | null
+          end_date?: string | null
+          click_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      featured_categories: {
+        Row: {
+          id: string
+          category_id: string
+          custom_title: string | null
+          custom_description: string | null
+          custom_image_url: string | null
+          position: number
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          category_id: string
+          custom_title?: string | null
+          custom_description?: string | null
+          custom_image_url?: string | null
+          position?: number
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          category_id?: string
+          custom_title?: string | null
+          custom_description?: string | null
+          custom_image_url?: string | null
+          position?: number
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      payments: {
+        Row: {
+          id: string
+          order_id: string
+          user_id: string
+          stripe_payment_intent_id: string
+          stripe_charge_id: string | null
+          amount: number
+          currency: string
+          status: 'pending' | 'processing' | 'succeeded' | 'failed' | 'refunded' | 'partially_refunded'
+          payment_method: string | null
+          card_brand: string | null
+          card_last_four: string | null
+          failure_reason: string | null
+          metadata: Json | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          order_id: string
+          user_id: string
+          stripe_payment_intent_id: string
+          stripe_charge_id?: string | null
+          amount: number
+          currency?: string
+          status?: 'pending' | 'processing' | 'succeeded' | 'failed' | 'refunded' | 'partially_refunded'
+          payment_method?: string | null
+          card_brand?: string | null
+          card_last_four?: string | null
+          failure_reason?: string | null
+          metadata?: Json | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          order_id?: string
+          user_id?: string
+          stripe_payment_intent_id?: string
+          stripe_charge_id?: string | null
+          amount?: number
+          currency?: string
+          status?: 'pending' | 'processing' | 'succeeded' | 'failed' | 'refunded' | 'partially_refunded'
+          payment_method?: string | null
+          card_brand?: string | null
+          card_last_four?: string | null
+          failure_reason?: string | null
+          metadata?: Json | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      seller_payouts: {
+        Row: {
+          id: string
+          seller_id: string
+          stripe_transfer_id: string
+          amount: number
+          currency: string
+          status: string
+          period_start: string | null
+          period_end: string | null
+          order_item_ids: string[] | null
+          notes: string | null
+          processed_at: string | null
+          failure_reason: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          seller_id: string
+          stripe_transfer_id: string
+          amount: number
+          currency?: string
+          status?: string
+          period_start?: string | null
+          period_end?: string | null
+          order_item_ids?: string[] | null
+          notes?: string | null
+          processed_at?: string | null
+          failure_reason?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          seller_id?: string
+          stripe_transfer_id?: string
+          amount?: number
+          currency?: string
+          status?: string
+          period_start?: string | null
+          period_end?: string | null
+          order_item_ids?: string[] | null
+          notes?: string | null
+          processed_at?: string | null
+          failure_reason?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      product_views: {
+        Row: {
+          id: string
+          product_id: string
+          user_id: string | null
+          session_id: string | null
+          ip_address: string | null
+          user_agent: string | null
+          referrer: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          product_id: string
+          user_id?: string | null
+          session_id?: string | null
+          ip_address?: string | null
+          user_agent?: string | null
+          referrer?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          product_id?: string
+          user_id?: string | null
+          session_id?: string | null
+          ip_address?: string | null
+          user_agent?: string | null
+          referrer?: string | null
+          created_at?: string
+        }
+      }
+      review_votes: {
+        Row: {
+          id: string
+          review_id: string
+          user_id: string
+          is_helpful: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          review_id: string
+          user_id: string
+          is_helpful: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          review_id?: string
+          user_id?: string
+          is_helpful?: boolean
+          created_at?: string
+        }
+      }
+      admin_audit_log: {
+        Row: {
+          id: string
+          admin_id: string
+          action: string
+          target_user_id: string | null
+          target_entity_type: string | null
+          target_entity_id: string | null
+          metadata: Json | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          admin_id: string
+          action: string
+          target_user_id?: string | null
+          target_entity_type?: string | null
+          target_entity_id?: string | null
+          metadata?: Json | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          admin_id?: string
+          action?: string
+          target_user_id?: string | null
+          target_entity_type?: string | null
+          target_entity_id?: string | null
+          metadata?: Json | null
+          created_at?: string
+        }
+      }
+      platform_settings: {
+        Row: {
+          id: string
+          key: string
+          value: Json
+          updated_by: string | null
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          key: string
+          value: Json
+          updated_by?: string | null
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          key?: string
+          value?: Json
+          updated_by?: string | null
+          updated_at?: string
         }
       }
       user_addresses: {
