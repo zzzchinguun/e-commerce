@@ -570,6 +570,7 @@ CREATE TYPE product_status AS ENUM ('draft', 'active', 'inactive', 'out_of_stock
     - `estimated_delivery_date`
     - `payment_status`: payment_status ENUM
     - `payment_method`, `stripe_session_id`, `stripe_payment_intent_id`
+    - `coupon_id`, `coupon_code`, `coupon_discount` (coupon fields)
     - `notes`, `internal_notes`
     - `confirmed_at`, `shipped_at`, `delivered_at`, `cancelled_at`
 
@@ -626,14 +627,50 @@ CREATE TYPE product_status AS ENUM ('draft', 'active', 'inactive', 'out_of_stock
     - `created_at`, `updated_at`
 
 21. **featured_categories** - Homepage featured category cards
-    - `id`, `category_id` (references categories)
-    - `custom_title` (optional), `custom_description`, `custom_image_url`
-    - `position` (default 0), `is_active` (default true)
+    - `id`, `name`, `slug` (unique)
+    - `icon` (Lucide icon name), `color`, `bg_color`
+    - `image_url`, `description`
+    - `category_id` (optional reference to categories)
+    - `is_active` (default true), `display_order` (default 0)
+    - `created_at`, `updated_at`
+
+### Coupons & Discounts
+
+22. **coupons** - Promo code/discount coupon system
+    - `id`, `code` (unique, case-insensitive)
+    - `description`
+    - `discount_type`: coupon_discount_type ENUM ('percentage', 'fixed_amount')
+    - `discount_value` (percentage 0-100 or fixed amount)
+    - `min_order_amount`, `max_discount_amount`
+    - `usage_limit`, `usage_count`, `per_user_limit`
+    - `valid_from`, `valid_until`
+    - `status`: coupon_status ENUM ('active', 'inactive', 'expired')
+    - `applies_to_products`, `applies_to_categories`, `applies_to_sellers` (UUID arrays)
+    - `excludes_sale_items`, `first_order_only`
+    - `created_by`, `created_at`, `updated_at`
+
+23. **coupon_usages** - Tracks coupon usage per user
+    - `id`, `coupon_id`, `user_id`, `order_id`
+    - `discount_amount`, `created_at`
+
+### Notification Preferences
+
+24. **seller_notification_preferences** - Seller notification settings
+    - `id`, `seller_id` (unique per seller)
+    - Email: `email_new_order`, `email_order_cancelled`, `email_low_stock`, `email_new_review`, `email_payout_processed`, `email_weekly_summary`
+    - Push: `push_new_order`, `push_order_cancelled`, `push_low_stock`, `push_new_review`
+    - Marketing: `marketing_tips`, `marketing_promotions`
+    - `created_at`, `updated_at`
+
+25. **user_notification_preferences** - Customer notification settings
+    - `id`, `user_id` (unique per user)
+    - Email: `email_order_updates`, `email_shipping_updates`, `email_promotions`, `email_newsletter`, `email_product_updates`
+    - Push: `push_order_updates`, `push_shipping_updates`, `push_promotions`
     - `created_at`, `updated_at`
 
 ### Admin Tables
 
-22. **admin_audit_log** - Tracks admin actions for audit trail
+26. **admin_audit_log** - Tracks admin actions for audit trail
     - `id`, `admin_id` (references users)
     - `action` (TEXT, e.g., 'approve_seller', 'suspend_user', 'process_refund')
     - `target_user_id` (optional, references users)
@@ -643,7 +680,7 @@ CREATE TYPE product_status AS ENUM ('draft', 'active', 'inactive', 'out_of_stock
     - `created_at`
     - **Viewable at**: `/admin/audit-log` with filters by action, entity type, and date range
 
-23. **platform_settings** - Platform-wide configuration
+27. **platform_settings** - Platform-wide configuration
     - `id`, `key` (unique TEXT)
     - `value` (JSONB)
     - `updated_by` (references users)
