@@ -428,7 +428,7 @@ src/
 │   │       │   └── QPayPaymentContent.tsx
 │   │       └── success/          # Order success
 │   ├── (protected)/      # User account pages (orders, addresses, settings)
-│   ├── (admin)/          # Super admin dashboard
+│   ├── admin/            # Super admin dashboard
 │   │   ├── layout.tsx    # Admin sidebar layout
 │   │   ├── page.tsx      # Dashboard home
 │   │   ├── users/        # User management
@@ -437,30 +437,37 @@ src/
 │   │   ├── orders/       # Order management (with refund processing)
 │   │   ├── analytics/    # Platform analytics
 │   │   ├── audit-log/    # Admin audit log viewer
+│   │   ├── homepage/     # Hero banners & featured categories management
+│   │   ├── notifications/# Broadcast notifications to users
 │   │   ├── maintenance/  # System maintenance actions
 │   │   └── settings/     # Platform settings
-│   ├── seller/           # Seller dashboard (products, orders, analytics)
+│   ├── seller/           # Seller dashboard (products, orders, analytics, earnings)
 │   └── api/              # API routes
 │       ├── checkout/     # Stripe checkout
 │       ├── cron/         # Scheduled jobs (nightly maintenance)
 │       ├── test-payment/ # QPay test payment
 │       └── webhooks/     # Stripe webhooks
 ├── actions/              # Server Actions
-│   ├── seller.ts         # Seller profile CRUD
+│   ├── seller.ts         # Seller profile CRUD, earnings, transactions
 │   ├── products.ts       # Product CRUD for sellers
 │   ├── orders.ts         # Order management for sellers
 │   ├── categories.ts     # Category fetching
 │   ├── test-payment.ts   # QPay test payment confirmation
 │   ├── admin.ts          # Admin dashboard actions (refunds, audit log, etc.)
 │   ├── addresses.ts      # User address CRUD
-│   └── analytics.ts      # Seller analytics
+│   ├── analytics.ts      # Seller analytics
+│   ├── reviews.ts        # Product reviews CRUD, voting
+│   ├── notifications.ts  # User notifications, admin broadcasting
+│   └── homepage.ts       # Hero banners and featured categories management
 ├── components/
 │   ├── ui/               # shadcn/ui components
 │   ├── layout/           # Header, Footer, navigation
 │   ├── products/         # ProductCard, ProductGrid
 │   ├── cart/             # CartDrawer, CartItem
 │   ├── checkout/         # CheckoutForm, StripeProvider
-│   └── admin/            # Admin components (ImpersonationBanner, PendingSellerCard, etc.)
+│   ├── admin/            # Admin components (ImpersonationBanner, PendingSellerCard, NotificationBell)
+│   ├── auth/             # Auth components (login-form, signup-form, ChangePasswordDialog)
+│   └── home/             # Homepage components (HeroSection, CategoryGrid, FeaturedProducts)
 ├── lib/
 │   ├── supabase/         # client.ts, server.ts
 │   ├── stripe/           # Stripe configuration
@@ -470,7 +477,9 @@ src/
 │   └── utils/            # Utility functions (format.ts)
 ├── stores/               # Zustand stores
 │   ├── cart-store.ts     # Shopping cart with localStorage
-│   └── wishlist-store.ts # Wishlist functionality
+│   ├── wishlist-store.ts # Wishlist functionality
+│   ├── auth-store.ts     # User authentication state
+│   └── ui-store.ts       # UI state (mobile menu, search, filters)
 └── types/
     └── database.ts       # Supabase generated types
 ```
@@ -774,12 +783,15 @@ interface CartStore {
 ## Key Features by User Role
 
 ### Customer
-- Browse products with filters/search
+- Browse products with filters/search at `/products` and `/search`
+- Browse by category at `/categories` and `/categories/[slug]`
 - Add to cart/wishlist
+- View wishlist at `/wishlist`
 - Checkout with Stripe or QPay (test)
-- Track orders
-- Leave reviews
+- Track orders at `/account/orders`
+- Leave reviews on purchased products
 - Manage multiple addresses at `/account/addresses`
+- Change password at `/account/settings`
 - View seller stores at `/sellers/[slug]`
 
 ### Seller
@@ -788,6 +800,7 @@ interface CartStore {
 - Product CRUD with images, variants, inventory
 - Order fulfillment (processing → shipped → delivered)
 - View analytics at `/seller/analytics`
+- View earnings and transaction history at `/seller/earnings`
 - Upload store logo at `/seller/settings`
 - Public store page at `/sellers/[slug]`
 
@@ -798,7 +811,8 @@ interface CartStore {
 - Platform-wide analytics
 - User management with impersonation
 - Order management with Stripe refund processing
-- Hero banners and featured categories management
+- Hero banners and featured categories management at `/admin/homepage`
+- Broadcast notifications to users (all, by role, or individual) at `/admin/notifications`
 - System maintenance actions at `/admin/maintenance`
 - Admin audit log at `/admin/audit-log` with filtering and pagination
 
@@ -849,29 +863,55 @@ const { data: { publicUrl } } = supabase.storage
 | Route | Description | Auth |
 |-------|-------------|------|
 | `/` | Home page | Public |
-| `/products` | Product listing | Public |
+| `/products` | Product listing with filters | Public |
 | `/products/[slug]` | Product detail | Public |
+| `/categories` | Category listing | Public |
+| `/categories/[slug]` | Browse by category | Public |
+| `/search` | Product search with filters | Public |
 | `/cart` | Shopping cart | Public |
+| `/wishlist` | Wishlist/saved items | Public |
+| `/deals` | Promotional deals | Public |
 | `/checkout` | Checkout flow | Protected |
 | `/checkout/qpay` | QPay test payment | Protected |
 | `/checkout/success` | Order success page | Protected |
 | `/login`, `/signup` | Auth pages | Guest only |
-| `/account/*` | User dashboard | Protected |
+| `/forgot-password` | Password recovery | Guest only |
+| `/reset-password` | Password reset | Guest only |
+| `/account` | User dashboard | Protected |
+| `/account/orders` | Order history | Protected |
+| `/account/addresses` | Address management | Protected |
+| `/account/settings` | Profile settings | Protected |
 | `/seller` | Seller dashboard | Seller only |
-| `/seller/products` | Product management | Seller only |
-| `/seller/orders` | Order management | Seller only |
 | `/seller/register` | Seller registration | Protected |
+| `/seller/products` | Product management | Seller only |
+| `/seller/products/new` | Create new product | Seller only |
+| `/seller/products/[id]` | Edit product | Seller only |
+| `/seller/orders` | Order management | Seller only |
+| `/seller/analytics` | Sales analytics | Seller only |
+| `/seller/earnings` | Earnings & transactions | Seller only |
+| `/seller/settings` | Store settings | Seller only |
+| `/sellers/[slug]` | Public seller store page | Public |
 | `/admin` | Admin dashboard | Admin only |
 | `/admin/users` | User management | Admin only |
 | `/admin/sellers` | Seller management | Admin only |
 | `/admin/products` | Product moderation | Admin only |
-| `/admin/orders` | Order management | Admin only |
+| `/admin/orders` | Order management (with refunds) | Admin only |
 | `/admin/analytics` | Platform analytics | Admin only |
+| `/admin/homepage` | Hero banners & featured categories | Admin only |
+| `/admin/notifications` | Broadcast notifications | Admin only |
 | `/admin/maintenance` | System maintenance | Admin only |
 | `/admin/audit-log` | Admin audit log | Admin only |
 | `/admin/settings` | Platform settings | Admin only |
-| `/account/addresses` | Address management | Protected |
-| `/sellers/[slug]` | Seller store page | Public |
+| `/track-order` | Order tracking (demo) | Public |
+| `/contact` | Contact page | Public |
+| `/help` | Help center | Public |
+| `/terms` | Terms of service | Public |
+| `/privacy` | Privacy policy | Public |
+| `/cookies` | Cookie policy | Public |
+| `/shipping` | Shipping information | Public |
+| `/returns` | Return policy | Public |
+| `/seller-policies` | Seller policies | Public |
+| `/success-stories` | Success stories | Public |
 
 ## Commission Structure
 
@@ -1012,6 +1052,165 @@ setDefaultAddress(id, type)          // Set default shipping/billing
 - Mongolian district/province dropdown
 - Form validation with Zod
 - Real-time updates with optimistic UI
+
+---
+
+## Password Change
+
+Users can change their password from the account settings page.
+
+### Component
+
+Located in `/src/components/auth/ChangePasswordDialog.tsx`:
+- Modal dialog with current password, new password, and confirmation fields
+- Password strength validation (minimum 6 characters)
+- Supabase Auth integration for password update
+- Available at `/account/settings` and `/seller/settings`
+
+### Validation
+
+- Current password required
+- New password minimum 6 characters
+- Password confirmation must match
+- Shows success/error feedback
+
+---
+
+## Notification System
+
+User notifications are managed through the notification system.
+
+### Server Actions
+
+Located in `/src/actions/notifications.ts`:
+
+```typescript
+getMyNotifications()              // Get user's notifications
+getUnreadNotificationCount()      // Count unread notifications
+markNotificationAsRead(id)        // Mark as read
+markAllNotificationsAsRead()      // Mark all as read
+sendNotificationToUser(userId, data)      // Admin: send to specific user
+sendNotificationToAllUsers(data)          // Admin: broadcast to all
+sendNotificationToRole(role, data)        // Admin: send by role
+```
+
+### Notification Types
+
+- `order_placed` - When order is created
+- `order_shipped` - When order ships
+- `order_delivered` - When order is delivered
+- `seller_approved` - When seller is approved
+- `announcement` - Admin announcements
+- `promotion` - Marketing promotions
+- `system` - System notifications
+
+### Admin Broadcasting
+
+Admins can send notifications from `/admin/notifications`:
+- Send to all users
+- Send to specific role (customer, seller, admin)
+- Send to individual user
+- Choose notification type
+
+---
+
+## Product Reviews
+
+Customers can leave reviews on products they've purchased.
+
+### Server Actions
+
+Located in `/src/actions/reviews.ts`:
+
+```typescript
+getProductReviews(productId, options)  // Get reviews with sorting
+createReview(data)                     // Create new review
+updateReview(reviewId, data)           // Update own review
+deleteReview(reviewId)                 // Delete own review
+voteReviewHelpful(reviewId, isHelpful) // Vote helpful/unhelpful
+```
+
+### Features
+
+- Star ratings (1-5)
+- Title and content
+- Pros and cons lists
+- Verified purchase badge
+- Helpful/unhelpful voting
+- Sorting options (helpful, recent, highest, lowest rating)
+- Seller response capability
+- Admin approval workflow
+
+### Review Triggers
+
+When reviews are created/updated/deleted, the `update_product_rating()` trigger automatically recalculates:
+- `products.rating_average`
+- `products.rating_count`
+
+---
+
+## Seller Earnings
+
+Sellers can track their earnings and transaction history at `/seller/earnings`.
+
+### Server Actions
+
+Located in `/src/actions/seller.ts`:
+
+```typescript
+getSellerEarningsStats()    // Total, pending, paid earnings
+getSellerTransactions()     // Transaction history with pagination
+```
+
+### Features
+
+- Total earnings summary
+- Pending vs paid breakdown
+- Transaction history by date
+- Order-level earnings detail
+- Commission deduction display
+
+---
+
+## Homepage Management
+
+Admins can manage homepage content at `/admin/homepage`.
+
+### Server Actions
+
+Located in `/src/actions/homepage.ts`:
+
+```typescript
+// Hero Banners
+getHeroBanners()                  // Get all banners (admin)
+getActiveHeroBanners()            // Get active banners (public)
+createHeroBanner(data)            // Create banner
+updateHeroBanner(id, data)        // Update banner
+deleteHeroBanner(id)              // Delete banner
+
+// Featured Categories
+getFeaturedCategories()           // Get featured categories (admin)
+getActiveFeaturedCategories()     // Get active categories (public)
+createFeaturedCategory(data)      // Create featured category
+updateFeaturedCategory(id, data)  // Update featured category
+deleteFeaturedCategory(id)        // Delete featured category
+```
+
+### Hero Banners
+
+- Title, subtitle, and CTA button
+- Image URL and background color
+- Position ordering (drag to reorder)
+- Active/inactive toggle
+- Scheduled display (start_date, end_date)
+- Click count tracking
+
+### Featured Categories
+
+- Link to existing category or custom
+- Custom title, description, image
+- Icon selection (Lucide icons)
+- Display order and active status
 
 ## Development Commands
 
