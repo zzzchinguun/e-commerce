@@ -9,7 +9,7 @@
 -- =============================================
 
 CREATE TABLE IF NOT EXISTS public.featured_categories (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     slug TEXT NOT NULL,
     icon TEXT NOT NULL DEFAULT 'Package',  -- Lucide icon name
@@ -86,7 +86,7 @@ BEGIN
 END $$;
 
 CREATE TABLE IF NOT EXISTS public.coupons (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     code TEXT NOT NULL,
     description TEXT,
     discount_type public.coupon_discount_type NOT NULL DEFAULT 'percentage',
@@ -125,7 +125,7 @@ CREATE TRIGGER update_coupons_updated_at
 
 -- Coupon usage tracking table
 CREATE TABLE IF NOT EXISTS public.coupon_usages (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     coupon_id UUID NOT NULL REFERENCES public.coupons(id) ON DELETE CASCADE,
     user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
     order_id UUID REFERENCES public.orders(id) ON DELETE SET NULL,
@@ -173,7 +173,7 @@ CREATE POLICY "System can insert coupon usages"
 -- =============================================
 
 CREATE TABLE IF NOT EXISTS public.seller_notification_preferences (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     seller_id UUID NOT NULL REFERENCES public.seller_profiles(id) ON DELETE CASCADE,
     -- Email notifications
     email_new_order BOOLEAN DEFAULT TRUE NOT NULL,
@@ -237,7 +237,7 @@ CREATE POLICY "Sellers can update their own notification preferences"
 -- =============================================
 
 CREATE TABLE IF NOT EXISTS public.user_notification_preferences (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
     -- Email notifications
     email_order_updates BOOLEAN DEFAULT TRUE NOT NULL,

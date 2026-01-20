@@ -2,35 +2,15 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import type { Tables } from '@/types/database'
 
 // ============================================
 // TYPES
 // ============================================
 
-export type HeroBanner = {
-  id: string
-  title: string
-  subtitle: string
-  cta_text: string
-  cta_link: string
-  bg_color: string
-  image_url?: string
-  is_active: boolean
-  display_order: number
-  created_at: string
-  updated_at: string
-}
+export type HeroBanner = Tables<'hero_banners'>
 
-export type FeaturedCategory = {
-  id: string
-  name: string
-  slug: string
-  icon: string
-  color: string
-  bg_color: string
-  is_active: boolean
-  display_order: number
-}
+export type FeaturedCategory = Tables<'featured_categories'>
 
 // ============================================
 // HELPER
@@ -183,10 +163,7 @@ export async function deleteHeroBanner(id: string) {
 export async function getFeaturedCategories(activeOnly = false) {
   const supabase = await createClient()
 
-  // Note: featured_categories table may not exist in the database yet
-  // Using 'as any' cast to avoid type errors for non-existent table
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let query = (supabase as any)
+  let query = supabase
     .from('featured_categories')
     .select('*')
     .order('display_order', { ascending: true })
@@ -198,12 +175,11 @@ export async function getFeaturedCategories(activeOnly = false) {
   const { data, error } = await query
 
   if (error) {
-    // Table might not exist yet, return empty array
-    console.log('Featured categories table may not exist:', error.message)
+    console.log('Featured categories error:', error.message)
     return { categories: [] }
   }
 
-  return { categories: data as FeaturedCategory[] }
+  return { categories: data }
 }
 
 export async function updateFeaturedCategory(
@@ -224,7 +200,7 @@ export async function updateFeaturedCategory(
 
   const supabase = await createClient()
 
-  const { data, error } = await (supabase as any)
+  const { data, error } = await supabase
     .from('featured_categories')
     .update(updates)
     .eq('id', id)
@@ -236,7 +212,7 @@ export async function updateFeaturedCategory(
   }
 
   revalidatePath('/')
-  return { category: data as FeaturedCategory }
+  return { category: data }
 }
 
 export async function createFeaturedCategory(category: {
@@ -253,18 +229,15 @@ export async function createFeaturedCategory(category: {
   const supabase = await createClient()
 
   // Get max display order
-  // Note: featured_categories table may not exist in the database yet
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: existing } = await (supabase as any)
+  const { data: existing } = await supabase
     .from('featured_categories')
     .select('display_order')
     .order('display_order', { ascending: false })
     .limit(1)
 
-  const existingCats = existing as Array<{ display_order: number }> | null
-  const displayOrder = existingCats && existingCats[0] ? existingCats[0].display_order + 1 : 0
+  const displayOrder = existing && existing[0] ? existing[0].display_order + 1 : 0
 
-  const { data, error } = await (supabase as any)
+  const { data, error } = await supabase
     .from('featured_categories')
     .insert({
       ...category,
@@ -279,7 +252,7 @@ export async function createFeaturedCategory(category: {
   }
 
   revalidatePath('/')
-  return { category: data as FeaturedCategory }
+  return { category: data }
 }
 
 export async function deleteFeaturedCategory(id: string) {
@@ -289,9 +262,7 @@ export async function deleteFeaturedCategory(id: string) {
 
   const supabase = await createClient()
 
-  // Note: featured_categories table may not exist in the database yet
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (supabase as any).from('featured_categories').delete().eq('id', id)
+  const { error } = await supabase.from('featured_categories').delete().eq('id', id)
 
   if (error) {
     return { error: error.message }

@@ -174,7 +174,7 @@ export default function HomepageManagementPage() {
     setEditingBanner(banner)
     setFormData({
       title: banner.title,
-      subtitle: banner.subtitle,
+      subtitle: banner.subtitle || '',
       cta_text: banner.cta_text,
       cta_link: banner.cta_link,
       bg_color: banner.bg_color,
