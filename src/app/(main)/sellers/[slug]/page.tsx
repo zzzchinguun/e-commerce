@@ -92,7 +92,7 @@ export default async function SellerStorefrontPage({
               {seller.store_name}
             </h1>
             <div className="mt-2 flex flex-wrap items-center justify-center gap-3 text-sm text-gray-600 md:justify-start">
-              {seller.rating_count > 0 && (
+              {(seller.rating_count ?? 0) > 0 && (
                 <div className="flex items-center gap-1">
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                   <span className="font-medium">{Number(seller.rating_average).toFixed(1)}</span>

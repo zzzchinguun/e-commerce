@@ -2,10 +2,11 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
-import type { Tables } from '@/types/database'
+import type { Tables, Database } from '@/types/database'
 
 type SellerProfile = Tables<'seller_profiles'>
 type Product = Tables<'products'>
+type ProductStatus = Database['public']['Enums']['product_status']
 
 // ============================================
 // PUBLIC PRODUCT ACTIONS (No auth required)
@@ -656,7 +657,7 @@ export type ProductInput = {
 }
 
 export async function getSellerProducts(options?: {
-  status?: string
+  status?: ProductStatus | 'all'
   search?: string
   limit?: number
   offset?: number
@@ -841,7 +842,7 @@ export async function getProduct(productId: string) {
     // Attach inventory to each variant
     if (inventoryData) {
       const inventoryMap = new Map(
-        inventoryData.map((inv: { variant_id: string; quantity: number; reserved_quantity: number; low_stock_threshold: number; track_inventory: boolean }) => [inv.variant_id, inv])
+        inventoryData.map((inv) => [inv.variant_id, inv])
       )
 
       p.product_variants = p.product_variants.map((v: { id: string }) => ({

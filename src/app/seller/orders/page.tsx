@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useTransition } from 'react'
+import type { Database } from '@/types/database'
 import {
   Search,
   MoreHorizontal,
@@ -83,7 +84,7 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true)
   const [selectedOrders, setSelectedOrders] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [statusFilter, setStatusFilter] = useState<Database['public']['Enums']['order_status'] | 'all'>('all')
   const [isPending, startTransition] = useTransition()
 
   // Ship dialog
@@ -192,7 +193,7 @@ export default function OrdersPage() {
           return (
             <button
               key={key}
-              onClick={() => setStatusFilter(statusFilter === key ? 'all' : key)}
+              onClick={() => setStatusFilter(statusFilter === key ? 'all' : key as Database['public']['Enums']['order_status'])}
               className={`rounded-lg border p-4 text-left transition-colors ${
                 statusFilter === key ? 'border-orange-300 bg-orange-50' : 'bg-white hover:bg-gray-50'
               }`}
@@ -218,7 +219,7 @@ export default function OrdersPage() {
             className="pl-9"
           />
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
+        <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as Database['public']['Enums']['order_status'] | 'all')}>
           <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="Бүх төлөв" />
           </SelectTrigger>

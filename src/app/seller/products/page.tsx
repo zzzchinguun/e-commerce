@@ -3,6 +3,7 @@
 import { useState, useEffect, useTransition } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import type { Database } from '@/types/database'
 import {
   Plus,
   Search,
@@ -69,7 +70,7 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true)
   const [selectedProducts, setSelectedProducts] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [statusFilter, setStatusFilter] = useState<Database['public']['Enums']['product_status'] | 'all'>('all')
   const [isPending, startTransition] = useTransition()
 
   const fetchProducts = async () => {
@@ -186,7 +187,7 @@ export default function ProductsPage() {
             className="pl-9"
           />
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
+        <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as Database['public']['Enums']['product_status'] | 'all')}>
           <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="Бүх төлөв" />
           </SelectTrigger>

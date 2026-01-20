@@ -4,10 +4,14 @@ import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { cookies } from 'next/headers'
 import { stripe } from '@/lib/stripe/server'
+import type { Database } from '@/types/database'
 
 // ============================================
 // TYPES
 // ============================================
+
+type OrderStatus = Database['public']['Enums']['order_status']
+type ProductStatus = Database['public']['Enums']['product_status']
 
 interface FilterOptions {
   search?: string
@@ -25,11 +29,11 @@ interface ProductFilterOptions extends FilterOptions {
   category?: string
   seller?: string
   featured?: boolean
-  productStatus?: 'draft' | 'active' | 'inactive' | 'out_of_stock'
+  productStatus?: ProductStatus
 }
 
 interface OrderFilterOptions extends FilterOptions {
-  orderStatus?: string
+  orderStatus?: OrderStatus
   sellerId?: string
   dateFrom?: string
   dateTo?: string

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import type { Database } from '@/types/database'
 import {
   Search,
   MoreHorizontal,
@@ -133,7 +134,7 @@ export default function AdminOrdersPage() {
   const [loading, setLoading] = useState(true)
 
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [statusFilter, setStatusFilter] = useState<Database['public']['Enums']['order_status'] | 'all'>('all')
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo] = useState('')
   const [page, setPage] = useState(1)
@@ -194,7 +195,7 @@ export default function AdminOrdersPage() {
   }
 
   const handleStatusFilterClick = (status: string) => {
-    setStatusFilter(status)
+    setStatusFilter(status as Database['public']['Enums']['order_status'] | 'all')
     setPage(1)
   }
 

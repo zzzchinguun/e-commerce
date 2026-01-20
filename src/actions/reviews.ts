@@ -221,7 +221,7 @@ export async function createReview(
     `)
     .eq('product_id', productId)
     .eq('orders.user_id', user.id)
-    .eq('orders.payment_status', 'paid')
+    .eq('orders.payment_status', 'succeeded')
     .limit(1)
     .single()
 
@@ -419,7 +419,7 @@ export async function canUserReview(productId: string): Promise<{
     `)
     .eq('product_id', productId)
     .eq('orders.user_id', user.id)
-    .eq('orders.payment_status', 'paid')
+    .eq('orders.payment_status', 'succeeded')
     .limit(1)
     .single()
 

@@ -166,7 +166,7 @@ export default async function SellerDashboard() {
                   id: string
                   orders: { order_number: string; created_at: string } | null
                   products: { name: string } | null
-                  status: string
+                  status: string | null
                   total: number
                 }) => (
                   <div
@@ -178,8 +178,8 @@ export default async function SellerDashboard() {
                         <span className="font-medium text-gray-900">
                           {order.orders?.order_number || 'N/A'}
                         </span>
-                        <Badge className={statusColors[order.status] || 'bg-gray-100 text-gray-700'}>
-                          {order.status}
+                        <Badge className={statusColors[order.status || 'pending'] || 'bg-gray-100 text-gray-700'}>
+                          {order.status || 'pending'}
                         </Badge>
                       </div>
                       <p className="text-sm text-gray-500">

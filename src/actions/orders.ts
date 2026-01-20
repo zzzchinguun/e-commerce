@@ -2,17 +2,18 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
-import type { Tables } from '@/types/database'
+import type { Tables, Database } from '@/types/database'
 
 type SellerProfile = Tables<'seller_profiles'>
 type OrderItem = Tables<'order_items'>
+type OrderStatus = Database['public']['Enums']['order_status']
 
 // ============================================
 // CUSTOMER ORDER ACTIONS
 // ============================================
 
 export async function getUserOrders(options?: {
-  status?: string
+  status?: OrderStatus | 'all'
   limit?: number
   offset?: number
 }) {
@@ -193,7 +194,7 @@ export async function getOrderById(orderId: string) {
 // ============================================
 
 export async function getSellerOrders(options?: {
-  status?: string
+  status?: OrderStatus | 'all'
   search?: string
   limit?: number
   offset?: number
