@@ -140,8 +140,9 @@ export function NotificationBell() {
           ) : (
             <div className="space-y-1 p-1">
               {notifications.map((notification) => {
-                const Icon = notificationIcons[notification.type] || Info
-                const colorClass = notificationColors[notification.type] || 'bg-gray-100 text-gray-600'
+                const notificationType = notification.type as NotificationType
+                const Icon = notificationIcons[notificationType] || Info
+                const colorClass = notificationColors[notificationType] || 'bg-gray-100 text-gray-600'
 
                 return (
                   <div

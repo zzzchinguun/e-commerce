@@ -308,7 +308,7 @@ function AddressDialog({
           state: editingAddress.state,
           postalCode: editingAddress.postal_code,
           country: editingAddress.country,
-          isDefaultShipping: editingAddress.is_default_shipping,
+          isDefaultShipping: editingAddress.is_default_shipping ?? false,
         }
       : {
           country: 'MN',

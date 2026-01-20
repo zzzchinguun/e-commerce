@@ -225,18 +225,15 @@ export async function createReview(
     .limit(1)
     .single()
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const orderItem = orderItemData as { id: string } | null
-  const isVerifiedPurchase = !!orderItem
+  const isVerifiedPurchase = !!orderItemData
 
   // Create review
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('product_reviews')
     .insert({
       product_id: productId,
       user_id: user.id,
-      order_item_id: orderItem?.id || null,
+      order_item_id: orderItemData?.id || null,
       rating: data.rating,
       title: data.title,
       content: data.content,
@@ -256,10 +253,8 @@ export async function createReview(
     .eq('id', productId)
     .single()
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const product = productData as { slug: string } | null
-  if (product?.slug) {
-    revalidatePath(`/products/${product.slug}`)
+  if (productData?.slug) {
+    revalidatePath(`/products/${productData.slug}`)
   }
 
   return { success: true }
@@ -287,36 +282,28 @@ export async function voteReview(
     .eq('user_id', user.id)
     .single()
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const existingVote = existingVoteData as { id: string; is_helpful: boolean } | null
-
-  if (existingVote) {
+  if (existingVoteData) {
     // Get current review vote counts
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: reviewData } = await (supabase as any)
+    const { data: reviewData } = await supabase
       .from('product_reviews')
       .select('helpful_votes, unhelpful_votes')
       .eq('id', reviewId)
       .single()
 
-    const currentReview = reviewData as { helpful_votes: number; unhelpful_votes: number } | null
-
-    if (existingVote.is_helpful === isHelpful) {
+    if (existingVoteData.is_helpful === isHelpful) {
       // Remove vote if clicking the same button
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (supabase as any)
+      await supabase
         .from('review_votes')
         .delete()
-        .eq('id', existingVote.id)
+        .eq('id', existingVoteData.id)
 
       // Decrement the appropriate vote count
-      if (currentReview) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (supabase as any)
+      if (reviewData) {
+        await supabase
           .from('product_reviews')
           .update({
-            helpful_votes: isHelpful ? Math.max(0, (currentReview.helpful_votes || 0) - 1) : currentReview.helpful_votes,
-            unhelpful_votes: !isHelpful ? Math.max(0, (currentReview.unhelpful_votes || 0) - 1) : currentReview.unhelpful_votes,
+            helpful_votes: isHelpful ? Math.max(0, (reviewData.helpful_votes || 0) - 1) : reviewData.helpful_votes,
+            unhelpful_votes: !isHelpful ? Math.max(0, (reviewData.unhelpful_votes || 0) - 1) : reviewData.unhelpful_votes,
           })
           .eq('id', reviewId)
       }
@@ -324,20 +311,18 @@ export async function voteReview(
       return { success: true }
     } else {
       // Change vote
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (supabase as any)
+      await supabase
         .from('review_votes')
         .update({ is_helpful: isHelpful })
-        .eq('id', existingVote.id)
+        .eq('id', existingVoteData.id)
 
       // Update vote counts (swap)
-      if (currentReview) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (supabase as any)
+      if (reviewData) {
+        await supabase
           .from('product_reviews')
           .update({
-            helpful_votes: isHelpful ? (currentReview.helpful_votes || 0) + 1 : Math.max(0, (currentReview.helpful_votes || 0) - 1),
-            unhelpful_votes: isHelpful ? Math.max(0, (currentReview.unhelpful_votes || 0) - 1) : (currentReview.unhelpful_votes || 0) + 1,
+            helpful_votes: isHelpful ? (reviewData.helpful_votes || 0) + 1 : Math.max(0, (reviewData.helpful_votes || 0) - 1),
+            unhelpful_votes: isHelpful ? Math.max(0, (reviewData.unhelpful_votes || 0) - 1) : (reviewData.unhelpful_votes || 0) + 1,
           })
           .eq('id', reviewId)
       }
@@ -347,8 +332,7 @@ export async function voteReview(
   }
 
   // Create new vote
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error: voteError } = await (supabase as any)
+  const { error: voteError } = await supabase
     .from('review_votes')
     .insert({
       review_id: reviewId,
@@ -361,16 +345,14 @@ export async function voteReview(
   }
 
   // Update review vote count
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: review } = await (supabase as any)
+  const { data: review } = await supabase
     .from('product_reviews')
     .select('helpful_votes, unhelpful_votes')
     .eq('id', reviewId)
     .single()
 
   if (review) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (supabase as any)
+    await supabase
       .from('product_reviews')
       .update({
         helpful_votes: isHelpful ? (review.helpful_votes || 0) + 1 : review.helpful_votes,

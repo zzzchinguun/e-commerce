@@ -3,6 +3,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
+import type { Tables } from '@/types/database'
+
+// Use database type for Address
+export type Address = Tables<'user_addresses'>
 
 // Validation schema for address input
 const addressSchema = z.object({
@@ -20,24 +24,6 @@ const addressSchema = z.object({
 })
 
 export type AddressInput = z.infer<typeof addressSchema>
-
-export interface Address {
-  id: string
-  user_id: string
-  label: string | null
-  recipient_name: string
-  phone: string | null
-  street_address: string
-  street_address_2: string | null
-  city: string
-  state: string
-  postal_code: string
-  country: string
-  is_default_shipping: boolean
-  is_default_billing: boolean
-  created_at: string
-  updated_at: string
-}
 
 /**
  * Get all addresses for the current user
@@ -67,7 +53,7 @@ export async function getUserAddresses(): Promise<{
     return { error: error.message }
   }
 
-  return { addresses: data as Address[] }
+  return { addresses: data }
 }
 
 /**
@@ -98,7 +84,7 @@ export async function getAddress(addressId: string): Promise<{
     return { error: error.message }
   }
 
-  return { address: data as Address }
+  return { address: data }
 }
 
 /**
@@ -128,24 +114,21 @@ export async function createAddress(input: AddressInput): Promise<{
 
   // If setting as default, unset other defaults first
   if (data.isDefaultShipping) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (supabase as any)
+    await supabase
       .from('user_addresses')
       .update({ is_default_shipping: false })
       .eq('user_id', user.id)
   }
 
   if (data.isDefaultBilling) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (supabase as any)
+    await supabase
       .from('user_addresses')
       .update({ is_default_billing: false })
       .eq('user_id', user.id)
   }
 
   // Create the address
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: address, error } = await (supabase as any)
+  const { data: address, error } = await supabase
     .from('user_addresses')
     .insert({
       user_id: user.id,
@@ -169,7 +152,7 @@ export async function createAddress(input: AddressInput): Promise<{
   }
 
   revalidatePath('/account/addresses')
-  return { address: address as Address }
+  return { address }
 }
 
 /**
@@ -218,8 +201,7 @@ export async function updateAddress(
 
   // Handle default shipping
   if (input.isDefaultShipping === true) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (supabase as any)
+    await supabase
       .from('user_addresses')
       .update({ is_default_shipping: false })
       .eq('user_id', user.id)
@@ -230,8 +212,7 @@ export async function updateAddress(
 
   // Handle default billing
   if (input.isDefaultBilling === true) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (supabase as any)
+    await supabase
       .from('user_addresses')
       .update({ is_default_billing: false })
       .eq('user_id', user.id)
@@ -241,8 +222,7 @@ export async function updateAddress(
   }
 
   // Update the address
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: address, error } = await (supabase as any)
+  const { data: address, error } = await supabase
     .from('user_addresses')
     .update(updateData)
     .eq('id', addressId)
@@ -254,7 +234,7 @@ export async function updateAddress(
   }
 
   revalidatePath('/account/addresses')
-  return { address: address as Address }
+  return { address }
 }
 
 /**
@@ -286,8 +266,7 @@ export async function deleteAddress(addressId: string): Promise<{
     return { error: 'Address not found' }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('user_addresses')
     .delete()
     .eq('id', addressId)
@@ -330,15 +309,13 @@ export async function setDefaultShippingAddress(addressId: string): Promise<{
   }
 
   // Unset current default
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  await (supabase as any)
+  await supabase
     .from('user_addresses')
     .update({ is_default_shipping: false })
     .eq('user_id', user.id)
 
   // Set new default
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('user_addresses')
     .update({ is_default_shipping: true })
     .eq('id', addressId)

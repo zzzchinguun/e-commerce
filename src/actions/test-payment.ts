@@ -13,22 +13,15 @@ export async function getPaymentDetails(sessionId: string) {
     .eq('stripe_session_id', sessionId)
     .single()
 
-  const order = orderData as {
-    id: string
-    order_number: string
-    grand_total: number
-    payment_status: string
-  } | null
-
-  if (error || !order) {
+  if (error || !orderData) {
     return { error: 'Төлбөрийн мэдээлэл олдсонгүй' }
   }
 
   return {
     details: {
-      orderNumber: order.order_number,
-      amount: order.grand_total,
-      status: order.payment_status,
+      orderNumber: orderData.order_number,
+      amount: orderData.grand_total,
+      status: orderData.payment_status,
     },
   }
 }
@@ -43,25 +36,23 @@ export async function confirmTestPayment(sessionId: string) {
     .eq('stripe_session_id', sessionId)
     .single()
 
-  const order = orderData as { id: string; order_number: string; payment_status: string } | null
-
-  if (findError || !order) {
+  if (findError || !orderData) {
     return { error: 'Захиалга олдсонгүй' }
   }
 
-  if (order.payment_status === 'paid') {
+  if (orderData.payment_status === 'succeeded') {
     return { error: 'Энэ захиалга аль хэдийн төлөгдсөн байна' }
   }
 
-  // Update order payment status to paid
-  const { error: updateError } = await (supabase as any)
+  // Update order payment status to succeeded
+  const { error: updateError } = await supabase
     .from('orders')
     .update({
-      payment_status: 'paid',
+      payment_status: 'succeeded',
       status: 'pending', // Order is paid but not yet processed
       confirmed_at: new Date().toISOString(),
     })
-    .eq('id', order.id)
+    .eq('id', orderData.id)
 
   if (updateError) {
     console.error('Update order error:', updateError)
@@ -69,19 +60,10 @@ export async function confirmTestPayment(sessionId: string) {
   }
 
   // Get order items to update inventory
-  const { data: orderItems } = await supabase
+  const { data: items } = await supabase
     .from('order_items')
     .select('id, product_id, variant_id, quantity, seller_id, seller_amount')
-    .eq('order_id', order.id)
-
-  const items = orderItems as Array<{
-    id: string
-    product_id: string
-    variant_id: string
-    quantity: number
-    seller_id: string
-    seller_amount: number
-  }> | null
+    .eq('order_id', orderData.id)
 
   // Update inventory for each item
   if (items) {
@@ -93,15 +75,13 @@ export async function confirmTestPayment(sessionId: string) {
         .eq('variant_id', item.variant_id)
         .single()
 
-      const inventory = inventoryData as { id: string; quantity: number } | null
-
-      if (inventory) {
-        await (supabase as any)
+      if (inventoryData) {
+        await supabase
           .from('inventory')
           .update({
-            quantity: Math.max(0, inventory.quantity - item.quantity),
+            quantity: Math.max(0, inventoryData.quantity - item.quantity),
           })
-          .eq('id', inventory.id)
+          .eq('id', inventoryData.id)
       }
 
       // Update seller stats
@@ -112,14 +92,12 @@ export async function confirmTestPayment(sessionId: string) {
           .eq('id', item.seller_id)
           .single()
 
-        const seller = sellerData as { total_sales: number; total_revenue: number } | null
-
-        if (seller) {
-          await (supabase as any)
+        if (sellerData) {
+          await supabase
             .from('seller_profiles')
             .update({
-              total_sales: (seller.total_sales || 0) + 1,
-              total_revenue: (seller.total_revenue || 0) + item.seller_amount,
+              total_sales: (sellerData.total_sales || 0) + 1,
+              total_revenue: Number(sellerData.total_revenue || 0) + item.seller_amount,
             })
             .eq('id', item.seller_id)
         }
@@ -132,13 +110,11 @@ export async function confirmTestPayment(sessionId: string) {
         .eq('id', item.product_id)
         .single()
 
-      const product = productData as { sales_count: number } | null
-
-      if (product) {
-        await (supabase as any)
+      if (productData) {
+        await supabase
           .from('products')
           .update({
-            sales_count: (product.sales_count || 0) + item.quantity,
+            sales_count: (productData.sales_count || 0) + item.quantity,
           })
           .eq('id', item.product_id)
       }
@@ -150,18 +126,18 @@ export async function confirmTestPayment(sessionId: string) {
     const { data: orderWithUser } = await supabase
       .from('orders')
       .select('user_id')
-      .eq('id', order.id)
+      .eq('id', orderData.id)
       .single()
 
     if (orderWithUser) {
-      await (supabase as any)
+      await supabase
         .from('notifications')
         .insert({
-          user_id: (orderWithUser as any).user_id,
+          user_id: orderWithUser.user_id,
           type: 'order_placed',
           title: 'Захиалга баталгаажлаа',
-          message: `Таны #${order.order_number} захиалга амжилттай төлөгдлөө.`,
-          data: { orderId: order.id, orderNumber: order.order_number },
+          message: `Таны #${orderData.order_number} захиалга амжилттай төлөгдлөө.`,
+          data: { orderId: orderData.id, orderNumber: orderData.order_number },
         })
     }
   } catch (e) {
@@ -174,6 +150,6 @@ export async function confirmTestPayment(sessionId: string) {
 
   return {
     success: true,
-    orderNumber: order.order_number,
+    orderNumber: orderData.order_number,
   }
 }

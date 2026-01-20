@@ -30,7 +30,7 @@ async function isAdmin() {
     .eq('id', user.id)
     .single()
 
-  return (data as { role: string } | null)?.role === 'admin'
+  return data?.role === 'admin'
 }
 
 // ============================================
@@ -57,7 +57,7 @@ export async function getHeroBanners(activeOnly = false) {
     return { banners: [] }
   }
 
-  return { banners: data as HeroBanner[] }
+  return { banners: data }
 }
 
 export async function createHeroBanner(banner: {
@@ -81,10 +81,9 @@ export async function createHeroBanner(banner: {
     .order('display_order', { ascending: false })
     .limit(1)
 
-  const existingData = existing as Array<{ display_order: number }> | null
-  const displayOrder = existingData && existingData[0] ? existingData[0].display_order + 1 : 0
+  const displayOrder = existing?.[0]?.display_order != null ? existing[0].display_order + 1 : 0
 
-  const { data, error } = await (supabase as any)
+  const { data, error } = await supabase
     .from('hero_banners')
     .insert({
       ...banner,
@@ -99,7 +98,7 @@ export async function createHeroBanner(banner: {
   }
 
   revalidatePath('/')
-  return { banner: data as HeroBanner }
+  return { banner: data }
 }
 
 export async function updateHeroBanner(
@@ -121,7 +120,7 @@ export async function updateHeroBanner(
 
   const supabase = await createClient()
 
-  const { data, error } = await (supabase as any)
+  const { data, error } = await supabase
     .from('hero_banners')
     .update({
       ...updates,
@@ -136,7 +135,7 @@ export async function updateHeroBanner(
   }
 
   revalidatePath('/')
-  return { banner: data as HeroBanner }
+  return { banner: data }
 }
 
 export async function deleteHeroBanner(id: string) {

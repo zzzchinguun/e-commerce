@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { revalidatePath } from 'next/cache'
+import type { Tables } from '@/types/database'
 
 // ============================================
 // NOTIFICATION TYPES
@@ -19,17 +19,8 @@ export type NotificationType =
   | 'promotion'
   | 'announcement'
 
-export type Notification = {
-  id: string
-  user_id: string
-  type: NotificationType
-  title: string
-  message: string
-  data?: Record<string, any>
-  is_read: boolean
-  read_at?: string
-  created_at: string
-}
+// Use database type for Notification
+export type Notification = Tables<'notifications'>
 
 // ============================================
 // USER NOTIFICATION ACTIONS
@@ -57,7 +48,7 @@ export async function getMyNotifications(limit = 20) {
     return { error: error.message }
   }
 
-  return { notifications: notifications as Notification[] }
+  return { notifications }
 }
 
 export async function getUnreadNotificationCount() {
@@ -95,7 +86,7 @@ export async function markNotificationAsRead(notificationId: string) {
     return { error: 'Not authenticated' }
   }
 
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('notifications')
     .update({
       is_read: true,
@@ -122,7 +113,7 @@ export async function markAllNotificationsAsRead() {
     return { error: 'Not authenticated' }
   }
 
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('notifications')
     .update({
       is_read: true,
@@ -156,7 +147,7 @@ async function isAdmin() {
     .eq('id', user.id)
     .single()
 
-  return (data as { role: string } | null)?.role === 'admin'
+  return data?.role === 'admin'
 }
 
 export async function sendNotificationToUser(
@@ -174,7 +165,7 @@ export async function sendNotificationToUser(
     return { error: 'Unauthorized' }
   }
 
-  const { data, error } = await (supabase as any)
+  const { data, error } = await supabase
     .from('notifications')
     .insert({
       user_id: userId,
@@ -190,7 +181,7 @@ export async function sendNotificationToUser(
     return { error: error.message }
   }
 
-  return { notification: data as Notification }
+  return { notification: data }
 }
 
 export async function sendNotificationToAllUsers(notification: {
@@ -227,7 +218,7 @@ export async function sendNotificationToAllUsers(notification: {
     data: notification.data || {},
   }))
 
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('notifications')
     .insert(notifications)
 
@@ -276,7 +267,7 @@ export async function sendNotificationToRole(
     data: notification.data || {},
   }))
 
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('notifications')
     .insert(notifications)
 
@@ -297,7 +288,7 @@ export async function createSystemNotification(
 ) {
   const supabase = await createClient()
 
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('notifications')
     .insert({
       user_id: userId,

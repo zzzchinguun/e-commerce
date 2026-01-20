@@ -23,7 +23,7 @@ export function QPayPaymentContent() {
   const [paymentDetails, setPaymentDetails] = useState<{
     orderNumber: string
     amount: number
-    status: string
+    status: string | null
   } | null>(null)
   const [isPaid, setIsPaid] = useState(false)
 

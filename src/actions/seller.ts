@@ -31,7 +31,7 @@ export async function getSellerProfile() {
     return { error: error.message }
   }
 
-  return { profile: profile as SellerProfile | null }
+  return { profile }
 }
 
 export async function registerSeller(formData: {
@@ -61,9 +61,8 @@ export async function registerSeller(formData: {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '')
 
-  // Create seller profile - cast to any to bypass TypeScript inference issues
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: profile, error } = await (supabase as any)
+  // Create seller profile
+  const { data: profile, error } = await supabase
     .from('seller_profiles')
     .insert({
       user_id: user.id,
@@ -86,14 +85,13 @@ export async function registerSeller(formData: {
   }
 
   // Update user role to seller
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  await (supabase as any)
+  await supabase
     .from('users')
     .update({ role: 'seller' })
     .eq('id', user.id)
 
   revalidatePath('/seller')
-  return { profile: profile as SellerProfile }
+  return { profile }
 }
 
 export async function updateSellerProfile(formData: {
@@ -129,8 +127,7 @@ export async function updateSellerProfile(formData: {
   if (formData.storeBannerUrl !== undefined) updateData.store_banner_url = formData.storeBannerUrl
   if (formData.businessAddress !== undefined) updateData.business_address = formData.businessAddress
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: profile, error } = await (supabase as any)
+  const { data: profile, error } = await supabase
     .from('seller_profiles')
     .update(updateData)
     .eq('user_id', user.id)
@@ -142,7 +139,7 @@ export async function updateSellerProfile(formData: {
   }
 
   revalidatePath('/seller/settings')
-  return { profile: profile as SellerProfile }
+  return { profile }
 }
 
 // ============================================
@@ -167,9 +164,7 @@ export async function getSellerPendingOrderCount() {
     .eq('user_id', user.id)
     .single()
 
-  const profile = profileData as { id: string } | null
-
-  if (!profile) {
+  if (!profileData) {
     return { count: 0 }
   }
 
@@ -177,7 +172,7 @@ export async function getSellerPendingOrderCount() {
   const { count } = await supabase
     .from('order_items')
     .select('*', { count: 'exact', head: true })
-    .eq('seller_id', profile.id)
+    .eq('seller_id', profileData.id)
     .eq('status', 'pending')
 
   return { count: count || 0 }
@@ -201,9 +196,7 @@ export async function getSellerDashboardStats() {
     .eq('user_id', user.id)
     .single()
 
-  const profile = profileData as Pick<SellerProfile, 'id' | 'total_revenue' | 'total_sales'> | null
-
-  if (!profile) {
+  if (!profileData) {
     return { error: 'Seller profile not found' }
   }
 
@@ -211,19 +204,19 @@ export async function getSellerDashboardStats() {
   const { count: productCount } = await supabase
     .from('products')
     .select('*', { count: 'exact', head: true })
-    .eq('seller_id', profile.id)
+    .eq('seller_id', profileData.id)
 
   // Get pending orders count
   const { count: pendingOrders } = await supabase
     .from('order_items')
     .select('*', { count: 'exact', head: true })
-    .eq('seller_id', profile.id)
+    .eq('seller_id', profileData.id)
     .eq('status', 'pending')
 
   return {
     stats: {
-      revenue: profile.total_revenue || 0,
-      totalSales: profile.total_sales || 0,
+      revenue: profileData.total_revenue || 0,
+      totalSales: profileData.total_sales || 0,
       productCount: productCount || 0,
       pendingOrders: pendingOrders || 0,
       totalViews: 0,
@@ -249,9 +242,7 @@ export async function getSellerRecentOrders(limit = 5) {
     .eq('user_id', user.id)
     .single()
 
-  const profile = profileData as Pick<SellerProfile, 'id'> | null
-
-  if (!profile) {
+  if (!profileData) {
     return { error: 'Seller profile not found' }
   }
 
@@ -270,7 +261,7 @@ export async function getSellerRecentOrders(limit = 5) {
         name
       )
     `)
-    .eq('seller_id', profile.id)
+    .eq('seller_id', profileData.id)
     .order('created_at', { ascending: false })
     .limit(limit)
 
@@ -303,9 +294,7 @@ export async function getSellerEarningsStats() {
     .eq('user_id', user.id)
     .single()
 
-  const profile = profileData as Pick<SellerProfile, 'id' | 'total_revenue' | 'total_sales' | 'commission_rate'> | null
-
-  if (!profile) {
+  if (!profileData) {
     return { error: 'Seller profile not found' }
   }
 
@@ -313,14 +302,10 @@ export async function getSellerEarningsStats() {
   const { data: completedOrders } = await supabase
     .from('order_items')
     .select('seller_amount, status, created_at')
-    .eq('seller_id', profile.id)
+    .eq('seller_id', profileData.id)
     .in('status', ['delivered', 'shipped', 'processing'])
 
-  const orders = (completedOrders || []) as Array<{
-    seller_amount: number
-    status: string
-    created_at: string
-  }>
+  const orders = completedOrders || []
 
   // Calculate available balance (delivered orders)
   const availableBalance = orders
@@ -364,7 +349,7 @@ export async function getSellerEarningsStats() {
     : thisMonthEarnings > 0 ? 100 : 0
 
   // Total earned is from seller_profiles
-  const totalEarned = Number(profile.total_revenue || 0)
+  const totalEarned = Number(profileData.total_revenue || 0)
 
   return {
     stats: {
@@ -373,7 +358,7 @@ export async function getSellerEarningsStats() {
       totalEarned,
       thisMonth: thisMonthEarnings,
       monthChange: Math.round(monthChange * 10) / 10, // Round to 1 decimal
-      commissionRate: Number(profile.commission_rate || 10),
+      commissionRate: Number(profileData.commission_rate || 10),
     },
   }
 }
@@ -396,9 +381,7 @@ export async function getSellerTransactions(limit = 10) {
     .eq('user_id', user.id)
     .single()
 
-  const profile = profileData as Pick<SellerProfile, 'id'> | null
-
-  if (!profile) {
+  if (!profileData) {
     return { error: 'Seller profile not found' }
   }
 
@@ -417,7 +400,7 @@ export async function getSellerTransactions(limit = 10) {
         order_number
       )
     `)
-    .eq('seller_id', profile.id)
+    .eq('seller_id', profileData.id)
     .order('created_at', { ascending: false })
     .limit(limit)
 
@@ -459,7 +442,7 @@ export async function getSellerBySlug(slug: string) {
     return { error: error.code === 'PGRST116' ? 'Seller not found' : error.message }
   }
 
-  return { seller: seller as SellerProfile }
+  return { seller }
 }
 
 export async function getSellerProducts(sellerId: string, options?: {
