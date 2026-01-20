@@ -327,9 +327,26 @@ Admins can manually trigger reconciliation from:
 - `/src/app/api/cron/nightly/route.ts` - Cron endpoint
 - `vercel.json` - Cron schedule configuration
 
-### Future: Order Cancellation
+### Order Cancellation & Refunds
 
-When order cancellation/refund logic is implemented, `sales_count` should be decremented. A TODO comment with example code is in `/src/actions/orders.ts` at the `updateOrderStatus()` function.
+Order cancellation and refund processing is fully implemented with the following side effects:
+
+**When an order item is cancelled:**
+1. Inventory is restored (`inventory.quantity` incremented)
+2. Product `sales_count` is decremented
+3. Seller `total_sales` is decremented
+4. Seller `total_revenue` is reduced by `seller_amount`
+
+**Files involved:**
+- `/src/actions/orders.ts` - `handleOrderItemCancellation()` helper in `updateOrderStatus()`
+- `/src/actions/admin.ts` - `processOrderRefund()` for admin refund processing
+
+**Admin Refund Processing:**
+- Admins can process refunds from `/admin/orders`
+- Creates Stripe refund via `payment_intent` if Stripe payment
+- Updates order and payment status to 'refunded'
+- Restores inventory and decrements all statistics
+- Logs action to `admin_audit_log`
 
 ---
 
@@ -417,8 +434,9 @@ src/
 │   │   ├── users/        # User management
 │   │   ├── sellers/      # Seller management
 │   │   ├── products/     # Product moderation
-│   │   ├── orders/       # Order management
+│   │   ├── orders/       # Order management (with refund processing)
 │   │   ├── analytics/    # Platform analytics
+│   │   ├── audit-log/    # Admin audit log viewer
 │   │   ├── maintenance/  # System maintenance actions
 │   │   └── settings/     # Platform settings
 │   ├── seller/           # Seller dashboard (products, orders, analytics)
@@ -433,19 +451,22 @@ src/
 │   ├── orders.ts         # Order management for sellers
 │   ├── categories.ts     # Category fetching
 │   ├── test-payment.ts   # QPay test payment confirmation
-│   └── admin.ts          # Admin dashboard actions
+│   ├── admin.ts          # Admin dashboard actions (refunds, audit log, etc.)
+│   ├── addresses.ts      # User address CRUD
+│   └── analytics.ts      # Seller analytics
 ├── components/
 │   ├── ui/               # shadcn/ui components
 │   ├── layout/           # Header, Footer, navigation
 │   ├── products/         # ProductCard, ProductGrid
 │   ├── cart/             # CartDrawer, CartItem
 │   ├── checkout/         # CheckoutForm, StripeProvider
-│   └── admin/            # Admin components (ImpersonationBanner, etc.)
+│   └── admin/            # Admin components (ImpersonationBanner, PendingSellerCard, etc.)
 ├── lib/
 │   ├── supabase/         # client.ts, server.ts
 │   ├── stripe/           # Stripe configuration
 │   ├── admin/            # Admin utilities (impersonation)
 │   ├── pricing.ts        # Centralized pricing calculations (tax, shipping, commission)
+│   ├── errors.ts         # Standardized error handling utilities
 │   └── utils/            # Utility functions (format.ts)
 ├── stores/               # Zustand stores
 │   ├── cart-store.ts     # Shopping cart with localStorage
@@ -614,12 +635,13 @@ CREATE TYPE product_status AS ENUM ('draft', 'active', 'inactive', 'out_of_stock
 
 22. **admin_audit_log** - Tracks admin actions for audit trail
     - `id`, `admin_id` (references users)
-    - `action` (TEXT, e.g., 'approve_seller', 'suspend_user')
+    - `action` (TEXT, e.g., 'approve_seller', 'suspend_user', 'process_refund')
     - `target_user_id` (optional, references users)
-    - `target_entity_type` (TEXT, e.g., 'product', 'order')
+    - `target_entity_type` (TEXT, e.g., 'product', 'order', 'seller', 'user')
     - `target_entity_id` (UUID)
     - `metadata` (JSONB for additional context)
     - `created_at`
+    - **Viewable at**: `/admin/audit-log` with filters by action, entity type, and date range
 
 23. **platform_settings** - Platform-wide configuration
     - `id`, `key` (unique TEXT)
@@ -717,26 +739,31 @@ interface CartStore {
 ### Customer
 - Browse products with filters/search
 - Add to cart/wishlist
-- Checkout with Stripe
+- Checkout with Stripe or QPay (test)
 - Track orders
 - Leave reviews
+- Manage multiple addresses at `/account/addresses`
+- View seller stores at `/sellers/[slug]`
 
 ### Seller
 - Register and await approval
 - Dashboard with stats (revenue, sales, orders, products)
 - Product CRUD with images, variants, inventory
 - Order fulfillment (processing → shipped → delivered)
-- View analytics (placeholder)
+- View analytics at `/seller/analytics`
+- Upload store logo at `/seller/settings`
+- Public store page at `/sellers/[slug]`
 
 ### Admin
 - Super Admin Dashboard at `/admin`
-- Approve/suspend sellers
+- Approve/suspend sellers (with interactive buttons)
 - Manage categories
 - Platform-wide analytics
 - User management with impersonation
-- Order management with refund processing
+- Order management with Stripe refund processing
 - Hero banners and featured categories management
 - System maintenance actions at `/admin/maintenance`
+- Admin audit log at `/admin/audit-log` with filtering and pagination
 
 ## Environment Variables
 
@@ -804,7 +831,10 @@ const { data: { publicUrl } } = supabase.storage
 | `/admin/orders` | Order management | Admin only |
 | `/admin/analytics` | Platform analytics | Admin only |
 | `/admin/maintenance` | System maintenance | Admin only |
+| `/admin/audit-log` | Admin audit log | Admin only |
 | `/admin/settings` | Platform settings | Admin only |
+| `/account/addresses` | Address management | Protected |
+| `/sellers/[slug]` | Seller store page | Public |
 
 ## Commission Structure
 
@@ -861,6 +891,90 @@ All checkout APIs and webhooks use these utilities:
 - `/src/app/api/checkout/route.ts` - Stripe checkout
 - `/src/app/api/test-payment/route.ts` - QPay test payment
 - `/src/app/api/webhooks/stripe/route.ts` - Stripe webhook
+
+---
+
+## Error Handling Utilities
+
+Standardized error handling is available in `/src/lib/errors.ts` for consistent server action responses.
+
+### Error Codes
+
+```typescript
+import { ErrorCode } from '@/lib/errors'
+
+// Available codes
+ErrorCode.NOT_AUTHENTICATED    // User not logged in
+ErrorCode.NOT_AUTHORIZED       // User lacks permission
+ErrorCode.VALIDATION_ERROR     // Input validation failed
+ErrorCode.NOT_FOUND           // Resource not found
+ErrorCode.INSUFFICIENT_INVENTORY
+ErrorCode.STRIPE_ERROR
+ErrorCode.DATABASE_ERROR
+// ... and more
+```
+
+### ActionResult Type
+
+```typescript
+import { ActionResult, success, error } from '@/lib/errors'
+
+// Server action with typed response
+async function myAction(): Promise<ActionResult<MyData>> {
+  // Return success
+  return success({ id: '123', name: 'Test' })
+
+  // Return error
+  return error(ErrorCode.NOT_FOUND, 'Олдсонгүй')
+}
+
+// Helper functions
+authError()       // Authentication error
+forbiddenError()  // Authorization error
+notFoundError()   // Not found error
+validationError() // Validation error
+dbError()         // Database error
+```
+
+### Legacy Compatibility
+
+For gradual migration from old `{ error?: string }` pattern:
+
+```typescript
+import { fromLegacy, toLegacy } from '@/lib/errors'
+
+// Convert legacy to ActionResult
+const result = fromLegacy(oldResult, 'data')
+
+// Convert ActionResult to legacy
+const legacy = toLegacy(newResult, 'data')
+```
+
+---
+
+## Address Management
+
+Customer address management is available at `/account/addresses` with full CRUD operations.
+
+### Server Actions
+
+Located in `/src/actions/addresses.ts`:
+
+```typescript
+getUserAddresses()                    // Get all user addresses
+createAddress(data)                   // Create new address
+updateAddress(id, data)              // Update existing address
+deleteAddress(id)                    // Delete address
+setDefaultAddress(id, type)          // Set default shipping/billing
+```
+
+### Features
+
+- Multiple addresses per user
+- Set default shipping address
+- Mongolian district/province dropdown
+- Form validation with Zod
+- Real-time updates with optimistic UI
 
 ## Development Commands
 
